@@ -50,7 +50,8 @@
     "transfer": "Transfer",
     "system": "System",
     "unknown": "Unknown",
-    "thirdParty": "Third Party Payment",
+    "thirdParty": "Third Party Payment (includes 30% fee){{thirdPartyName}}",
+    "thirdPartyFrom": ". From third-party provider: ",
     "interest": "Interest"
   },
 "messages": {

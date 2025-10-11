@@ -50,7 +50,8 @@
     "transfer": "振替",
     "system": "システム",
     "unknown": "不明",
-    "thirdParty": "サードパーティ決済",
+    "thirdParty": "サードパーティ決済（含30%手数料）{{thirdPartyName}}",
+    "thirdPartyFrom": "、サードパーティ提供元：",
     "interest": "利息"
   },
 "messages": {

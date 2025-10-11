@@ -50,7 +50,8 @@
     "transfer": "转账",
     "system": "系统",
     "unknown": "未知",
-    "thirdParty": "第三方支付",
+    "thirdParty": "第三方支付（含30%手续费）{{thirdPartyName}}",
+    "thirdPartyFrom": "，第三方提供商：",
     "interest": "利息"
   },
 "messages": {

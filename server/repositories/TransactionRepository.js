@@ -23,7 +23,8 @@ class TransactionRepository {
       toWalletId,
       amount,
       transactionType,
-      description = ''
+      description = '',
+      thirdPartyName = null
     } = transactionData;
     
     // Check transaction type
@@ -42,9 +43,9 @@ class TransactionRepository {
     
     try {
       await dbAsync.run(
-        `INSERT INTO transactions (id, from_wallet_id, to_wallet_id, amount, transaction_type, description, created_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [id, fromWalletId, toWalletId, amount, transactionType, description, now]
+        `INSERT INTO transactions (id, from_wallet_id, to_wallet_id, amount, transaction_type, description, third_party_name, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, fromWalletId, toWalletId, amount, transactionType, description, thirdPartyName, now]
       );
       
       return await this.findById(id);
@@ -91,7 +92,8 @@ class TransactionRepository {
     let sql = `
       SELECT t.*, 
              fw.username as from_username,
-             tw.username as to_username
+             tw.username as to_username,
+             t.third_party_name
       FROM transactions t
       LEFT JOIN wallets fw ON t.from_wallet_id = fw.id
       LEFT JOIN wallets tw ON t.to_wallet_id = tw.id
@@ -130,7 +132,8 @@ class TransactionRepository {
     let sql = `
       SELECT t.*, 
              fw.username as from_username,
-             tw.username as to_username
+             tw.username as to_username,
+             t.third_party_name
       FROM transactions t
       LEFT JOIN wallets fw ON t.from_wallet_id = fw.id
       LEFT JOIN wallets tw ON t.to_wallet_id = tw.id
@@ -284,7 +287,8 @@ class TransactionRepository {
       const transactions = await dbAsync.all(
         `SELECT t.*, 
                 fw.username as from_username,
-                tw.username as to_username
+                tw.username as to_username,
+                t.third_party_name
          FROM transactions t
          LEFT JOIN wallets fw ON t.from_wallet_id = fw.id
          LEFT JOIN wallets tw ON t.to_wallet_id = tw.id

@@ -253,6 +253,7 @@ router.get('/:walletId/transactions', validateWalletId, async (req, res) => {
       transactionType: transaction.transaction_type,
       description: transaction.description,
       createdAt: transaction.created_at,
+      thirdPartyName: transaction.third_party_name,
       // Chrysorrhoe: Add Transaction Direction Information
       direction: transaction.from_wallet_id === walletId ? 'outgoing' : 'incoming',
       // Chrysorrhoe: Add Other Wallet Information (if needed)
@@ -338,6 +339,7 @@ router.get('/:walletId/transactions/detailed', validateWalletId, async (req, res
         transactionType: transaction.transaction_type,
         description: transaction.description,
         createdAt: transaction.created_at,
+        thirdPartyName: transaction.third_party_name,
         direction,
         otherWallet: otherWalletId ? {
           id: otherWalletId,

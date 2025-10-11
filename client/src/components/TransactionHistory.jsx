@@ -94,7 +94,10 @@ const TransactionHistory = () => {
     
     // Handle third-party payment related transactions
     if (['third_party_payment', 'third_party_receipt'].includes(transaction.transactionType)) {
-      return t('transaction.thirdParty')
+      const thirdPartyName = transaction?.thirdPartyName || '';
+      return thirdPartyName 
+        ? t('transaction.thirdParty', { thirdPartyName: `${t('transaction.thirdPartyFrom')} ${thirdPartyName}` })
+        : t('transaction.thirdParty', { thirdPartyName: '' });
     }
     
     // Handle interest related transactions

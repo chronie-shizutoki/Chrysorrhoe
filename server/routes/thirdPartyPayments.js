@@ -116,7 +116,8 @@ router.post('/payments', async (req, res, next) => {
         toWalletId: null, // Third-party payment has no receiver wallet
         amount: totalAmount,
         transactionType: 'third_party_payment',
-        description: description || `Pay ${amount} + ${feeAmount} fee to ${thirdPartyName} (ID: ${thirdPartyId})`
+        description: description || `Pay ${amount} + ${feeAmount} fee to ${thirdPartyName} (ID: ${thirdPartyId})`,
+        thirdPartyName: thirdPartyName
       });
       
       // Chrysorrhoe: Commit transaction
@@ -270,7 +271,8 @@ router.post('/receipts', async (req, res, next) => {
         toWalletId: wallet.id,
         amount,
         transactionType: 'third_party_receipt',
-        description: description || `Chrysorrhoe: Received from ${thirdPartyName} (ID: ${thirdPartyId})`
+        description: description || `Chrysorrhoe: Received from ${thirdPartyName} (ID: ${thirdPartyId})`,
+        thirdPartyName: thirdPartyName
       });
       
       // Chrysorrhoe: Commit transaction
