@@ -26,16 +26,17 @@ Chrysorrhoe/
    ```
 
 2. **Set up the database**:
+   The SQLite database will be automatically created and initialized when the server starts for the first time.
+   
    ```bash
-   # Follow instructions in database/README.md
-   psql -U postgres -f database/init.sql
+   # Follow instructions in database/README.md for more details
    ```
 
 3. **Configure environment**:
    ```bash
    # Copy and edit environment files
    cp server/.env.example server/.env
-   # Edit server/.env with your database credentials
+   # No database configuration is needed for SQLite
    ```
 
 4. **Start development servers**:

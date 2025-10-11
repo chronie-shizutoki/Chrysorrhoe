@@ -1,54 +1,26 @@
 # Database Setup
 
 ## Prerequisites
-- PostgreSQL installed and running
-- Access to PostgreSQL with superuser privileges
+- Node.js installed
+- No additional database software is required as we use SQLite, which is embedded in the application
 
 ## Setup Instructions
 
-1. **Install PostgreSQL** (if not already installed):
-   - Windows: Download from https://www.postgresql.org/download/windows/
-   - macOS: `brew install postgresql`
-   - Linux: `sudo apt-get install postgresql postgresql-contrib`
+1. **Initialize the database**:
+   SQLite database will be automatically created and initialized when the server starts for the first time. The database file (`wallet.db`) will be stored in the `server/data` directory.
 
-2. **Start PostgreSQL service**:
-   - Windows: Start from Services or `net start postgresql-x64-14`
-   - macOS: `brew services start postgresql`
-   - Linux: `sudo systemctl start postgresql`
+2. **Manual initialization** (if needed):
+   You can manually initialize the database by running the server, which will execute the SQL scripts from `database/sqlite_init.sql`.
 
-3. **Run the initialization script**:
-   ```bash
-   # Connect as postgres superuser
-   psql -U postgres -f database/init.sql
-   ```
-
-4. **Verify the setup**:
-   ```bash
-   # Connect to the wallet_app database
-   psql -U wallet_user -d wallet_app -h localhost
-   
-   # List tables
-   \dt
-   
-   # Check table structure
-   \d wallets
-   \d transactions
-   ```
+3. **Database migrations**:
+   Any schema changes are managed through migration scripts located in the `database/migrations` directory. Migrations are executed when the server starts.
 
 ## Environment Configuration
 
-Make sure your `.env` file in the server directory matches the database configuration:
-
-```
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=wallet_app
-DB_USER=wallet_user
-DB_PASSWORD=wallet_password
-```
+There are no specific database environment variables required for SQLite. The database path is hardcoded to `server/data/wallet.db`.
 
 ## Troubleshooting
 
-- If you get authentication errors, check your PostgreSQL `pg_hba.conf` file
-- Make sure PostgreSQL is running on the correct port (default 5432)
-- Verify the user has the correct permissions
+- If you encounter issues with the database, check the `server/data` directory to ensure it has write permissions
+- Make sure the `database/sqlite_init.sql` file exists and contains valid SQL
+- For database reset, you can stop the server, delete the `wallet.db` file, and restart the server to recreate the database from scratch

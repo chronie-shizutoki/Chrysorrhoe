@@ -1,5 +1,7 @@
 // 数据库迁移工具
 // 用于执行数据库迁移脚本
+// 迁移脚本应在migrations目录下，文件名格式为YYYYMMDDHHMMSS_*.sql
+// 例如：20230101000000_create_wallets_table.sql
 
 const fs = require('fs');
 const path = require('path');
