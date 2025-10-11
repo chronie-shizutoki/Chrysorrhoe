@@ -92,6 +92,16 @@ const TransactionHistory = () => {
       return transaction.otherWallet.username
     }
     
+    // Handle third-party payment related transactions
+    if (['third_party_payment', 'third_party_receipt'].includes(transaction.transactionType)) {
+      return t('transaction.thirdParty')
+    }
+    
+    // Handle interest related transactions
+    if (['interest_credit', 'interest_debit'].includes(transaction.transactionType)) {
+      return t('transaction.interest')
+    }
+    
     return t('transaction.unknown')
   }
 

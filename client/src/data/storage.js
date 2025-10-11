@@ -1,6 +1,6 @@
 /**
- * 本地存储管理器
- * 提供对浏览器localStorage的封装，支持数据的增删改查操作
+ * Local Storage Manager
+ * Provides a wrapper for browser localStorage with CRUD operations
  */
 
 import { STORAGE_KEYS, AppSettingsSchema } from './schema.js';
@@ -10,7 +10,7 @@ class StorageManager {
     this.isAvailable = this.checkStorageAvailability();
   }
 
-  // 检查localStorage是否可用
+  // Check if localStorage is available
   checkStorageAvailability() {
     try {
       const test = '__storage_test__';
@@ -18,12 +18,12 @@ class StorageManager {
       localStorage.removeItem(test);
       return true;
     } catch (e) {
-      console.warn('localStorage不可用，数据将不会持久化');
+      console.warn('localStorage is not available, data will not be persisted');
       return false;
     }
   }
 
-  // 获取数据
+  // Get data from localStorage
   get(key) {
     if (!this.isAvailable) return null;
     
@@ -31,12 +31,12 @@ class StorageManager {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : null;
     } catch (error) {
-      console.error(`读取存储数据失败: ${key}`, error);
+      console.error(`Failed to read data from localStorage: ${key}`, error);
       return null;
     }
   }
 
-  // 设置数据
+  // Set data in localStorage
   set(key, value) {
     if (!this.isAvailable) return false;
     
@@ -44,12 +44,12 @@ class StorageManager {
       localStorage.setItem(key, JSON.stringify(value));
       return true;
     } catch (error) {
-      console.error(`保存存储数据失败: ${key}`, error);
+      console.error(`Failed to save data to localStorage: ${key}`, error);
       return false;
     }
   }
 
-  // 删除数据
+  // Remove data from localStorage
   remove(key) {
     if (!this.isAvailable) return false;
     
@@ -57,12 +57,12 @@ class StorageManager {
       localStorage.removeItem(key);
       return true;
     } catch (error) {
-      console.error(`删除存储数据失败: ${key}`, error);
+      console.error(`Failed to remove data from localStorage: ${key}`, error);
       return false;
     }
   }
 
-  // 清空所有应用数据
+  // Clear all application data from localStorage
   clear() {
     if (!this.isAvailable) return false;
     
@@ -72,62 +72,62 @@ class StorageManager {
       });
       return true;
     } catch (error) {
-      console.error('清空存储数据失败', error);
+      console.error('Failed to clear localStorage', error);
       return false;
     }
   }
 
-  // 获取所有钱包
+  // Get all wallets from localStorage
   getWallets() {
     return this.get(STORAGE_KEYS.WALLETS) || [];
   }
 
-  // 保存钱包列表
+  // Save wallet list to localStorage
   setWallets(wallets) {
     return this.set(STORAGE_KEYS.WALLETS, wallets);
   }
 
-  // 获取所有交易
+  // Get all transactions from localStorage
   getTransactions() {
     return this.get(STORAGE_KEYS.TRANSACTIONS) || [];
   }
 
-  // 保存交易列表
+  // Save transaction list to localStorage
   setTransactions(transactions) {
     return this.set(STORAGE_KEYS.TRANSACTIONS, transactions);
   }
 
-  // 获取当前钱包ID
+  // Get current wallet ID from localStorage
   getCurrentWalletId() {
     return this.get(STORAGE_KEYS.CURRENT_WALLET);
   }
 
-  // 设置当前钱包ID
+  // Set current wallet ID in localStorage
   setCurrentWalletId(walletId) {
     return this.set(STORAGE_KEYS.CURRENT_WALLET, walletId);
   }
 
-  // 获取应用设置
+  // Get application settings from localStorage
   getAppSettings() {
     const settings = this.get(STORAGE_KEYS.APP_SETTINGS);
     return settings ? { ...AppSettingsSchema, ...settings } : AppSettingsSchema;
   }
 
-  // 保存应用设置
+  // Save application settings to localStorage
   setAppSettings(settings) {
     const currentSettings = this.getAppSettings();
     const newSettings = { ...currentSettings, ...settings };
     return this.set(STORAGE_KEYS.APP_SETTINGS, newSettings);
   }
 
-  // 数据迁移和初始化
+  // Initialize localStorage with default data if empty
   initializeStorage() {
-    // 检查是否需要初始化
+    // Check if initialization is needed
     const wallets = this.getWallets();
     const transactions = this.getTransactions();
     const settings = this.getAppSettings();
 
-    // 如果没有数据，创建空的数据结构
+    // If there is no data, create empty data structures
     if (wallets.length === 0) {
       this.setWallets([]);
     }
@@ -136,14 +136,14 @@ class StorageManager {
       this.setTransactions([]);
     }
 
-    // 确保设置存在
+    // Ensure settings exist
     this.setAppSettings(settings);
 
-    console.log('本地存储初始化完成');
+    console.log('Local storage initialized with default data');
     return true;
   }
 
-  // 导出数据（用于备份）
+  // Export data (for backup)
   exportData() {
     return {
       wallets: this.getWallets(),
@@ -153,7 +153,7 @@ class StorageManager {
     };
   }
 
-  // 导入数据（用于恢复）
+  // Import data (for recovery)
   importData(data) {
     try {
       if (data.wallets) this.setWallets(data.wallets);
@@ -161,12 +161,12 @@ class StorageManager {
       if (data.settings) this.setAppSettings(data.settings);
       return true;
     } catch (error) {
-      console.error('导入数据失败', error);
+      console.error('Failed to import data', error);
       return false;
     }
   }
 
-  // 获取存储使用情况
+  // Get storage usage information
   getStorageInfo() {
     if (!this.isAvailable) return null;
 
@@ -182,6 +182,6 @@ class StorageManager {
   }
 }
 
-// 创建单例实例
+// Create singleton instance
 export const storageManager = new StorageManager();
 export default storageManager;

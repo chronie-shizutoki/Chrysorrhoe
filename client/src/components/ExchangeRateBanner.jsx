@@ -11,7 +11,7 @@ function ExchangeRateBanner() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // 从服务器获取最新汇率
+// Fetch the latest exchange rate from the server
   const fetchExchangeRate = async () => {
     try {
       setIsLoading(true)
@@ -24,11 +24,11 @@ function ExchangeRateBanner() {
         setExchangeRate(data.data.rate)
         setLastUpdated(new Date(data.data.created_at))
       } else {
-        throw new Error(data.message || '获取汇率失败')
+        throw new Error(data.message || 'Failed to fetch exchange rate')
       }
     } catch (err) {
-      console.error('获取汇率时出错:', err)
-      setError(err.message || '无法获取汇率数据')
+      console.error('Error fetching exchange rate:', err)
+      setError(err.message || 'Failed to fetch exchange rate data')
       
       setExchangeRate(generateRandomRate())
       setLastUpdated(new Date())
@@ -37,19 +37,19 @@ function ExchangeRateBanner() {
     }
   }
 
-  // 初始化汇率并设置每小时更新
+  // Initialize exchange rate and set it to update every hour
   useEffect(() => {
-    // 初始获取汇率
+    // Initial fetch of exchange rate
     fetchExchangeRate()
 
-    // 设置定时器，每小时更新一次汇率
-    const intervalId = setInterval(fetchExchangeRate, 60 * 60 * 1000) // 1小时 = 60分钟 * 60秒 * 1000毫秒
+    // Set up interval to update exchange rate every hour
+    const intervalId = setInterval(fetchExchangeRate, 60 * 60 * 1000) // 1 hour = 60 minutes * 60 seconds * 1000 milliseconds
     
-    // 清理函数
+    // Cleanup function to clear interval when component unmounts
     return () => clearInterval(intervalId)
   }, [])
 
-  // 格式化更新时间
+  // Format the last updated time to a readable string
   const formatUpdateTime = (date) => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -60,7 +60,7 @@ function ExchangeRateBanner() {
     return `${year}-${month}-${day} ${hours}:${minutes}`
   }
 
-  // 格式化汇率数字，使用当前语言的数字格式化规则
+  // Format the exchange rate number using the current language's number formatting rules
   const formattedRate = exchangeRate ? formatNumber(exchangeRate) : '0'
 
   return (
@@ -70,7 +70,7 @@ function ExchangeRateBanner() {
         
         {isLoading ? (
           <div className="exchange-rate-loading">
-            正在加载汇率...
+            {t('exchangeRate.loading')}
           </div>
         ) : error ? (
           <div className="exchange-rate-error">

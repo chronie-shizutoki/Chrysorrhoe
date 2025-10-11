@@ -1,40 +1,40 @@
-// 数据库迁移工具
-// 用于执行数据库迁移脚本
-// 迁移脚本应在migrations目录下，文件名格式为YYYYMMDDHHMMSS_*.sql
-// 例如：20230101000000_create_wallets_table.sql
+// Chrysorrhoe Database Migration Tool
+// Used to execute Chrysorrhoe database migration scripts
+// Migration scripts should be placed in the migrations directory with filenames in the format YYYYMMDDHHMMSS_*.sql
+// Example: 20230101000000_create_wallets_table.sql
 
 const fs = require('fs');
 const path = require('path');
 
-// 动态加载数据库配置
+// Dynamically load database configuration
 function loadDatabaseConfig() {
   try {
     const dbConfigPath = path.join(__dirname, '..', 'server', 'config', 'database.js');
     if (fs.existsSync(dbConfigPath)) {
       return require(dbConfigPath);
     } else {
-      console.error('无法找到数据库配置文件:', dbConfigPath);
+      console.error('Chrysorrhoe database configuration file not found:', dbConfigPath);
       process.exit(1);
     }
   } catch (error) {
-    console.error('加载数据库配置失败:', error.message);
+    console.error('Failed to load Chrysorrhoe database configuration:', error.message);
     process.exit(1);
   }
 }
 
-// 读取迁移脚本
+// Read migration script
 function readMigrationScript(scriptPath) {
   try {
     return fs.readFileSync(scriptPath, 'utf8');
   } catch (error) {
-    console.error('读取迁移脚本失败:', error.message);
+    console.error('Failed to read Chrysorrhoe migration script:', error.message);
     process.exit(1);
   }
 }
 
-// 执行SQL脚本
+// Execute Chrysorrhoe SQL script
 async function executeSqlScript(dbAsync, sqlScript) {
-  // 移除注释和空行
+  // Remove comments and empty lines
   const cleanScript = sqlScript
     .split('\n')
     .filter(line => {
@@ -43,7 +43,7 @@ async function executeSqlScript(dbAsync, sqlScript) {
     })
     .join('\n');
 
-  // 分割SQL语句
+  // Split SQL statements
   const statements = [];
   let currentStatement = '';
   let inTrigger = false;
@@ -55,19 +55,19 @@ async function executeSqlScript(dbAsync, sqlScript) {
 
     currentStatement += line + '\n';
 
-    // 检查是否进入触发器
+    // Check if entering a trigger
     if (trimmed.toUpperCase().includes('CREATE TRIGGER')) {
       inTrigger = true;
     }
 
-    // 在触发器中计算大括号
+    // Count braces in trigger blocks
     if (inTrigger) {
       for (const char of trimmed) {
         if (char === '{') braceCount++;
         if (char === '}') braceCount--;
       }
       
-      // 检查是否是BEGIN/END块
+      // Check if it's a BEGIN/END block
       if (trimmed.toUpperCase() === 'BEGIN') {
         braceCount++;
       } else if (trimmed.toUpperCase() === 'END;') {
@@ -75,7 +75,7 @@ async function executeSqlScript(dbAsync, sqlScript) {
       }
     }
 
-    // 检查是否是语句结束
+    // Check if statement ends
     if (trimmed.endsWith(';')) {
       if (!inTrigger || (inTrigger && braceCount <= 0)) {
         statements.push(currentStatement.trim());
@@ -86,107 +86,107 @@ async function executeSqlScript(dbAsync, sqlScript) {
     }
   }
 
-  // 如果还有未完成的语句
+  // If there are any remaining statements
   if (currentStatement.trim()) {
     statements.push(currentStatement.trim());
   }
 
-  // 执行每个语句
+  // Execute each statement
   for (const statement of statements) {
     if (statement.trim()) {
       try {
         await dbAsync.run(statement);
         const preview = statement.replace(/\s+/g, ' ').substring(0, 50);
-        console.log('执行SQL语句成功:', preview + '...');
+        console.log('Chrysorrhoe SQL statement executed successfully:', preview + '...');
       } catch (error) {
         const preview = statement.replace(/\s+/g, ' ').substring(0, 50);
-        console.error('执行SQL语句失败:', preview + '...', error.message);
-        console.error('完整语句:', statement);
+        console.error('Chrysorrhoe SQL statement execution failed:', preview + '...', error.message);
+        console.error('Full statement:', statement);
         throw error;
       }
     }
   }
 }
 
-// 执行指定的迁移脚本
+// Execute specified migration script
 async function runMigration(scriptFileName) {
   try {
-    console.log('开始执行数据库迁移...');
+    console.log('Starting Chrysorrhoe database migration...');
     
-    // 加载数据库配置
+    // Load database configuration
     const { dbAsync } = loadDatabaseConfig();
     
-    // 构建迁移脚本路径
+    // Build migration script path
     const scriptPath = path.join(__dirname, 'migrations', scriptFileName);
     
     if (!fs.existsSync(scriptPath)) {
-      console.error('迁移脚本不存在:', scriptPath);
+      console.error('Chrysorrhoe migration script does not exist:', scriptPath);
       process.exit(1);
     }
     
-    // 读取迁移脚本
+    // Read migration script
     const migrationScript = readMigrationScript(scriptPath);
     
-    // 执行迁移脚本
+    // Execute migration script
     await executeSqlScript(dbAsync, migrationScript);
     
-    console.log('数据库迁移执行成功:', scriptFileName);
+    console.log('Chrysorrhoe database migration executed successfully:', scriptFileName);
     process.exit(0);
     
   } catch (error) {
-    console.error('数据库迁移失败:', error.message);
+    console.error('Chrysorrhoe database migration failed:', error.message);
     process.exit(1);
   }
 }
 
-// 执行所有迁移脚本
+// Execute all Chrysorrhoe migration scripts
 async function runAllMigrations() {
   try {
-    console.log('开始执行所有数据库迁移...');
+    console.log('Starting Chrysorrhoe database migration...');
     
-    // 加载数据库配置
+    // Load database configuration
     const { dbAsync } = loadDatabaseConfig();
     
-    // 获取migrations目录下的所有SQL文件
+    // Get all Chrysorrhoe migration scripts in the migrations directory
     const migrationsDir = path.join(__dirname, 'migrations');
     
     if (!fs.existsSync(migrationsDir)) {
-      console.error('migrations目录不存在:', migrationsDir);
+      console.error('Chrysorrhoe migrations directory does not exist:', migrationsDir);
       process.exit(1);
     }
     
-    // 读取并按文件名排序（假设文件名包含日期前缀）
+    // Read and sort Chrysorrhoe migration scripts by filename (assumes filename contains date prefix)
     const migrationFiles = fs.readdirSync(migrationsDir)
       .filter(file => file.endsWith('.sql'))
       .sort();
     
     if (migrationFiles.length === 0) {
-      console.log('没有找到需要执行的迁移脚本');
+      console.log('No Chrysorrhoe migration scripts found to execute');
       process.exit(0);
     }
     
-    console.log(`找到 ${migrationFiles.length} 个迁移脚本，将按顺序执行:`);
+    console.log(`Found ${migrationFiles.length} Chrysorrhoe migration scripts, will execute in order:`);
     migrationFiles.forEach(file => console.log(`- ${file}`));
     
-    // 逐一执行迁移脚本
+    // Execute each Chrysorrhoe migration script
     for (const file of migrationFiles) {
-      console.log(`\n执行迁移脚本: ${file}`);
+      console.log(`\nExecuting Chrysorrhoe migration script: ${file}`);
       const scriptPath = path.join(migrationsDir, file);
       const migrationScript = readMigrationScript(scriptPath);
       await executeSqlScript(dbAsync, migrationScript);
-      console.log(`迁移脚本执行成功: ${file}`);
+      console.log(`Chrysorrhoe migration script executed successfully: ${file}`);
     }
     
-    console.log('\n所有数据库迁移执行成功');
+    console.log('\nAll Chrysorrhoe database migrations executed successfully');
     process.exit(0);
     
   } catch (error) {
-    console.error('数据库迁移失败:', error.message);
+    console.error('Chrysorrhoe database migration failed:', error.message);
     process.exit(1);
   }
 }
 
-// 解析命令行参数
+// Parse command line arguments
 function parseArgs() {
   const args = process.argv.slice(2);
   
@@ -201,7 +201,7 @@ function parseArgs() {
   return { command: 'unknown' };
 }
 
-// 主函数
+// Main function
 async function main() {
   const args = parseArgs();
   
@@ -210,12 +210,12 @@ async function main() {
   } else if (args.command === 'single' && args.scriptName) {
     await runMigration(args.scriptName);
   } else {
-    console.log('用法:');
-    console.log('  node migrate.js                   # 执行所有迁移脚本');
-    console.log('  node migrate.js --script <filename> # 执行指定的迁移脚本');
+    console.log('Chrysorrhoe database migration usage:');
+    console.log('  node migrate.js                   # Execute all Chrysorrhoe migration scripts');
+    console.log('  node migrate.js --script <filename> # Execute specified Chrysorrhoe migration script');
     process.exit(0);
   }
 }
 
-// 执行主函数
+// Execute main function
 main();

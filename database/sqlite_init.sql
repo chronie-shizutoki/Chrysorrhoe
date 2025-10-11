@@ -1,7 +1,7 @@
--- SQLite数据库初始化脚本
--- 创建钱包应用所需的表结构和索引
+-- SQLite Chrysorrhoe Database Initialization Script
+-- Used to create the necessary tables and indices for the Chrysorrhoe wallet application
 
--- 创建钱包表
+-- Create wallets table
 CREATE TABLE IF NOT EXISTS wallets (
   id TEXT PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS wallets (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- 创建交易表
+-- Create transactions table
 CREATE TABLE IF NOT EXISTS transactions (
   id TEXT PRIMARY KEY,
   from_wallet_id TEXT,
@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS transactions (
   FOREIGN KEY (to_wallet_id) REFERENCES wallets(id)
 );
 
--- 创建汇率表
+-- Create exchange rates table
 CREATE TABLE IF NOT EXISTS exchange_rates (
   id TEXT PRIMARY KEY,
   rate REAL NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- 创建索引以优化查询性能
+-- Create indices to optimize query performance
 CREATE INDEX IF NOT EXISTS idx_wallets_username ON wallets(username);
 
 CREATE INDEX IF NOT EXISTS idx_transactions_from_wallet ON transactions(from_wallet_id);
@@ -41,7 +41,7 @@ CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON transactions(created_a
 
 CREATE INDEX IF NOT EXISTS idx_transactions_type ON transactions(transaction_type);
 
--- 创建触发器自动更新updated_at字段
+-- Create trigger to automatically update updated_at field in wallets table
 CREATE TRIGGER IF NOT EXISTS update_wallets_updated_at
   AFTER UPDATE ON wallets
   FOR EACH ROW

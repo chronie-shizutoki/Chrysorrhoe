@@ -1,7 +1,7 @@
 {
-  "name": "simple-wallet-app",
+  "name": "chrysorrhoe",
   "version": "1.0.0",
-  "description": "Simple wallet web application with frontend and backend",
+  "description": "Chrysorrhoe is a wallet web application with frontend and backend",
   "main": "server/index.js",
   "scripts": {
     "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",

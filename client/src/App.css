@@ -1,14 +1,13 @@
 /* Global styles */
-/* 基础样式重置 */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* 现代设计系统变量 */
+/* system variables */
 :root {
-  /* 颜色系统 */
+  /* Color System */
   --color-bg: #f5f5f5;
   --color-surface: #ffffff;
   --color-text: #333333;
@@ -26,7 +25,7 @@
   --color-info-bg: #f8f9fa;
   --color-focus: #007bff;
   
-  /* 液态玻璃风格变量 */
+  /* Glass Material Style Variables */
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-bg-hover: rgba(255, 255, 255, 0.8);
   --glass-bg-dark: rgba(27, 31, 36, 0.7);
@@ -35,15 +34,15 @@
   --glass-border-dark: rgba(255, 255, 255, 0.05);
   --glass-blur: 10px;
   
-  /* 排版系统 */
+  /* Typography System */
   --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-family-mono: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', Consolas, 'Courier New', monospace;
   
-  /* 字体大小层次结构 */
+  /* Font Size Hierarchy */
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px - 基础字号 */
+  --font-size-base: 1rem;     /* 16px - Base Font Size */
   --font-size-lg: 1.125rem;   /* 18px */
   --font-size-xl: 1.25rem;    /* 20px */
   --font-size-2xl: 1.5rem;    /* 24px */
@@ -51,24 +50,24 @@
   --font-size-4xl: 2.25rem;   /* 36px */
   --font-size-5xl: 3rem;      /* 48px */
   
-  /* 行高设置 */
+  /* Line Height Settings */
   --line-height-tight: 1.2;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
   
-  /* 字重设置 */
+  /* Font Weight Settings */
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   
-  /* 字间距 */
+  /* Letter Spacing */
   --letter-spacing-tight: -0.025em;
   --letter-spacing-normal: 0;
   --letter-spacing-wide: 0.025em;
   
-  /* 间距系统 */
+  /* Spacing System */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
@@ -77,14 +76,14 @@
   --space-2xl: 3rem;
   --space-3xl: 4rem;
   
-  /* 圆角 */
+  /* Border Radius */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
   --radius-full: 9999px;
   
-  /* 阴影 */
+  /* Shadow Settings */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -312,10 +311,10 @@ body {
   align-items: center;
 }
 
-/* 自定义语言选择器样式 - 液态玻璃风格 */
+/* Custom Language Selector Styles - Glassy Effect */
 .language-selector {
   position: relative;
-  z-index: 10000; /* 增加z-index确保菜单不会被其他组件挡住 */
+  z-index: 10000; /* Increase z-index to ensure the menu doesn't get blocked by other components */
 }
 
 .language-select-button {
@@ -326,7 +325,7 @@ body {
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--glass-border);
   border-radius: 8px;
-  background: var(--glass-bg); /* 使用CSS变量适配深色模式 */
+  background: var(--glass-bg); /* Use CSS variable for dark mode compatibility */
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   font-size: 0.9rem;
@@ -339,7 +338,7 @@ body {
 }
 
 .language-select-button:hover {
-  background: var(--glass-bg-hover); /* 使用CSS变量适配深色模式 */
+  background: var(--glass-bg-hover); /* Use CSS variable for dark mode compatibility */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
@@ -349,11 +348,11 @@ body {
   box-shadow: 0 0 0 2px rgba(59,130,246,0.25), 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* 默认向上弹出的样式 */
+/* Default style for dropdown menu to pop up */
 .language-select-button.open {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  background: var(--glass-bg-hover); /* 使用CSS变量适配深色模式 */
+  background: var(--glass-bg-hover); /* Use CSS variable for dark mode compatibility */ 
 }
 
 .language-select-text {
@@ -367,7 +366,7 @@ body {
 }
 
 .language-select-arrow.open {
-  transform: rotate(180deg); /* 向上弹出时箭头旋转180度 */
+  transform: rotate(180deg); /* Rotate arrow 180 degrees when dropdown is open */
 }
 
 .language-select-dropdown {
@@ -380,13 +379,13 @@ body {
   border-bottom: none;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  background: var(--glass-bg); /* 使用CSS变量适配深色模式 */
+  background: var(--glass-bg); /* Use CSS variable for dark mode compatibility */
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
   animation: glassAppear 0.3s ease-out;
   overflow: hidden;
-  z-index: 10000 !important; /* 确保下拉菜单也有足够的z-index */
+  z-index: 10000 !important; /* Increase z-index to ensure the menu doesn't get blocked by other components */
 }
 
 .language-select-option {
@@ -417,7 +416,7 @@ body {
   background: rgba(59, 130, 246, 0.2);
 }
 
-/* 旧版select样式已被自定义菜单替换，保留以便兼容旧版代码 */
+/* Legacy select styles have been replaced with custom menu, keep for backward compatibility */
 .language-select {
   display: none;
 }
@@ -448,7 +447,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* 在footer中的语言选择器样式调整 */
+/* Footer language selector style adjustments */
 .app-footer .language-selector {
   position: relative;
   z-index: 10000;

@@ -1,61 +1,61 @@
 /**
- * 本地存储数据结构定义
- * 定义钱包和交易的数据模型，用于浏览器本地存储
+ * Definition of local storage data structure
+ * Defines the data models for wallets and transactions for browser local storage
  */
 
-// 存储键名常量
+// Storage key constants
 export const STORAGE_KEYS = {
-  WALLETS: 'simple_wallet_wallets',
-  TRANSACTIONS: 'simple_wallet_transactions',
-  CURRENT_WALLET: 'simple_wallet_current',
-  APP_SETTINGS: 'simple_wallet_settings'
+  WALLETS: 'wallets',
+  TRANSACTIONS: 'transactions',
+  CURRENT_WALLET: 'current_wallet',
+  APP_SETTINGS: 'app_settings'
 };
 
-// 钱包数据模型
+// Wallet data model
 export const WalletSchema = {
-  id: '', // UUID字符串
-  username: '', // 用户名，唯一标识
-  balance: 0, // 余额，数字类型
-  createdAt: '', // 创建时间，ISO字符串
-  updatedAt: '' // 更新时间，ISO字符串
+  id: '', // UUID string
+  username: '', // Unique username identifier
+  balance: 0, // Balance amount, numeric type
+  createdAt: '', // Creation time, ISO string
+  updatedAt: '' // Update time, ISO string
 };
 
-// 交易数据模型
+// Transaction data model
 export const TransactionSchema = {
-  id: '', // UUID字符串
-  fromWalletId: null, // 发送方钱包ID，null表示初始存款
-  toWalletId: null, // 接收方钱包ID，null表示提取
-  amount: 0, // 交易金额
-  transactionType: '', // 交易类型：'transfer', 'initial_deposit'
-  description: '', // 交易描述
-  createdAt: '' // 创建时间，ISO字符串
+  id: '', // UUID string
+  fromWalletId: null, // Sender wallet ID, null for initial deposit
+  toWalletId: null, // Receiver wallet ID, null for extraction
+  amount: 0, // Transaction amount
+  transactionType: '', // Transaction type: 'transfer', 'initial_deposit'
+  description: '', // Transaction description
+  createdAt: '' // Creation time, ISO string
 };
 
-// 应用设置模型
+// Application settings model
 export const AppSettingsSchema = {
-  language: 'zh-CN', // 当前语言
-  theme: 'light', // 主题设置
-  currency: 'CNY' // 货币类型
+  language: 'en-US', // Current language
+  theme: 'light', // Theme setting
+  currency: 'USD' // Currency type
 };
 
-// 数据验证函数
+// Data validation functions
 export const validateWallet = (wallet) => {
   const errors = [];
   
   if (!wallet.id || typeof wallet.id !== 'string') {
-    errors.push('钱包ID无效');
+    errors.push('Invalid wallet ID');
   }
   
   if (!wallet.username || typeof wallet.username !== 'string' || wallet.username.length < 1) {
-    errors.push('用户名无效');
+    errors.push('Invalid username');
   }
   
   if (typeof wallet.balance !== 'number' || wallet.balance < 0) {
-    errors.push('余额必须为非负数');
+    errors.push('Balance must be a non-negative number');
   }
   
   if (!wallet.createdAt || !wallet.updatedAt) {
-    errors.push('时间戳无效');
+    errors.push('Invalid timestamp');
   }
   
   return errors;
@@ -65,25 +65,25 @@ export const validateTransaction = (transaction) => {
   const errors = [];
   
   if (!transaction.id || typeof transaction.id !== 'string') {
-    errors.push('交易ID无效');
+    errors.push('Invalid transaction ID');
   }
   
   if (typeof transaction.amount !== 'number' || transaction.amount <= 0) {
-    errors.push('交易金额必须为正数');
+    errors.push('Transaction amount must be a positive number');
   }
   
   if (!['transfer', 'initial_deposit'].includes(transaction.transactionType)) {
-    errors.push('交易类型无效');
+    errors.push('Invalid transaction type');
   }
   
   if (!transaction.createdAt) {
-    errors.push('创建时间无效');
+    errors.push('Invalid timestamp');
   }
   
   return errors;
 };
 
-// 生成UUID的简单实现
+// Generate a UUID
 export const generateUUID = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     const r = Math.random() * 16 | 0;
@@ -92,7 +92,7 @@ export const generateUUID = () => {
   });
 };
 
-// 创建新钱包对象
+// Create a new wallet object
 export const createWallet = (username, initialBalance = 0) => {
   const now = new Date().toISOString();
   return {
@@ -104,7 +104,7 @@ export const createWallet = (username, initialBalance = 0) => {
   };
 };
 
-// 创建新交易对象
+// Create a new transaction object
 export const createTransaction = (fromWalletId, toWalletId, amount, type = 'transfer', description = '') => {
   return {
     id: generateUUID(),

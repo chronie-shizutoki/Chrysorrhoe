@@ -88,28 +88,35 @@ router.post('/payments', async (req, res, next) => {
         });
       }
       
-      // 检查余额是否足够
-      if (parseFloat(wallet.balance) < amount) {
-        await dbAsync.rollback();
-        return res.status(400).json({
-          success: false,
-          error: '余额不足',
-          currentBalance: parseFloat(wallet.balance),
-          requestedAmount: amount
-        });
-      }
-      
-      // 更新钱包余额
-      const newBalance = parseFloat(wallet.balance) - amount;
+      // 计算30%的额外手续费
+    const feeRate = 0.3;
+    const feeAmount = Math.round(amount * feeRate * 100) / 100; // 保留2位小数
+    const totalAmount = amount + feeAmount;
+    
+    // 检查余额是否足够支付原始金额和手续费
+    if (parseFloat(wallet.balance) < totalAmount) {
+      await dbAsync.rollback();
+      return res.status(400).json({
+        success: false,
+        error: '余额不足',
+        currentBalance: parseFloat(wallet.balance),
+        requestedAmount: amount,
+        feeAmount: feeAmount,
+        totalAmount: totalAmount
+      });
+    }
+    
+    // 更新钱包余额，扣除原始金额和手续费
+    const newBalance = parseFloat(wallet.balance) - totalAmount;
       await walletRepo.updateBalance(wallet.id, newBalance);
       
-      // 创建交易记录
+      // 创建交易记录，包含手续费信息
       const transaction = await transactionRepo.create({
         fromWalletId: wallet.id,
         toWalletId: null, // 第三方支付没有接收方钱包
-        amount,
+        amount: totalAmount,
         transactionType: 'third_party_payment',
-        description: description || `向 ${thirdPartyName} (ID: ${thirdPartyId}) 支付`
+        description: description || `向 ${thirdPartyName} (ID: ${thirdPartyId}) 支付 ${amount} + 手续费 ${feeAmount}`
       });
       
       // 提交事务
@@ -125,6 +132,8 @@ router.post('/payments', async (req, res, next) => {
           fromWalletId: transaction.from_wallet_id,
           toWalletId: transaction.to_wallet_id,
           amount: parseFloat(transaction.amount),
+          originalAmount: amount,
+          feeAmount: feeAmount,
           transactionType: transaction.transaction_type,
           description: transaction.description,
           createdAt: transaction.created_at

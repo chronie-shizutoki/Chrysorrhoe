@@ -57,13 +57,13 @@ function WalletSetup() {
     try {
       let result
       if (mode === 'create') {
-        // 固定初始余额为0
+        // Set the initial balance to 0
         result = await walletService.createWallet(
           formData.username.trim(),
           0
         )
       } else {
-        // 登录模式
+        // Login mode
         result = await walletService.loginWallet(
           formData.username.trim()
         )

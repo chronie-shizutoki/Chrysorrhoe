@@ -35,22 +35,24 @@
 "processing": "処理中..."
 },
 "transaction": {
-"history": "取引履歴",
-"type": "取引種類",
-"date": "日付",
-"amount": "金額",
-"from": "送金元",
-"to": "送金先",
-"noTransactions": "取引履歴がまだありません",
-"loadMore": "さらに読み込む",
-"page": "{{current}} / {{total}} ページ",
-"initialDeposit": "初期入金",
-"sent": "送金済み",
-"received": "入金済み",
-"transfer": "振替",
-"system": "システム",
-"unknown": "不明"
-},
+    "history": "取引履歴",
+    "type": "取引種類",
+    "date": "日付",
+    "amount": "金額",
+    "from": "送金元",
+    "to": "送金先",
+    "noTransactions": "取引履歴がまだありません",
+    "loadMore": "さらに読み込む",
+    "page": "{{current}} / {{total}} ページ",
+    "initialDeposit": "初期入金",
+    "sent": "送金済み",
+    "received": "入金済み",
+    "transfer": "振替",
+    "system": "システム",
+    "unknown": "不明",
+    "thirdParty": "サードパーティ決済",
+    "interest": "利息"
+  },
 "messages": {
 "insufficient_funds": "残高が不足しています。チャージしてください",
 "invalid_amount": "無効な金額です",
@@ -88,6 +90,7 @@
 "skipToMain": "メインコンテンツまでスキップ"
 },
 "exchangeRate": {
+"loading": "為替レートを読み込み中...",
 "title": "為替レート",
 "rate": "1米ドル = {{rate}}",
 "lastUpdated": "{{time}}"

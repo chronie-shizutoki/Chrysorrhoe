@@ -35,22 +35,24 @@
 "processing": "处理中..."
 },
 "transaction": {
-"history": "交易记录",
-"type": "交易类型",
-"date": "日期",
-"amount": "金额",
-"from": "付款方",
-"to": "收款方",
-"noTransactions": "暂无交易记录",
-"loadMore": "加载更多",
-"page": "第 {{current}} 页/共 {{total}} 页",
-"initialDeposit": "初始存入",
-"sent": "转出",
-"received": "转入",
-"transfer": "转账",
-"system": "系统",
-"unknown": "未知"
-},
+    "history": "交易记录",
+    "type": "交易类型",
+    "date": "日期",
+    "amount": "金额",
+    "from": "付款方",
+    "to": "收款方",
+    "noTransactions": "暂无交易记录",
+    "loadMore": "加载更多",
+    "page": "第 {{current}} 页/共 {{total}} 页",
+    "initialDeposit": "初始存入",
+    "sent": "转出",
+    "received": "转入",
+    "transfer": "转账",
+    "system": "系统",
+    "unknown": "未知",
+    "thirdParty": "第三方支付",
+    "interest": "利息"
+  },
 "messages": {
 "insufficient_funds": "余额不足，请充值",
 "invalid_amount": "金额无效",
@@ -88,6 +90,7 @@
 "skipToMain": "跳过导航"
 },
 "exchangeRate": {
+"loading": "正在加载汇率...",
 "title": "汇率",
 "rate": "1美元 = {{rate}}",
 "lastUpdated": "{{time}}"

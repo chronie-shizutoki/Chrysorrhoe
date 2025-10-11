@@ -29,8 +29,8 @@ function WalletDashboard() {
   }
 
   const getBalanceStatusClass = (balance) => {
-    if (balance <= 0) return 'balance--negative'
-    if (balance < 100) return 'balance--low'
+    if (balance <= 2800) return 'balance--negative'
+    if (balance < 84000) return 'balance--low'
     return 'balance--positive'
   }
 
@@ -82,17 +82,17 @@ function WalletDashboard() {
               {formatCurrency(currentWallet.balance)}
             </div>
             <div className="balance-card__status">
-              {currentWallet.balance <= 0 && (
+              {currentWallet.balance <= 2800 && (
                 <span className="balance-status balance-status--negative">
                   {t('messages.insufficient_funds')}
                 </span>
               )}
-              {currentWallet.balance > 0 && currentWallet.balance < 100 && (
+              {currentWallet.balance > 2800 && currentWallet.balance < 84000 && (
                 <span className="balance-status balance-status--low">
                   {t('wallet.balanceLow')}
                 </span>
               )}
-              {currentWallet.balance >= 100 && (
+              {currentWallet.balance >= 84000 && (
                 <span className="balance-status balance-status--positive">
                   {t('wallet.balanceSufficient')}
                 </span>

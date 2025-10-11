@@ -1,5 +1,5 @@
 const LANGUAGE_STORAGE_KEY = 'language'
-const DEFAULT_LANGUAGE = 'zh-CN'
+const DEFAULT_LANGUAGE = 'en-US'
 
 export const languageStorage = {
   // Get saved language from localStorage

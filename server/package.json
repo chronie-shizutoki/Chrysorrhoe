@@ -1,7 +1,7 @@
 {
-  "name": "wallet-server",
+  "name": "chrysorrhoe-server",
   "version": "1.0.0",
-  "description": "Backend server for simple wallet app",
+  "description": "Backend server for Chrysorrhoe wallet app",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

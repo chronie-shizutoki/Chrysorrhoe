@@ -35,22 +35,24 @@
 "processing": "Processing..."
 },
 "transaction": {
-"history": "Transaction History",
-"type": "Transaction Type",
-"date": "Date",
-"amount": "Amount",
-"from": "From",
-"to": "To",
-"noTransactions": "No transactions yet",
-"loadMore": "Load More",
-"page": "Page {{current}} of {{total}}",
-"initialDeposit": "Initial Deposit",
-"sent": "Sent",
-"received": "Received",
-"transfer": "Transfer",
-"system": "System",
-"unknown": "Unknown"
-},
+    "history": "Transaction History",
+    "type": "Transaction Type",
+    "date": "Date",
+    "amount": "Amount",
+    "from": "From",
+    "to": "To",
+    "noTransactions": "No transactions yet",
+    "loadMore": "Load More",
+    "page": "Page {{current}} of {{total}}",
+    "initialDeposit": "Initial Deposit",
+    "sent": "Sent",
+    "received": "Received",
+    "transfer": "Transfer",
+    "system": "System",
+    "unknown": "Unknown",
+    "thirdParty": "Third Party Payment",
+    "interest": "Interest"
+  },
 "messages": {
 "insufficient_funds": "Insufficient funds, please top up",
 "invalid_amount": "Invalid amount",
@@ -88,6 +90,7 @@
 "skipToMain": "Skip to main content"
 },
 "exchangeRate": {
+"loading": "Loading exchange rate...",
 "title": "Exchange Rate",
 "rate": "1 USD = {{rate}}",
 "lastUpdated": "{{time}}"

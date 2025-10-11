@@ -35,22 +35,24 @@
 "processing": "處理中..."
 },
 "transaction": {
-"history": "交易記錄",
-"type": "交易類型",
-"date": "日期",
-"amount": "金額",
-"from": "付款方",
-"to": "收款方",
-"noTransactions": "暫無交易記錄",
-"loadMore": "載入更多",
-"page": "第 {{current}} 頁/共 {{total}} 頁",
-"initialDeposit": "初始存入",
-"sent": "轉出",
-"received": "轉入",
-"transfer": "轉帳",
-"system": "系統",
-"unknown": "未知"
-},
+    "history": "交易記錄",
+    "type": "交易類型",
+    "date": "日期",
+    "amount": "金額",
+    "from": "付款方",
+    "to": "收款方",
+    "noTransactions": "暫無交易記錄",
+    "loadMore": "載入更多",
+    "page": "第 {{current}} 頁/共 {{total}} 頁",
+    "initialDeposit": "初始存入",
+    "sent": "轉出",
+    "received": "轉入",
+    "transfer": "轉帳",
+    "system": "系統",
+    "unknown": "未知",
+    "thirdParty": "第三方支付",
+    "interest": "利息"
+  },
 "messages": {
 "insufficient_funds": "餘額不足，請儲值",
 "invalid_amount": "金額無效",
@@ -88,6 +90,7 @@
 "skipToMain": "跳過導覽"
 },
 "exchangeRate": {
+"loading": "正在載入匯率...",
 "title": "匯率",
 "rate": "1美元 = {{rate}}",
 "lastUpdated": "{{time}}"
