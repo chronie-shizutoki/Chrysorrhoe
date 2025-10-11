@@ -120,16 +120,6 @@ function WalletSetup() {
             )}
           </div>
 
-          {mode === 'create' && (
-            <div className="form-group">
-              <div className="initial-balance-info">
-                <span className="info-label">{t('wallet.initialBalance')}:</span>
-                <span className="info-value">¥0.00</span>
-              </div>
-              <p className="balance-note">{t('wallet.initialBalanceNote')}</p>
-            </div>
-          )}
-
           <button 
             type="submit" 
             className="wallet-setup__submit"

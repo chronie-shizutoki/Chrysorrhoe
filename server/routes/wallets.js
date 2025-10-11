@@ -22,13 +22,19 @@ const validateCreateWallet = (req, res, next) => {
     });
   }
   
-  if (initialBalance !== undefined) {
-    if (typeof initialBalance !== 'number' || initialBalance < 0) {
-      return res.status(400).json({
-        success: false,
-        error: '初始余额必须是非负数'
-      });
-    }
+  // 验证用户名只能包含英语字母
+  if (!/^[a-zA-Z]+$/.test(username.trim())) {
+    return res.status(400).json({
+      success: false,
+      error: '用户名只能包含英语字母'
+    });
+  }
+  
+  if (initialBalance !== undefined && initialBalance !== 0) {
+    return res.status(400).json({
+      success: false,
+      error: '初始余额只能是0'
+    });
   }
   
   next();

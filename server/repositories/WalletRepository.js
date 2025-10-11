@@ -15,15 +15,27 @@ class WalletRepository {
    * @returns {Promise<Object>} 创建的钱包对象
    */
   async create(walletData) {
-    const { username, balance = 0 } = walletData;
+    const { username, balance } = walletData;
     const id = uuidv4();
     const now = new Date().toISOString();
+    
+    // 验证用户名只能包含英语字母
+    if (!/^[a-zA-Z]+$/.test(username.trim())) {
+      throw new Error('用户名只能包含英语字母');
+    }
+    
+    // 验证初始余额只能是0
+    if (balance !== undefined && balance !== 0) {
+      throw new Error('初始余额只能是0');
+    }
+    
+    const actualBalance = balance === undefined ? 0 : balance;
     
     try {
       await dbAsync.run(
         `INSERT INTO wallets (id, username, balance, created_at, updated_at) 
          VALUES (?, ?, ?, ?, ?)`,
-        [id, username, balance, now, now]
+        [id, username, actualBalance, now, now]
       );
       
       return await this.findById(id);
