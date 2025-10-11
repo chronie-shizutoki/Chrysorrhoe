@@ -1,6 +1,6 @@
-# Simple Wallet App
+# 𝙲𝚑𝚛𝚢𝚜𝚘𝚛𝚛𝚑𝚘𝚎
 
-A simple web-based wallet application with frontend and backend components, supporting multi-language interface and basic wallet operations.
+A web-based wallet application with frontend and backend components, supporting multi-language interface and wallet operations.
 
 ## Project Structure
 
@@ -9,7 +9,6 @@ simple-wallet-app/
 ├── client/                 # React frontend
 ├── server/                 # Node.js backend
 ├── database/              # Database setup scripts
-├── .kiro/                 # Kiro specs and configuration
 └── package.json           # Root package.json for development scripts
 ```
 
@@ -84,7 +83,6 @@ This will start:
 ### Backend
 - Node.js
 - Express.js
-- PostgreSQL
 - Joi (validation)
 - CORS, Helmet (security)
 
@@ -93,17 +91,6 @@ This will start:
 The application follows a client-server architecture with:
 - React SPA frontend with responsive design
 - RESTful API backend
-- PostgreSQL database for data persistence
+- Data persistence
 - Multi-language support with i18next
 - Development proxy for API calls
-
-## Next Steps
-
-This is the initial project setup. The next tasks will implement:
-1. Database schema and data access layer
-2. Wallet management APIs
-3. Transfer functionality
-4. Transaction history
-5. Frontend components and UI
-
-See `.kiro/specs/simple-wallet-app/tasks.md` for the complete implementation plan.
