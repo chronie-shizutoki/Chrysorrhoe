@@ -9,9 +9,9 @@ class ExchangeRateScheduler {
   constructor() {
     this.job = null;
     // Exchange rate range: 1 USD = 2000-3000 local currency. Adjusted to a more reasonable range.
-    // 强制汇率价格范围范围锁定：1美元 = 1900-2100本地货币
-    this.minRate = 1900;
-    this.maxRate = 2100;
+    // 强制汇率价格范围范围锁定：1美元 = 1950-2050本地货币
+    this.minRate = 1950;
+    this.maxRate = 2050;
   }
 
   /**
