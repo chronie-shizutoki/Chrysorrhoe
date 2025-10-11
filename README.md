@@ -5,7 +5,7 @@ A web-based wallet application with frontend and backend components, supporting 
 ## Project Structure
 
 ```
-simple-wallet-app/
+Chrysorrhoe/
 ├── client/                 # React frontend
 ├── server/                 # Node.js backend
 ├── database/              # Database setup scripts
@@ -16,7 +16,6 @@ simple-wallet-app/
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- PostgreSQL (v12 or higher)
 - npm or yarn
 
 ### Installation
