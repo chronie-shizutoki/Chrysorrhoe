@@ -423,6 +423,10 @@ body {
 
 /* Footer Styles */
 .app-footer {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
@@ -1315,7 +1319,7 @@ body {
   border-top: 1px solid var(--color-border);
   color: var(--color-text-muted);
   font-size: 0.9rem;
-  font-style: italic;
+  white-space: pre-wrap;
 }
 
 /* Load More Button */
