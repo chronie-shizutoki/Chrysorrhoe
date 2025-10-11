@@ -2,20 +2,20 @@ const { dbAsync } = require('../config/database');
 const { v4: uuidv4 } = require('uuid');
 
 /**
- * 交易数据访问层
- * 提供交易相关的数据库操作方法
+ * Chrysorrhoe Transaction Data Access Layer
+ * Provides database operations methods for transactions
  */
 class TransactionRepository {
   
   /**
-   * 创建新交易记录
-   * @param {Object} transactionData - 交易数据
-   * @param {string|null} transactionData.fromWalletId - 发送方钱包ID
-   * @param {string|null} transactionData.toWalletId - 接收方钱包ID
-   * @param {number} transactionData.amount - 交易金额
-   * @param {string} transactionData.transactionType - 交易类型
-   * @param {string} transactionData.description - 交易描述
-   * @returns {Promise<Object>} 创建的交易对象
+   * Chrysorrhoe Create New Transaction Record
+   * @param {Object} transactionData - Transaction data
+   * @param {string|null} transactionData.fromWalletId - Sender wallet ID
+   * @param {string|null} transactionData.toWalletId - Receiver wallet ID
+   * @param {number} transactionData.amount - Transaction amount
+   * @param {string} transactionData.transactionType - Transaction type
+   * @param {string} transactionData.description - Transaction description
+   * @returns {Promise<Object>} Created transaction object
    */
   async create(transactionData) {
     const {
@@ -26,15 +26,15 @@ class TransactionRepository {
       description = ''
     } = transactionData;
     
-    // 验证交易类型
+    // Check transaction type
     const validTypes = ['transfer', 'initial_deposit', 'interest_credit', 'interest_debit', 'third_party_payment', 'third_party_receipt'];
     if (!validTypes.includes(transactionType)) {
-      throw new Error('无效的交易类型');
+      throw new Error('Chrysorrhoe Invalid transaction type');
     }
     
-    // 验证金额
+    // Check transaction amount
     if (typeof amount !== 'number' || amount <= 0) {
-      throw new Error('交易金额必须大于0');
+      throw new Error('Chrysorrhoe Transaction amount must be greater than 0');
     }
     
     const id = uuidv4();
@@ -49,14 +49,14 @@ class TransactionRepository {
       
       return await this.findById(id);
     } catch (error) {
-      throw new Error(`创建交易记录失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Create transaction record failed: ${error.message}`);
     }
   }
 
   /**
-   * 根据ID查找交易
-   * @param {string} id - 交易ID
-   * @returns {Promise<Object|null>} 交易对象或null
+   * Chrysorrhoe Find Transaction by ID
+   * @param {string} id - Transaction ID
+   * @returns {Promise<Object|null>} Transaction object or null
    */
   async findById(id) {
     try {
@@ -72,18 +72,18 @@ class TransactionRepository {
       );
       return transaction || null;
     } catch (error) {
-      throw new Error(`查找交易失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Find transaction by ID failed: ${error.message}`);
     }
   }
 
   /**
-   * 根据钱包ID查找交易记录
-   * @param {string} walletId - 钱包ID
-   * @param {Object} options - 查询选项
-   * @param {number} options.limit - 限制数量
-   * @param {number} options.offset - 偏移量
-   * @param {string} options.type - 交易类型过滤
-   * @returns {Promise<Array>} 交易列表
+   * Chrysorrhoe Find Transactions by Wallet ID
+   * @param {string} walletId - Wallet ID
+   * @param {Object} options - Query options
+   * @param {number} options.limit - Limit number
+   * @param {number} options.offset - Offset number
+   * @param {string} options.type - Transaction type filter
+   * @returns {Promise<Array>} Transaction list
    */
   async findByWalletId(walletId, options = {}) {
     const { limit = 20, offset = 0, type } = options;
@@ -112,17 +112,17 @@ class TransactionRepository {
       const transactions = await dbAsync.all(sql, params);
       return transactions;
     } catch (error) {
-      throw new Error(`获取交易记录失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Find transactions by wallet ID failed: ${error.message}`);
     }
   }
 
   /**
-   * 获取所有交易记录
-   * @param {Object} options - 查询选项
-   * @param {number} options.limit - 限制数量
-   * @param {number} options.offset - 偏移量
-   * @param {string} options.type - 交易类型过滤
-   * @returns {Promise<Array>} 交易列表
+   * Chrysorrhoe Get All Transactions
+   * @param {Object} options - Query options
+   * @param {number} options.limit - Limit number
+   * @param {number} options.offset - Offset number
+   * @param {string} options.type - Transaction type filter
+   * @returns {Promise<Array>} Transaction list
    */
   async findAll(options = {}) {
     const { limit = 50, offset = 0, type } = options;
@@ -150,15 +150,15 @@ class TransactionRepository {
       const transactions = await dbAsync.all(sql, params);
       return transactions;
     } catch (error) {
-      throw new Error(`获取交易记录失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Get all transactions failed: ${error.message}`);
     }
   }
 
   /**
-   * 统计钱包的交易数量
-   * @param {string} walletId - 钱包ID
-   * @param {string} type - 交易类型过滤（可选）
-   * @returns {Promise<number>} 交易数量
+   * Chrysorrhoe Count Transactions by Wallet ID
+   * @param {string} walletId - Wallet ID
+   * @param {string} type - Optional transaction type filter
+   * @returns {Promise<number>} Transaction count
    */
   async countByWalletId(walletId, type = null) {
     let sql = 'SELECT COUNT(*) as count FROM transactions WHERE (from_wallet_id = ? OR to_wallet_id = ?)';
@@ -173,14 +173,14 @@ class TransactionRepository {
       const result = await dbAsync.get(sql, params);
       return result.count;
     } catch (error) {
-      throw new Error(`统计交易数量失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Count transactions by wallet ID failed: ${error.message}`);
     }
   }
 
   /**
-   * 计算交易总数
-   * @param {string} type - 可选，交易类型过滤
-   * @returns {Promise<number>} 交易总数
+   * Chrysorrhoe Count All Transactions
+   * @param {string} type - Optional transaction type filter
+   * @returns {Promise<number>} Transaction count
    */
   async count(type) {
     try {
@@ -200,15 +200,15 @@ class TransactionRepository {
       const result = await dbAsync.get(sql, params);
       return result.count;
     } catch (error) {
-      throw new Error(`计算交易总数失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Count all transactions failed: ${error.message}`);
     }
   }
 
   /**
-   * 计算特定钱包的交易总数
-   * @param {string} walletId - 钱包ID
-   * @param {string|Array} type - 可选，交易类型过滤
-   * @returns {Promise<number>} 交易总数
+   * Chrysorrhoe Count Transactions by Wallet ID
+   * @param {string} walletId - Wallet ID
+   * @param {string|Array} type - Optional transaction type filter
+   * @returns {Promise<number>} Transaction count
    */
   async countByWalletId(walletId, type) {
     try {
@@ -228,33 +228,33 @@ class TransactionRepository {
       const result = await dbAsync.get(sql, params);
       return result.count;
     } catch (error) {
-      throw new Error(`计算钱包交易总数失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Count transactions by wallet ID failed: ${error.message}`);
     }
   }
 
   /**
-   * 获取钱包的交易统计信息
-   * @param {string} walletId - 钱包ID
-   * @returns {Promise<Object>} 统计信息
+   * Chrysorrhoe Get Wallet Stats
+   * @param {string} walletId - Wallet ID
+   * @returns {Promise<Object>} Statistics
    */
   async getWalletStats(walletId) {
     try {
-      // 总交易数
+      // total transactions
       const totalCount = await this.countByWalletId(walletId);
       
-      // 转账交易数
+      // transfer transactions
       const transferCount = await this.countByWalletId(walletId, 'transfer');
       
-      // 初始存款交易数
+      // initial deposit transactions
       const depositCount = await this.countByWalletId(walletId, 'initial_deposit');
       
-      // 发送的交易总额
+      // total sent amount
       const sentResult = await dbAsync.get(
         'SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE from_wallet_id = ?',
         [walletId]
       );
       
-      // 接收的交易总额
+      // total received amount
       const receivedResult = await dbAsync.get(
         'SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE to_wallet_id = ?',
         [walletId]
@@ -268,16 +268,16 @@ class TransactionRepository {
         totalReceived: receivedResult.total
       };
     } catch (error) {
-      throw new Error(`获取交易统计失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Get wallet stats failed: ${error.message}`);
     }
   }
 
   /**
-   * 获取指定时间范围内的交易
-   * @param {string} walletId - 钱包ID
-   * @param {string} startDate - 开始日期（ISO字符串）
-   * @param {string} endDate - 结束日期（ISO字符串）
-   * @returns {Promise<Array>} 交易列表
+   * Chrysorrhoe Get Transactions by Date Range
+   * @param {string} walletId - Wallet ID
+   * @param {string} startDate - Start date (ISO string)
+   * @param {string} endDate - End date (ISO string)
+   * @returns {Promise<Array>} Transaction list
    */
   async findByDateRange(walletId, startDate, endDate) {
     try {
@@ -295,14 +295,14 @@ class TransactionRepository {
       );
       return transactions;
     } catch (error) {
-      throw new Error(`获取时间范围交易失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Get transactions by date range failed: ${error.message}`);
     }
   }
 
   /**
-   * 删除交易记录（谨慎使用）
-   * @param {string} id - 交易ID
-   * @returns {Promise<boolean>} 是否删除成功
+   * Chrysorrhoe Delete Transaction
+   * @param {string} id - Transaction ID
+   * @returns {Promise<boolean>} Whether deletion was successful
    */
   async delete(id) {
     try {
@@ -312,17 +312,17 @@ class TransactionRepository {
       );
       return result.changes > 0;
     } catch (error) {
-      throw new Error(`删除交易记录失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Delete transaction failed: ${error.message}`);
     }
   }
 
   /**
-   * 创建转账交易记录
-   * @param {string} fromWalletId - 发送方钱包ID
-   * @param {string} toWalletId - 接收方钱包ID
-   * @param {number} amount - 转账金额
-   * @param {string} description - 交易描述
-   * @returns {Promise<Object>} 创建的交易对象
+   * Chrysorrhoe Create Transfer Transaction
+   * @param {string} fromWalletId - Sender wallet ID
+   * @param {string} toWalletId - Receiver wallet ID
+   * @param {number} amount - Transfer amount
+   * @param {string} description - Transaction description
+   * @returns {Promise<Object>} Created transaction object
    */
   async createTransfer(fromWalletId, toWalletId, amount, description = '') {
     return await this.create({
@@ -335,11 +335,11 @@ class TransactionRepository {
   }
 
   /**
-   * 创建初始存款交易记录
-   * @param {string} toWalletId - 接收方钱包ID
-   * @param {number} amount - 存款金额
-   * @param {string} description - 交易描述
-   * @returns {Promise<Object>} 创建的交易对象
+   * Chrysorrhoe Create Initial Deposit Transaction
+   * @param {string} toWalletId - Receiver wallet ID
+   * @param {number} amount - Deposit amount
+   * @param {string} description - Transaction description
+   * @returns {Promise<Object>} Created transaction object
    */
   async createInitialDeposit(toWalletId, amount, description = '初始存款') {
     return await this.create({
@@ -352,11 +352,11 @@ class TransactionRepository {
   }
 
   /**
-   * 创建利息收入交易记录
-   * @param {string} toWalletId - 接收方钱包ID
-   * @param {number} amount - 利息金额
-   * @param {string} description - 交易描述
-   * @returns {Promise<Object>} 创建的交易对象
+   * Chrysorrhoe Create Interest Credit Transaction
+   * @param {string} toWalletId - Receiver wallet ID
+   * @param {number} amount - Interest amount
+   * @param {string} description - Transaction description
+   * @returns {Promise<Object>} Created transaction object
    */
   async createInterestCredit(toWalletId, amount, description = '利息收入') {
     return await this.create({
@@ -369,13 +369,13 @@ class TransactionRepository {
   }
 
   /**
-   * 创建利息支出交易记录
-   * @param {string} toWalletId - 接收方钱包ID
-   * @param {number} amount - 利息金额
-   * @param {string} description - 交易描述
-   * @returns {Promise<Object>} 创建的交易对象
+   * Chrysorrhoe Create Interest Debit Transaction
+   * @param {string} toWalletId - Receiver wallet ID
+   * @param {number} amount - Interest amount
+   * @param {string} description - Transaction description
+   * @returns {Promise<Object>} Created transaction object
    */
-  async createInterestDebit(toWalletId, amount, description = '利息支出') {
+  async createInterestDebit(toWalletId, amount, description = 'interest_debit') {
     return await this.create({
       fromWalletId: null,
       toWalletId,

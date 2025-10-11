@@ -1,2 +1,2 @@
-# 保持数据目录存在
-# SQLite数据库文件将存储在此目录中
+# Keep the data directory existing
+# SQLite database files will be stored in this directory

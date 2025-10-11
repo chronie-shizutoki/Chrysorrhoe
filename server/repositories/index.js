@@ -1,18 +1,18 @@
 /**
- * Repository模块导出
- * 提供统一的数据访问层接口
+ * Chrysorrhoe Repository Module Export
+ * Provides a unified data access layer interface
  */
 
 const WalletRepository = require('./WalletRepository');
 const TransactionRepository = require('./TransactionRepository');
 
-// 创建Repository实例
+// Create Repository Instances
 const walletRepository = new WalletRepository();
 const transactionRepository = new TransactionRepository();
 
 /**
- * 数据库服务类
- * 提供统一的数据库操作接口
+ * Chrysorrhoe Database Service Class
+ * Provides a unified database operation interface
  */
 class DatabaseService {
   constructor() {
@@ -21,19 +21,19 @@ class DatabaseService {
   }
 
   /**
-   * 执行完整的转账操作（包含事务）
-   * @param {string} fromWalletId - 发送方钱包ID
-   * @param {string} toWalletId - 接收方钱包ID
-   * @param {number} amount - 转账金额
-   * @param {string} description - 交易描述
-   * @returns {Promise<Object>} 转账结果
+   * Chrysorrhoe Execute Transfer Operation (Includes Transaction)
+   * @param {string} fromWalletId - Sender wallet ID
+   * @param {string} toWalletId - Receiver wallet ID
+   * @param {number} amount - Transfer amount
+   * @param {string} description - Transaction description
+   * @returns {Promise<Object>} Transfer result
    */
   async executeTransfer(fromWalletId, toWalletId, amount, description = '') {
     try {
-      // 执行钱包余额更新（包含事务）
+      // Execute wallet balance update (includes transaction)
       const transferResult = await this.wallets.transfer(fromWalletId, toWalletId, amount);
       
-      // 创建交易记录
+      // Create transaction record
       const transaction = await this.transactions.createTransfer(
         fromWalletId, 
         toWalletId, 
@@ -48,28 +48,28 @@ class DatabaseService {
         toWallet: transferResult.toWallet
       };
     } catch (error) {
-      throw new Error(`转账操作失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Transfer Operation Failed: ${error.message}`);
     }
   }
 
   /**
-   * 创建钱包并记录初始存款
-   * @param {string} username - 用户名
-   * @param {number} initialBalance - 初始余额
-   * @returns {Promise<Object>} 创建结果
+   * Chrysorrhoe Create Wallet with Initial Deposit
+   * @param {string} username - Username
+   * @param {number} initialBalance - Initial balance
+   * @returns {Promise<Object>} Creation result
    */
   async createWalletWithInitialDeposit(username, initialBalance = 0) {
     try {
-      // 创建钱包
+      // Create wallet
       const wallet = await this.wallets.create({ username, balance: initialBalance });
       
-      // 如果有初始余额，创建初始存款记录
+      // If there is initial balance, create initial deposit record
       let transaction = null;
       if (initialBalance > 0) {
         transaction = await this.transactions.createInitialDeposit(
           wallet.id, 
           initialBalance, 
-          '账户初始化存款'
+          'Chrysorrhoe Initial Deposit'
         );
       }
       
@@ -79,20 +79,20 @@ class DatabaseService {
         transaction
       };
     } catch (error) {
-      throw new Error(`创建钱包失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Create Wallet with Initial Deposit Failed: ${error.message}`);
     }
   }
 
   /**
-   * 获取钱包详细信息（包含统计数据）
-   * @param {string} walletId - 钱包ID
-   * @returns {Promise<Object>} 钱包详细信息
+   * Chrysorrhoe Get Wallet Details (Includes Statistics)
+   * @param {string} walletId - Wallet ID
+   * @returns {Promise<Object>} Wallet details
    */
   async getWalletDetails(walletId) {
     try {
       const wallet = await this.wallets.findById(walletId);
       if (!wallet) {
-        throw new Error('钱包不存在');
+        throw new Error('Chrysorrhoe Wallet Does Not Exist');
       }
       
       const stats = await this.transactions.getWalletStats(walletId);
@@ -102,16 +102,16 @@ class DatabaseService {
         stats
       };
     } catch (error) {
-      throw new Error(`获取钱包详情失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Get Wallet Details Failed: ${error.message}`);
     }
   }
 
   /**
-   * 获取钱包交易历史（分页）
-   * @param {string} walletId - 钱包ID
-   * @param {number} page - 页码（从1开始）
-   * @param {number} pageSize - 每页数量
-   * @returns {Promise<Object>} 分页交易数据
+   * Chrysorrhoe Get Wallet Transaction History (Pagination)
+   * @param {string} walletId - Wallet ID
+   * @param {number} page - Page number (starting from 1)
+   * @param {number} pageSize - Number of items per page
+   * @returns {Promise<Object>} Paged transaction data
    */
   async getWalletTransactionHistory(walletId, page = 1, pageSize = 20) {
     try {
@@ -136,12 +136,12 @@ class DatabaseService {
         }
       };
     } catch (error) {
-      throw new Error(`获取交易历史失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe Get Wallet Transaction History Failed: ${error.message}`);
     }
   }
 }
 
-// 创建数据库服务实例
+// Create Database Service Instance
 const databaseService = new DatabaseService();
 
 module.exports = {

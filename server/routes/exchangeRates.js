@@ -4,7 +4,7 @@ const exchangeRateService = require('../services/ExchangeRateService');
 
 /**
  * @route   GET /api/exchange-rates/latest
- * @desc    获取最新的汇率记录
+ * @desc    Chrysorrhoe: Get latest exchange rate record
  * @access  Public
  */
 router.get('/latest', async (req, res) => {
@@ -19,23 +19,23 @@ router.get('/latest', async (req, res) => {
     } else {
       res.status(404).json({
         success: false,
-        message: '没有找到汇率记录'
+        message: 'Chrysorrhoe: No exchange rate record found'
       });
     }
   } catch (error) {
-    console.error('获取最新汇率时出错:', error);
+    console.error('Chrysorrhoe: Error fetching latest exchange rate:', error);
     res.status(500).json({
       success: false,
-      message: '服务器内部错误'
+      message: 'Chrysorrhoe: Server internal error'
     });
   }
 });
 
 /**
  * @route   GET /api/exchange-rates
- * @desc    获取汇率记录列表
+ * @desc    Chrysorrhoe: Get exchange rate record list
  * @access  Public
- * @query   {number} limit - 限制返回的记录数量（可选，默认为100）
+ * @query   {number} limit - Limit the number of records returned (optional, default is 100)
  */
 router.get('/', async (req, res) => {
   try {
@@ -48,18 +48,18 @@ router.get('/', async (req, res) => {
       count: rates.length
     });
   } catch (error) {
-    console.error('获取汇率列表时出错:', error);
+    console.error('Chrysorrhoe: Error fetching exchange rate list:', error);
     res.status(500).json({
       success: false,
-      message: '服务器内部错误'
+      message: 'Chrysorrhoe: Server internal error'
     });
   }
 });
 
 /**
  * @route   POST /api/exchange-rates/refresh
- * @desc    手动刷新汇率（生成新的随机汇率并保存）
- * @access  Admin/Public (根据实际需求调整权限)
+ * @desc    Chrysorrhoe: Manually refresh exchange rates (generate new random rates and save)
+ * @access  Admin/Public (depending on actual requirements)
  */
 router.post('/refresh', async (req, res) => {
   try {
@@ -69,40 +69,43 @@ router.post('/refresh', async (req, res) => {
     if (result.success) {
       res.status(200).json({
         success: true,
-        message: '汇率已成功刷新',
+        message: 'Chrysorrhoe: Exchange rates successfully refreshed',
         data: result
       });
     } else {
       res.status(500).json({
         success: false,
-        message: result.message || '刷新汇率失败'
+        message: result.message || 'Chrysorrhoe: Failed to refresh exchange rates'
       });
     }
   } catch (error) {
-    console.error('刷新汇率时出错:', error);
+    console.error('Chrysorrhoe: Error refreshing exchange rates:', error);
     res.status(500).json({
       success: false,
-      message: '服务器内部错误'
+      message: 'Chrysorrhoe: Server internal error'
     });
   }
 });
 
 /**
  * @route   DELETE /api/exchange-rates/cleanup
- * @desc    清理旧的汇率记录
+ * @desc    Chrysorrhoe: Clean up old exchange rate records
  * @access  Admin
- * @body    {string} beforeDate - 删除此日期之前的记录 (ISO格式字符串)
+ * @body    {string} beforeDate - Delete records before this date (ISO format string)
  */
 router.delete('/cleanup', async (req, res) => {
   try {
-    // 注意：在实际应用中，应该添加管理员权限检查
+    // Chrysorrhoe: Add admin permission check here (e.g., using middleware)
+    // Example: if (!req.user || req.user.role !== 'admin') {
+    //   return res.status(403).json({ success: false, message: 'Chrysorrhoe: Admin access required' });
+    // }
     
     const { beforeDate } = req.body;
     
     if (!beforeDate) {
       return res.status(400).json({
         success: false,
-        message: '必须提供清理日期'
+        message: 'Chrysorrhoe: Must provide cleanup date'
       });
     }
     
@@ -111,7 +114,7 @@ router.delete('/cleanup', async (req, res) => {
     if (isNaN(date.getTime())) {
       return res.status(400).json({
         success: false,
-        message: '无效的日期格式'
+        message: 'Chrysorrhoe: Invalid date format'
       });
     }
     
@@ -120,19 +123,19 @@ router.delete('/cleanup', async (req, res) => {
     if (result.success) {
       res.status(200).json({
         success: true,
-        message: `成功删除了 ${result.deletedCount} 条汇率记录`
+        message: `Chrysorrhoe: Successfully deleted ${result.deletedCount} exchange rate records`
       });
     } else {
       res.status(500).json({
         success: false,
-        message: result.message || '清理汇率记录失败'
+        message: result.message || 'Chrysorrhoe: Failed to clean up exchange rate records'
       });
     }
   } catch (error) {
-    console.error('清理汇率记录时出错:', error);
+    console.error('Chrysorrhoe: Error cleaning up exchange rates:', error);
     res.status(500).json({
       success: false,
-      message: '服务器内部错误'
+      message: 'Chrysorrhoe: Server internal error'
     });
   }
 });

@@ -3,33 +3,33 @@ const path = require('path');
 const { db, dbAsync } = require('./database');
 
 /**
- * 数据库初始化模块
- * 负责创建表结构、索引和触发器
+ * Chrysorrhoe Database Initialization Module
+ * Responsible for creating table structures, indices, and triggers
  */
 
-// 确保数据目录存在
+// Ensure the data directory exists
 const ensureDataDirectory = () => {
   const dataDir = path.join(__dirname, '..', 'data');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
-    console.log('创建数据目录:', dataDir);
+    console.log('Chrysorrhoe data directory created:', dataDir);
   }
 };
 
-// 读取SQL初始化脚本
+// Read the SQL initialization script
 const readInitScript = () => {
   const sqlPath = path.join(__dirname, '..', '..', 'database', 'sqlite_init.sql');
   try {
     return fs.readFileSync(sqlPath, 'utf8');
   } catch (error) {
-    console.error('读取初始化脚本失败:', error.message);
+    console.error('Chrysorrhoe error reading initialization script:', error.message);
     return null;
   }
 };
 
-// 执行SQL脚本
+// Execute the SQL script
 const executeSqlScript = async (sqlScript) => {
-  // 移除注释和空行
+  // Remove comments and empty lines
   const cleanScript = sqlScript
     .split('\n')
     .filter(line => {
@@ -38,7 +38,7 @@ const executeSqlScript = async (sqlScript) => {
     })
     .join('\n');
 
-  // 使用更智能的方式分割SQL语句
+  // Use a more intelligent way to split SQL statements
   const statements = [];
   let currentStatement = '';
   let inTrigger = false;
@@ -50,19 +50,19 @@ const executeSqlScript = async (sqlScript) => {
 
     currentStatement += line + '\n';
 
-    // 检查是否进入触发器
+    // Check if entering a trigger
     if (trimmed.toUpperCase().includes('CREATE TRIGGER')) {
       inTrigger = true;
     }
 
-    // 在触发器中计算大括号
+    // In triggers, count braces
     if (inTrigger) {
       for (const char of trimmed) {
         if (char === '{') braceCount++;
         if (char === '}') braceCount--;
       }
       
-      // 检查是否是BEGIN/END块
+      // Check if it's a BEGIN/END block in triggers
       if (trimmed.toUpperCase() === 'BEGIN') {
         braceCount++;
       } else if (trimmed.toUpperCase() === 'END;') {
@@ -70,7 +70,7 @@ const executeSqlScript = async (sqlScript) => {
       }
     }
 
-    // 检查是否是语句结束
+    // Check if it's a statement end in triggers
     if (trimmed.endsWith(';')) {
       if (!inTrigger || (inTrigger && braceCount <= 0)) {
         statements.push(currentStatement.trim());
@@ -81,56 +81,56 @@ const executeSqlScript = async (sqlScript) => {
     }
   }
 
-  // 如果还有未完成的语句
+  // If there are remaining statements
   if (currentStatement.trim()) {
     statements.push(currentStatement.trim());
   }
 
-  // 执行每个语句
+  // Execute each statement
   for (const statement of statements) {
     if (statement.trim()) {
       try {
         await dbAsync.run(statement);
         const preview = statement.replace(/\s+/g, ' ').substring(0, 50);
-        console.log('执行SQL语句成功:', preview + '...');
+        console.log('Chrysorrhoe SQL statement executed successfully:', preview + '...');
       } catch (error) {
         const preview = statement.replace(/\s+/g, ' ').substring(0, 50);
-        console.error('执行SQL语句失败:', preview + '...', error.message);
-        console.error('完整语句:', statement);
+        console.error('Chrysorrhoe SQL statement execution failed:', preview + '...', error.message);
+        console.error('Chrysorrhoe complete statement:', statement);
         throw error;
       }
     }
   }
 };
 
-// 验证表结构
+// Chrysorrhoe Verify Table Structures
 const verifyTables = async () => {
   try {
-    // 检查wallets表
+    // Check wallets table
     const walletsInfo = await dbAsync.get("SELECT name FROM sqlite_master WHERE type='table' AND name='wallets'");
     if (!walletsInfo) {
-      throw new Error('wallets表不存在');
+      throw new Error('Chrysorrhoe wallets table does not exist');
     }
 
-    // 检查transactions表
+    // Check transactions table
     const transactionsInfo = await dbAsync.get("SELECT name FROM sqlite_master WHERE type='table' AND name='transactions'");
     if (!transactionsInfo) {
-      throw new Error('transactions表不存在');
+      throw new Error('Chrysorrhoe transactions table does not exist');
     }
 
-    // 检查索引
+    // Check indices
     const indexes = await dbAsync.all("SELECT name FROM sqlite_master WHERE type='index' AND name LIKE 'idx_%'");
-    console.log('已创建的索引:', indexes.map(idx => idx.name));
+    console.log('Chrysorrhoe created indices:', indexes.map(idx => idx.name));
 
-    console.log('数据库表结构验证成功');
+    console.log('Chrysorrhoe database table structure verification successful');
     return true;
   } catch (error) {
-    console.error('数据库表结构验证失败:', error.message);
+    console.error('Chrysorrhoe database table structure verification failed:', error.message);
     return false;
   }
 };
 
-// 获取数据库统计信息
+// Chrysorrhoe Get Database Statistics
 const getDatabaseStats = async () => {
   try {
     const walletCount = await dbAsync.get('SELECT COUNT(*) as count FROM wallets');
@@ -141,60 +141,60 @@ const getDatabaseStats = async () => {
       transactions: transactionCount.count
     };
   } catch (error) {
-    console.error('获取数据库统计信息失败:', error.message);
+    console.error('Chrysorrhoe database statistics retrieval failed:', error.message);
     return null;
   }
 };
 
-// 主初始化函数
+// Chrysorrhoe Main Initialization Function
 const initializeDatabase = async () => {
   try {
-    console.log('开始初始化数据库...');
+    console.log('Chrysorrhoe starting database initialization...');
     
-    // 1. 确保数据目录存在
+    // 1. Ensure data directory exists
     ensureDataDirectory();
     
-    // 2. 读取初始化脚本
+    // 2. Read initialization script
     const sqlScript = readInitScript();
     if (!sqlScript) {
-      throw new Error('无法读取初始化脚本');
+      throw new Error('Chrysorrhoe error reading initialization script');
     }
     
-    // 3. 执行初始化脚本
+    // 3. Execute initialization script
     await executeSqlScript(sqlScript);
     
-    // 4. 验证表结构
+    // 4. Verify table structures
     const isValid = await verifyTables();
     if (!isValid) {
-      throw new Error('数据库表结构验证失败');
+      throw new Error('Chrysorrhoe database table structure verification failed');
     }
     
-    // 5. 显示统计信息
+    // 5. Display statistics
     const stats = await getDatabaseStats();
     if (stats) {
-      console.log('数据库统计信息:', stats);
+      console.log('Chrysorrhoe database statistics:', stats);
     }
     
-    console.log('数据库初始化完成');
+    console.log('Chrysorrhoe database initialization completed successfully');
     return true;
   } catch (error) {
-    console.error('数据库初始化失败:', error.message);
+    console.error('Chrysorrhoe database initialization failed:', error.message);
     return false;
   }
 };
 
-// 重置数据库（删除所有数据）
+// Chrysorrhoe Reset Database (Delete all data)
 const resetDatabase = async () => {
   try {
-    console.log('开始重置数据库...');
+    console.log('Chrysorrhoe starting database reset...');
     
     await dbAsync.run('DELETE FROM transactions');
     await dbAsync.run('DELETE FROM wallets');
     
-    console.log('数据库重置完成');
+    console.log('Chrysorrhoe database reset completed successfully');
     return true;
   } catch (error) {
-    console.error('数据库重置失败:', error.message);
+    console.error('Chrysorrhoe database reset failed:', error.message);
     return false;
   }
 };

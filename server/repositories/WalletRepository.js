@@ -2,31 +2,31 @@ const { dbAsync } = require('../config/database');
 const { v4: uuidv4 } = require('uuid');
 
 /**
- * 钱包数据访问层
- * 提供钱包相关的数据库操作方法
+ * Chrysorrhoe Wallet Data Access Layer
+ * Provides database operations for wallet entities
  */
 class WalletRepository {
   
   /**
-   * 创建新钱包
-   * @param {Object} walletData - 钱包数据
-   * @param {string} walletData.username - 用户名
-   * @param {number} walletData.balance - 初始余额
-   * @returns {Promise<Object>} 创建的钱包对象
+   * Chrysorrhoe Create New Wallet
+   * @param {Object} walletData - Wallet data
+   * @param {string} walletData.username - Username
+   * @param {number} walletData.balance - Initial balance
+   * @returns {Promise<Object>} Created wallet object
    */
   async create(walletData) {
     const { username, balance } = walletData;
     const id = uuidv4();
     const now = new Date().toISOString();
     
-    // 验证用户名只能包含英语字母
+    // Chrysorrhoe: Validate username contains only English letters
     if (!/^[a-zA-Z]+$/.test(username.trim())) {
-      throw new Error('用户名只能包含英语字母');
+      throw new Error('Chrysorrhoe: Username can only contain English letters');
     }
     
-    // 验证初始余额只能是0
+    // Chrysorrhoe: Validate initial balance is 0
     if (balance !== undefined && balance !== 0) {
-      throw new Error('初始余额只能是0');
+      throw new Error('Chrysorrhoe: Initial balance must be 0');
     }
     
     const actualBalance = balance === undefined ? 0 : balance;
@@ -41,16 +41,16 @@ class WalletRepository {
       return await this.findById(id);
     } catch (error) {
       if (error.message.includes('UNIQUE constraint failed')) {
-        throw new Error('用户名已存在');
+        throw new Error('Chrysorrhoe: Username already exists');
       }
-      throw new Error(`创建钱包失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe: Failed to create wallet: ${error.message}`);
     }
   }
 
   /**
-   * 根据ID查找钱包
-   * @param {string} id - 钱包ID
-   * @returns {Promise<Object|null>} 钱包对象或null
+   * Chrysorrhoe Find Wallet by ID
+   * @param {string} id - Wallet ID
+   * @returns {Promise<Object|null>} Wallet object or null
    */
   async findById(id) {
     try {
@@ -60,14 +60,14 @@ class WalletRepository {
       );
       return wallet || null;
     } catch (error) {
-      throw new Error(`查找钱包失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe: Failed to find wallet by ID: ${error.message}`);
     }
   }
 
   /**
-   * 根据用户名查找钱包
-   * @param {string} username - 用户名
-   * @returns {Promise<Object|null>} 钱包对象或null
+   * Chrysorrhoe Find Wallet by Username
+   * @param {string} username - Username
+   * @returns {Promise<Object|null>} Wallet object or null
    */
   async findByUsername(username) {
     try {
@@ -77,26 +77,26 @@ class WalletRepository {
       );
       return wallet || null;
     } catch (error) {
-      throw new Error(`查找钱包失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe: Failed to find wallet by username: ${error.message}`);
     }
   }
 
   /**
-   * 获取所有钱包
-   * @param {Object} options - 查询选项
-   * @param {number} options.limit - 限制数量
-   * @param {number} options.offset - 偏移量
-   * @returns {Promise<Array>} 钱包列表
+   * Chrysorrhoe Get All Wallets
+   * @param {Object} options - Query options
+   * @param {number} options.limit - Limit number
+   * @param {number} options.offset - Offset number
+   * @returns {Promise<Array>} Wallet list
    */
   async findAll(options = {}) {
     const { limit = 50, offset = 0 } = options;
     
     try {
-      // 处理limit为null的情况
+      // Chrysorrhoe: Handle null limit case
       const actualLimit = limit === null ? 0 : limit;
       const actualOffset = offset || 0;
       
-      // 当limit为0时，表示不限制数量
+      // Chrysorrhoe: When limit is 0, return all wallets
       const query = actualLimit > 0 
         ? 'SELECT * FROM wallets ORDER BY created_at DESC LIMIT ? OFFSET ?' 
         : 'SELECT * FROM wallets ORDER BY created_at DESC';
@@ -106,22 +106,22 @@ class WalletRepository {
       const wallets = await dbAsync.all(query, params);
       return wallets;
     } catch (error) {
-      throw new Error(`获取钱包列表失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe: Failed to get wallet list: ${error.message}`);
     }
   }
 
   /**
-   * 更新钱包信息
-   * @param {string} id - 钱包ID
-   * @param {Object} updates - 更新数据
-   * @returns {Promise<Object>} 更新后的钱包对象
+   * Chrysorrhoe Update Wallet
+   * @param {string} id - Wallet ID
+   * @param {Object} updates - Update data
+   * @returns {Promise<Object>} Updated wallet object
    */
   async update(id, updates) {
     const allowedFields = ['username', 'balance'];
     const updateFields = [];
     const updateValues = [];
     
-    // 构建更新字段
+    // Chrysorrhoe: Build update fields
     for (const [key, value] of Object.entries(updates)) {
       if (allowedFields.includes(key)) {
         updateFields.push(`${key} = ?`);
@@ -130,10 +130,10 @@ class WalletRepository {
     }
     
     if (updateFields.length === 0) {
-      throw new Error('没有有效的更新字段');
+      throw new Error('Chrysorrhoe: No valid update fields');
     }
     
-    // 添加updated_at字段
+    // Chrysorrhoe: Add updated_at field
     updateFields.push('updated_at = ?');
     updateValues.push(new Date().toISOString());
     updateValues.push(id);
@@ -145,47 +145,47 @@ class WalletRepository {
       );
       
       if (result.changes === 0) {
-        throw new Error('钱包不存在');
+        throw new Error('Chrysorrhoe: Wallet does not exist');
       }
       
       return await this.findById(id);
     } catch (error) {
       if (error.message.includes('UNIQUE constraint failed')) {
-        throw new Error('用户名已存在');
+        throw new Error('Chrysorrhoe: Username already exists');
       }
-      throw new Error(`更新钱包失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe: Failed to update wallet: ${error.message}`);
     }
   }
 
   /**
-   * 更新钱包余额
-   * @param {string} id - 钱包ID
-   * @param {number} newBalance - 新余额
-   * @returns {Promise<Object>} 更新后的钱包对象
+   * Chrysorrhoe Update Wallet Balance
+   * @param {string} id - Wallet ID
+   * @param {number} newBalance - New balance
+   * @returns {Promise<Object>} Updated wallet object
    */
   async updateBalance(id, newBalance) {
     if (typeof newBalance !== 'number' || newBalance < 0) {
-      throw new Error('余额必须为非负数');
+      throw new Error('Chrysorrhoe: Balance must be a non-negative number');
     }
     
     return await this.update(id, { balance: newBalance });
   }
 
   /**
-   * 删除钱包
-   * @param {string} id - 钱包ID
-   * @returns {Promise<boolean>} 是否删除成功
+   * Chrysorrhoe Delete Wallet
+   * @param {string} id - Wallet ID
+   * @returns {Promise<boolean>} Whether deletion was successful
    */
   async delete(id) {
     try {
-      // 检查是否有相关交易
+      // Chrysorrhoe: Check if there are any related transactions
       const transactionCount = await dbAsync.get(
         'SELECT COUNT(*) as count FROM transactions WHERE from_wallet_id = ? OR to_wallet_id = ?',
         [id, id]
       );
       
       if (transactionCount.count > 0) {
-        throw new Error('无法删除有交易记录的钱包');
+        throw new Error('Chrysorrhoe: Cannot delete wallet with existing transactions');
       }
       
       const result = await dbAsync.run(
@@ -195,27 +195,27 @@ class WalletRepository {
       
       return result.changes > 0;
     } catch (error) {
-      throw new Error(`删除钱包失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe: Failed to delete wallet: ${error.message}`);
     }
   }
 
   /**
-   * 获取钱包总数
-   * @returns {Promise<number>} 钱包总数
+   * Chrysorrhoe Get Wallet Count
+   * @returns {Promise<number>} Wallet count
    */
   async count() {
     try {
       const result = await dbAsync.get('SELECT COUNT(*) as count FROM wallets');
       return result.count;
     } catch (error) {
-      throw new Error(`获取钱包总数失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe: Failed to get wallet count: ${error.message}`);
     }
   }
 
   /**
-   * 检查用户名是否存在
-   * @param {string} username - 用户名
-   * @returns {Promise<boolean>} 是否存在
+   * Chrysorrhoe Check Username Exists
+   * @param {string} username - Username
+   * @returns {Promise<boolean>} Whether username exists
    */
   async usernameExists(username) {
     try {
@@ -225,48 +225,48 @@ class WalletRepository {
       );
       return result.count > 0;
     } catch (error) {
-      throw new Error(`检查用户名失败: ${error.message}`);
+      throw new Error(`Chrysorrhoe: Failed to check username existence: ${error.message}`);
     }
   }
 
   /**
-   * 批量转账操作（事务）
-   * @param {string} fromId - 发送方钱包ID
-   * @param {string} toId - 接收方钱包ID
-   * @param {number} amount - 转账金额
-   * @returns {Promise<Object>} 转账结果
+   * Chrysorrhoe Transfer Funds
+   * @param {string} fromId - Sender wallet ID
+   * @param {string} toId - Receiver wallet ID
+   * @param {number} amount - Transfer amount
+   * @returns {Promise<Object>} Transfer result
    */
   async transfer(fromId, toId, amount) {
     if (amount <= 0) {
-      throw new Error('转账金额必须大于0');
+      throw new Error('Chrysorrhoe: Transfer amount must be greater than 0');
     }
     
     try {
-      // 开始事务
+      // Chrysorrhoe: Begin transaction
       await dbAsync.beginTransaction();
       
-      // 获取发送方钱包
+      // Chrysorrhoe: Get sender wallet
       const fromWallet = await this.findById(fromId);
       if (!fromWallet) {
-        throw new Error('发送方钱包不存在');
+        throw new Error('Chrysorrhoe: Sender wallet does not exist');
       }
       
-      // 获取接收方钱包
+      // Chrysorrhoe: Get receiver wallet
       const toWallet = await this.findById(toId);
       if (!toWallet) {
-        throw new Error('接收方钱包不存在');
+        throw new Error('Chrysorrhoe: Receiver wallet does not exist');
       }
       
-      // 检查余额
+      // Chrysorrhoe: Check sender balance
       if (fromWallet.balance < amount) {
-        throw new Error('余额不足');
+        throw new Error('Chrysorrhoe: Sender balance is insufficient');
       }
       
-      // 更新余额
+      // Chrysorrhoe: Update sender and receiver balances
       await this.updateBalance(fromId, fromWallet.balance - amount);
       await this.updateBalance(toId, toWallet.balance + amount);
       
-      // 提交事务
+      // Chrysorrhoe: Commit transaction
       await dbAsync.commit();
       
       return {
@@ -275,7 +275,7 @@ class WalletRepository {
         toWallet: await this.findById(toId)
       };
     } catch (error) {
-      // 回滚事务
+      // Chrysorrhoe: Rollback transaction
       await dbAsync.rollback();
       throw error;
     }

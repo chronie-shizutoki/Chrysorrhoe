@@ -7,37 +7,37 @@ const TransactionRepository = require('../repositories/TransactionRepository');
 const walletRepo = new WalletRepository();
 const transactionRepo = new TransactionRepository();
 
-// 转账输入验证中间件
+// Chrysorrhoe: Transfer Funds Input Validation Middleware
 const validateTransfer = async (req, res, next) => {
   const { fromWalletId, toWalletId, fromUsername, toUsername, amount } = req.body;
   
-  // 确保要么提供钱包ID，要么提供用户名
+  // Chrysorrhoe: Ensure either wallet ID or username is provided, and they are strings
   if ((!fromWalletId && !fromUsername) || typeof fromWalletId !== 'string' && typeof fromUsername !== 'string') {
     return res.status(400).json({
       success: false,
-      error: '发送方钱包ID或用户名是必需的'
+      error: 'Chrysorrhoe: Sender wallet ID or username is required'
     });
   }
   
   if ((!toWalletId && !toUsername) || typeof toWalletId !== 'string' && typeof toUsername !== 'string') {
     return res.status(400).json({
       success: false,
-      error: '接收方钱包ID或用户名是必需的'
+      error: 'Chrysorrhoe: Receiver wallet ID or username is required'
     });
   }
   
-  // 如果同时提供了ID和用户名，检查是否一致
+  // Chrysorrhoe: If both wallet ID and username are provided, check if they match
   if (fromWalletId && fromUsername) {
     try {
       const wallet = await walletRepo.findByUsername(fromUsername);
       if (wallet && wallet.id !== fromWalletId) {
         return res.status(400).json({
           success: false,
-          error: '发送方钱包ID与用户名不匹配'
+          error: 'Chrysorrhoe: Sender wallet ID does not match the provided username'
         });
       }
     } catch (error) {
-      console.error('验证钱包与用户名匹配时出错:', error);
+      console.error('Chrysorrhoe: Error validating sender wallet ID with username:', error);
     }
   }
   
@@ -47,96 +47,96 @@ const validateTransfer = async (req, res, next) => {
       if (wallet && wallet.id !== toWalletId) {
         return res.status(400).json({
           success: false,
-          error: '接收方钱包ID与用户名不匹配'
+          error: 'Chrysorrhoe: Receiver wallet ID does not match the provided username'
         });
       }
     } catch (error) {
-      console.error('验证钱包与用户名匹配时出错:', error);
+      console.error('Chrysorrhoe: Error validating receiver wallet ID with username:', error);
     }
   }
   
-  // 不能向自己转账
+  // Chrysorrhoe: Cannot transfer to oneself
   if ((fromWalletId && toWalletId && fromWalletId === toWalletId) || 
       (fromUsername && toUsername && fromUsername === toUsername)) {
     return res.status(400).json({
       success: false,
-      error: '不能向自己转账'
+      error: 'Chrysorrhoe: Cannot transfer to oneself'
     });
   }
   
   if (typeof amount !== 'number' || amount <= 0) {
     return res.status(400).json({
       success: false,
-      error: '转账金额必须是大于0的数字'
+      error: 'Chrysorrhoe: Amount must be a number greater than 0'
     });
   }
   
-  // 检查金额精度（最多2位小数）
+  // Chrysorrhoe: Check amount precision (up to 2 decimal places)
   if (Math.round(amount * 100) !== amount * 100) {
     return res.status(400).json({
       success: false,
-      error: '转账金额最多支持2位小数'
+      error: 'Chrysorrhoe: Amount must be up to 2 decimal places'
     });
   }
   
   next();
 };
 
-// 执行转账 - 支持钱包ID或用户名
+// Chrysorrhoe: Execute Transfer - Supports Wallet ID or Username 
 router.post('/', async (req, res, next) => {
   try {
     await validateTransfer(req, res, next);
   } catch (error) {
-    console.error('转账验证出错:', error);
+    console.error('Chrysorrhoe: Error validating transfer:', error);
     return res.status(500).json({
       success: false,
-      error: '系统错误，请稍后再试'
+      error: 'Chrysorrhoe: System error, please try again later'
     });
   }
 }, async (req, res) => {
   await executeTransfer(req, res);
 });
 
-// 根据用户名转账（便捷接口）
+// Chrysorrhoe: Transfer Funds by Username (Convenient Interface)
 router.post('/by-username', async (req, res) => {
   try {
     const { fromUsername, toUsername, amount, description = '' } = req.body;
     
-    // 输入验证
+    // Chrysorrhoe: Input Validation
     if (!fromUsername || typeof fromUsername !== 'string') {
       return res.status(400).json({
         success: false,
-        error: '发送方用户名是必需的'
+        error: 'Chrysorrhoe: Sender username is required'
       });
     }
     
     if (!toUsername || typeof toUsername !== 'string') {
       return res.status(400).json({
         success: false,
-        error: '接收方用户名是必需的'
+        error: 'Chrysorrhoe: Receiver username is required'
       });
     }
     
     if (fromUsername === toUsername) {
       return res.status(400).json({
         success: false,
-        error: '不能向自己转账'
+        error: 'Chrysorrhoe: Cannot transfer to oneself'
       });
     }
     
     if (typeof amount !== 'number' || amount <= 0) {
       return res.status(400).json({
         success: false,
-        error: '转账金额必须是大于0的数字'
+        error: 'Chrysorrhoe: Amount must be a number greater than 0'
       });
     }
     
-    // 查找钱包
+    // Chrysorrhoe: Find Wallets by Usernames
     const fromWallet = await walletRepo.findByUsername(fromUsername);
     if (!fromWallet) {
       return res.status(404).json({
         success: false,
-        error: '发送方用户不存在'
+        error: 'Chrysorrhoe: Sender username does not exist'
       });
     }
     
@@ -144,11 +144,11 @@ router.post('/by-username', async (req, res) => {
     if (!toWallet) {
       return res.status(404).json({
         success: false,
-        error: '接收方用户不存在'
+        error: 'Chrysorrhoe: Receiver username does not exist'
       });
     }
     
-    // 执行转账逻辑（复用主转账逻辑）
+    // Chrysorrhoe: Execute Transfer Logic (Reuse Main Transfer Logic)
     const transferData = {
       fromWalletId: fromWallet.id,
       toWalletId: toWallet.id,
@@ -156,35 +156,35 @@ router.post('/by-username', async (req, res) => {
       description
     };
     
-    // 创建新的请求对象来复用验证和转账逻辑
+    // Chrysorrhoe: Create New Request Object to Reuse Validation and Transfer Logic
     const mockReq = { body: transferData };
     const mockRes = res;
     
-    // 验证转账数据
+    // Chrysorrhoe: Validate Transfer Data
     validateTransfer(mockReq, mockRes, async () => {
-      // 执行转账逻辑
+      // Chrysorrhoe: Execute Transfer Logic
       await executeTransfer(mockReq, mockRes);
     });
     
   } catch (error) {
-    console.error('用户名转账错误:', error);
+    console.error('Chrysorrhoe: Error executing transfer by username:', error);
     res.status(500).json({
       success: false,
-      error: error.message || '转账失败'
+      error: error.message || 'Chrysorrhoe: Transfer failed'
     });
   }
 });
 
-// 提取转账执行逻辑为独立函数
+// Chrysorrhoe: Extract Transfer Execution Logic into Separate Function
 async function executeTransfer(req, res) {
   try {
     const { fromWalletId, toWalletId, fromUsername, toUsername, amount, description = '' } = req.body;
     
-    // 开始数据库事务
+    // Chrysorrhoe: Start Database Transaction
     await dbAsync.beginTransaction();
     
     try {
-      // 验证发送方钱包存在
+      // Chrysorrhoe: Validate Sender Wallet Existence
       let fromWallet;
       if (fromWalletId) {
         fromWallet = await walletRepo.findById(fromWalletId);
@@ -196,11 +196,11 @@ async function executeTransfer(req, res) {
         await dbAsync.rollback();
         return res.status(404).json({
           success: false,
-          error: '发送方钱包不存在'
+          error: 'Chrysorrhoe: Sender wallet does not exist'
         });
       }
       
-      // 验证接收方钱包存在
+      // Chrysorrhoe: Validate Receiver Wallet Existence
       let toWallet;
       if (toWalletId) {
         toWallet = await walletRepo.findById(toWalletId);
@@ -212,51 +212,51 @@ async function executeTransfer(req, res) {
         await dbAsync.rollback();
         return res.status(404).json({
           success: false,
-          error: '接收方钱包不存在'
+          error: 'Chrysorrhoe: Receiver wallet does not exist'
         });
       }
       
-      // 确保不能向自己转账（额外检查，因为可能混合使用ID和用户名）
+      // Chrysorrhoe: Ensure Cannot Transfer to Self (Extra Check for Mixed ID/Username)
       if (fromWallet.id === toWallet.id) {
         await dbAsync.rollback();
         return res.status(400).json({
           success: false,
-          error: '不能向自己转账'
+          error: 'Chrysorrhoe: Cannot transfer to oneself'
         });
       }
       
-      // 检查余额是否足够
+      // Chrysorrhoe: Check Sufficient Balance
       if (parseFloat(fromWallet.balance) < amount) {
         await dbAsync.rollback();
         return res.status(400).json({
           success: false,
-          error: '余额不足',
+          error: 'Chrysorrhoe: Insufficient balance',
           currentBalance: parseFloat(fromWallet.balance),
           requestedAmount: amount
         });
       }
       
-      // 更新发送方余额
+      // Chrysorrhoe: Update Sender Balance
       const newFromBalance = parseFloat(fromWallet.balance) - amount;
       await walletRepo.updateBalance(fromWallet.id, newFromBalance);
       
-      // 更新接收方余额
+      // Chrysorrhoe: Update Receiver Balance
       const newToBalance = parseFloat(toWallet.balance) + amount;
       await walletRepo.updateBalance(toWallet.id, newToBalance);
       
-      // 创建交易记录
+      // Chrysorrhoe: Create Transaction Record
       const transaction = await transactionRepo.create({
         fromWalletId: fromWallet.id,
         toWalletId: toWallet.id,
         amount,
         transactionType: 'transfer',
-        description: description || `从 ${fromWallet.username} 转账到 ${toWallet.username}`
+        description: description || `Chrysorrhoe: Transfer from ${fromWallet.username} to ${toWallet.username}`
       });
       
-      // 提交事务
+      // Chrysorrhoe: Commit Transaction
       await dbAsync.commit();
       
-      // 获取更新后的钱包信息
+      // Chrysorrhoe: Get Updated Wallet Information
       const updatedFromWallet = await walletRepo.findById(fromWallet.id);
       const updatedToWallet = await walletRepo.findById(toWallet.id);
       
@@ -284,23 +284,23 @@ async function executeTransfer(req, res) {
       });
       
     } catch (error) {
-      // 回滚事务
+      // Chrysorrhoe: Rollback transaction on error
       await dbAsync.rollback();
       throw error;
     }
     
   } catch (error) {
-    console.error('转账错误:', error);
+    console.error('Chrysorrhoe: Error executing transfer:', error);
     
-    // 处理特定错误类型
-    if (error.message.includes('余额不足')) {
+    // Chrysorrhoe: Handle Specific Error Types
+    if (error.message.includes('Chrysorrhoe: Insufficient balance')) {
       return res.status(400).json({
         success: false,
         error: error.message
       });
     }
     
-    if (error.message.includes('钱包不存在')) {
+    if (error.message.includes('Chrysorrhoe: Wallet does not exist')) {
       return res.status(404).json({
         success: false,
         error: error.message
@@ -309,11 +309,11 @@ async function executeTransfer(req, res) {
     
     res.status(500).json({
       success: false,
-      error: error.message || '转账失败'
+      error: error.message || 'Chrysorrhoe: Transfer failed'
     });
   }
 };
 
-// 导出executeTransfer函数供测试使用
+// Chrysorrhoe: Export executeTransfer function for testing
 module.exports = router;
 module.exports.executeTransfer = executeTransfer;

@@ -1,16 +1,16 @@
-// 测试通过用户名转账功能
+// Chrysorrhoe: Test transfer by username functionality
 const { dbAsync } = require('../config/database');
 const WalletRepository = require('../repositories/WalletRepository');
 const TransactionRepository = require('../repositories/TransactionRepository');
 
-// 直接导入转账相关的模块和函数
+// Chrysorrhoe: Import transfer-related modules and functions
 const { validateTransfer } = require('../routes/transfers');
 const executeTransfer = require('../routes/transfers').executeTransfer;
 
 const walletRepo = new WalletRepository();
 const transactionRepo = new TransactionRepository();
 
-// 测试账号信息
+// Chrysorrhoe: Test account information
 const testUsers = {
   sender: {
     username: 'test_sender',
@@ -22,17 +22,17 @@ const testUsers = {
   }
 };
 
-// 转账金额
+// Chrysorrhoe: Transfer amount
 const transferAmount = 200.00;
 
 async function setupTestData() {
-  console.log('正在设置测试数据...');
+  console.log('Chrysorrhoe: Setting up test data...');
   
   try {
-    // 开始事务
+    // Chrysorrhoe: Begin transaction
     await dbAsync.beginTransaction();
     
-    // 清理测试数据
+    // Chrysorrhoe: Clean up test data
     await dbAsync.run('DELETE FROM wallets WHERE username IN (?, ?)', [
       testUsers.sender.username,
       testUsers.receiver.username
@@ -49,7 +49,7 @@ async function setupTestData() {
       testUsers.receiver.username
     ]);
     
-    // 创建测试钱包
+    // Chrysorrhoe: Create test wallets
     await walletRepo.create({
       username: testUsers.sender.username,
       balance: testUsers.sender.initialBalance
@@ -60,29 +60,29 @@ async function setupTestData() {
       balance: testUsers.receiver.initialBalance
     });
     
-    // 提交事务
+    // Chrysorrhoe: Commit transaction
     await dbAsync.commit();
     
-    console.log('测试数据设置完成');
+    console.log('Chrysorrhoe: Test data setup completed');
     
   } catch (error) {
     await dbAsync.rollback();
-    console.error('设置测试数据时出错:', error);
+    console.error('Chrysorrhoe: Error setting up test data:', error);
     throw error;
   }
 }
 
 async function testTransferByUsername() {
-  console.log('\n测试通过用户名转账功能...');
+  console.log('\nChrysorrhoe: Testing transfer by username functionality...');
   
   try {
-    // 创建mock请求和响应对象
+    // Chrysorrhoe: Create mock request and response objects
     const mockReq = {
       body: {
         fromUsername: testUsers.sender.username,
         toUsername: testUsers.receiver.username,
         amount: transferAmount,
-        description: '测试通过用户名转账'
+        description: 'Chrysorrhoe: Test transfer by username'
       }
     };
     
@@ -99,50 +99,50 @@ async function testTransferByUsername() {
       }
     };
     
-    // 直接调用转账执行函数
+    // Chrysorrhoe: Call transfer execution function directly 
     await executeTransfer(mockReq, mockRes);
     
-    // 验证转账成功
-    console.log('转账响应状态码:', mockRes.statusCode);
-    console.log('转账响应体:', JSON.stringify(mockRes.responseBody, null, 2));
+    // Chrysorrhoe: Verify transfer success
+    console.log('Chrysorrhoe: Transfer response status code:', mockRes.statusCode);
+    console.log('Chrysorrhoe: Transfer response body:', JSON.stringify(mockRes.responseBody, null, 2));
     
     if (mockRes.statusCode === 201 && mockRes.responseBody && mockRes.responseBody.success) {
-      console.log('✅ 转账请求成功');
+      console.log('✅ Chrysorrhoe: Transfer request successful');
       
-      // 验证余额更新
+      // Chrysorrhoe: Verify balance update
       const senderWallet = await walletRepo.findByUsername(testUsers.sender.username);
       const receiverWallet = await walletRepo.findByUsername(testUsers.receiver.username);
       
       const expectedSenderBalance = testUsers.sender.initialBalance - transferAmount;
       const expectedReceiverBalance = testUsers.receiver.initialBalance + transferAmount;
       
-      console.log(`发送方余额: ${senderWallet.balance}, 预期: ${expectedSenderBalance}`);
-      console.log(`接收方余额: ${receiverWallet.balance}, 预期: ${expectedReceiverBalance}`);
+      console.log(`Chrysorrhoe: Sender balance: ${senderWallet.balance}, Expected: ${expectedSenderBalance}`);
+      console.log(`Chrysorrhoe: Receiver balance: ${receiverWallet.balance}, Expected: ${expectedReceiverBalance}`);
       
       if (parseFloat(senderWallet.balance) === expectedSenderBalance && 
           parseFloat(receiverWallet.balance) === expectedReceiverBalance) {
-        console.log('✅ 余额更新正确');
+        console.log('✅ Chrysorrhoe: Balance update correct');
         return true;
       } else {
-        console.error('❌ 余额更新错误');
+        console.error('❌ Chrysorrhoe: Balance update error');
         return false;
       }
     } else {
-      console.error('❌ 转账请求失败');
+      console.error('❌ Chrysorrhoe: Transfer request failed');
       return false;
     }
     
   } catch (error) {
-    console.error('转账测试时出错:', error);
+    console.error('Chrysorrhoe: Error in transfer test:', error);
     return false;
   }
 }
 
 async function cleanupTestData() {
-  console.log('\n正在清理测试数据...');
+  console.log('\nChrysorrhoe: Cleaning up test data...');
   
   try {
-    // 清理测试数据
+    // Chrysorrhoe: Clean up test data
     await dbAsync.run(`DELETE FROM transactions WHERE from_wallet_id IN (
       SELECT id FROM wallets WHERE username IN (?, ?)
     ) OR to_wallet_id IN (
@@ -159,53 +159,53 @@ async function cleanupTestData() {
       testUsers.receiver.username
     ]);
     
-    console.log('测试数据清理完成');
+    console.log('Chrysorrhoe: Test data cleanup completed');
     
   } catch (error) {
-    console.error('清理测试数据时出错:', error);
+    console.error('Chrysorrhoe: Error cleaning up test data:', error);
   }
 }
 
-// 为了让executeTransfer函数可以被导入，需要在transfers.js中导出它
+// To make the executeTransfer function importable, it needs to be exported in transfers.js
 function prepareModules() {
-  console.log('正在准备测试模块...');
+  console.log('Chrysorrhoe: Preparing test modules...');
   
-  // 由于Node.js的模块缓存机制，我们需要确保executeTransfer函数可以被访问
-  // 这里我们不做任何修改，因为我们直接调用executeTransfer函数
-  console.log('模块准备完成');
+  // Due to Node.js module caching mechanism, we need to ensure the executeTransfer function is accessible
+  // We don't make any modifications here because we call the executeTransfer function directly
+  console.log('Chrysorrhoe: Test modules preparation completed');
 }
 
-// 运行测试
+// Chrysorrhoe: Run test
 async function runTest() {
   try {
-    // 准备测试模块
+    // Chrysorrhoe: Prepare test modules
     prepareModules();
     
-    // 设置测试数据
+    // Chrysorrhoe: Set up test data
     await setupTestData();
     
-    // 运行测试
+    // Chrysorrhoe: Run test
     const testResult = await testTransferByUsername();
     
-    // 清理测试数据
+    // Chrysorrhoe: Clean up test data
     await cleanupTestData();
     
-    console.log('\n测试完成:', testResult ? '成功' : '失败');
+    console.log('\nChrysorrhoe: Test completed:', testResult ? 'Success' : 'Failure');
     process.exit(testResult ? 0 : 1);
     
   } catch (error) {
-    console.error('测试运行时出错:', error);
+    console.error('Chrysorrhoe: Error running test:', error);
     
     try {
-      // 尝试清理测试数据
+      // Chrysorrhoe: Try to clean up test data
       await cleanupTestData();
     } catch (cleanupError) {
-      console.error('清理测试数据时出错:', cleanupError);
+      console.error('Chrysorrhoe: Error cleaning up test data:', cleanupError);
     }
     
     process.exit(1);
   }
 }
 
-// 运行测试
+// Chrysorrhoe: Run test
 runTest();

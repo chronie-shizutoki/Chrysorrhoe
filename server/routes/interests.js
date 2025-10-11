@@ -3,23 +3,26 @@ const router = express.Router();
 const interestScheduler = require('../services/InterestScheduler');
 
 /**
- * 利息相关API路由
+ * Chrysorrhoe: Interest-related API routes
  */
 
 /**
- * 手动触发利息计算（仅限管理员使用）
+ * Chrysorrhoe: Manually trigger interest calculation (admin only)
  */
 router.post('/process', async (req, res) => {
   try {
-    // 在实际应用中，这里应该有管理员身份验证
+    // Chrysorrhoe: Add admin permission check here (e.g., using middleware)
+    // Example: if (!req.user || req.user.role !== 'admin') {
+    //   return res.status(403).json({ success: false, message: 'Chrysorrhoe: Admin access required' });
+    // }
     
-    console.log('手动触发利息计算请求');
+    console.log('Chrysorrhoe: Manual interest calculation request');
     const result = await interestScheduler.executeNow();
     
     if (result.success) {
       res.status(200).json({
         success: true,
-        message: '利息计算已成功执行',
+        message: 'Chrysorrhoe: Interest calculation executed successfully',
         data: {
           processedCount: result.processedCount,
           totalInterest: result.totalInterest
@@ -28,20 +31,20 @@ router.post('/process', async (req, res) => {
     } else {
       res.status(500).json({
         success: false,
-        message: result.message || '利息计算执行失败'
+        message: result.message || 'Chrysorrhoe: Failed to execute interest calculation'
       });
     }
   } catch (error) {
-    console.error('手动触发利息计算时出错:', error);
+    console.error('Chrysorrhoe: Error manually triggering interest calculation:', error);
     res.status(500).json({
       success: false,
-      message: error.message || '服务器内部错误'
+      message: error.message || 'Chrysorrhoe: Server internal error'
     });
   }
 });
 
 /**
- * 获取利息调度器状态
+ * Chrysorrhoe: Get interest scheduler status
  */
 router.get('/status', async (req, res) => {
   try {
@@ -56,10 +59,10 @@ router.get('/status', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('获取利息调度器状态时出错:', error);
+    console.error('Chrysorrhoe: Error getting interest scheduler status:', error);
     res.status(500).json({
       success: false,
-      message: error.message || '服务器内部错误'
+      message: error.message || 'Chrysorrhoe: Server internal error'
     });
   }
 });

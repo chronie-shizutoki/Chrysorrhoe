@@ -1,26 +1,26 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-// 确保从正确的路径加载 .env 文件
+// Ensure the .env file is loaded from the correct path
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
-// 数据库文件路径
+// Chrysorrhoe Database File Path
 const dbPath = path.join(__dirname, '..', 'data', 'wallet.db');
 
-// 创建数据库连接
+// Create database connection
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
-    console.error('SQLite连接错误:', err.message);
+    console.error('SQLite connection error:', err.message);
   } else {
-    console.log('已连接到SQLite数据库');
-    // 启用外键约束
+    console.log('Connected to SQLite database');
+    // Enable foreign key constraints
     db.run('PRAGMA foreign_keys = ON');
   }
 });
 
-// 数据库操作的Promise包装器
+// Chrysorrhoe Database Operations Promise Wrapper
 const dbAsync = {
-  // 执行查询并返回所有结果
+  // Execute query and return all results
   all: (sql, params = []) => {
     return new Promise((resolve, reject) => {
       db.all(sql, params, (err, rows) => {
@@ -30,7 +30,7 @@ const dbAsync = {
     });
   },
 
-  // 执行查询并返回第一个结果
+  // Execute query and return the first result
   get: (sql, params = []) => {
     return new Promise((resolve, reject) => {
       db.get(sql, params, (err, row) => {
@@ -40,7 +40,7 @@ const dbAsync = {
     });
   },
 
-  // 执行插入/更新/删除操作
+  // Execute insert/update/delete operation
   run: (sql, params = []) => {
     return new Promise((resolve, reject) => {
       db.run(sql, params, function(err) {
@@ -50,29 +50,29 @@ const dbAsync = {
     });
   },
 
-  // 开始事务
+  // Begin transaction
   beginTransaction: () => {
     return dbAsync.run('BEGIN TRANSACTION');
   },
 
-  // 提交事务
+  // Commit transaction
   commit: () => {
     return dbAsync.run('COMMIT');
   },
 
-  // 回滚事务
+  // Rollback transaction
   rollback: () => {
     return dbAsync.run('ROLLBACK');
   }
 };
 
-// 优雅关闭数据库连接
+// Graceful close database connection
 process.on('SIGINT', () => {
   db.close((err) => {
     if (err) {
-      console.error('关闭数据库连接时出错:', err.message);
+      console.error('Error closing database connection:', err.message);
     } else {
-      console.log('数据库连接已关闭');
+      console.log('Database connection closed');
     }
     process.exit(0);
   });

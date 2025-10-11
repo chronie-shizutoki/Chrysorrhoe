@@ -7,72 +7,72 @@ const TransactionRepository = require('../repositories/TransactionRepository');
 const walletRepo = new WalletRepository();
 const transactionRepo = new TransactionRepository();
 
-// 第三方支付输入验证中间件
+// Chrysorrhoe: Third-party payment input validation middleware
 const validateThirdPartyPayment = async (req, res, next) => {
   const { walletId, username, amount, thirdPartyId, thirdPartyName, description = '' } = req.body;
   
-  // 确保要么提供钱包ID，要么提供用户名
+  // Chrysorrhoe: Ensure either walletId or username is provided, and they are strings
   if ((!walletId && !username) || typeof walletId !== 'string' && typeof username !== 'string') {
     return res.status(400).json({
       success: false,
-      error: '钱包ID或用户名是必需的'
+      error: 'Chrysorrhoe: Wallet ID or username is required'
     });
   }
   
-  // 第三方信息验证
+  // Chrysorrhoe: Third-party information validation
   if (!thirdPartyId || typeof thirdPartyId !== 'string') {
     return res.status(400).json({
       success: false,
-      error: '第三方ID是必需的'
+      error: 'Chrysorrhoe: Third-party ID is required'
     });
   }
   
   if (!thirdPartyName || typeof thirdPartyName !== 'string') {
     return res.status(400).json({
       success: false,
-      error: '第三方名称是必需的'
+      error: 'Chrysorrhoe: Third-party name is required'
     });
   }
   
-  // 金额验证
+  // Chrysorrhoe: Amount validation
   if (typeof amount !== 'number' || amount <= 0) {
     return res.status(400).json({
       success: false,
-      error: '金额必须是大于0的数字'
+      error: 'Chrysorrhoe: Amount must be a number greater than 0'
     });
   }
   
-  // 检查金额精度（最多2位小数）
+  // Chrysorrhoe: Check amount precision (up to 2 decimal places)
   if (Math.round(amount * 100) !== amount * 100) {
     return res.status(400).json({
       success: false,
-      error: '金额最多支持2位小数'
+      error: 'Chrysorrhoe: Amount must have up to 2 decimal places'
     });
   }
   
   next();
 };
 
-// 向第三方支付
+// Chrysorrhoe: Third-party payment endpoint
 router.post('/payments', async (req, res, next) => {
   try {
     await validateThirdPartyPayment(req, res, next);
   } catch (error) {
-    console.error('第三方支付验证出错:', error);
+    console.error('Chrysorrhoe: Error validating third-party payment:', error);
     return res.status(500).json({
       success: false,
-      error: '系统错误，请稍后再试'
+      error: 'Chrysorrhoe: System error, please try again later'
     });
   }
 }, async (req, res) => {
   try {
     const { walletId, username, amount, thirdPartyId, thirdPartyName, description = '' } = req.body;
     
-    // 开始数据库事务
+    // Chrysorrhoe: Begin database transaction
     await dbAsync.beginTransaction();
     
     try {
-      // 查找用户钱包
+      // Chrysorrhoe: Find user wallet
       let wallet;
       if (walletId) {
         wallet = await walletRepo.findById(walletId);
@@ -84,21 +84,21 @@ router.post('/payments', async (req, res, next) => {
         await dbAsync.rollback();
         return res.status(404).json({
           success: false,
-          error: '钱包不存在'
+          error: 'Chrysorrhoe: Wallet does not exist'
         });
       }
       
-      // 计算30%的额外手续费
+      // Chrysorrhoe: Calculate 30% extra fee
     const feeRate = 0.3;
-    const feeAmount = Math.round(amount * feeRate * 100) / 100; // 保留2位小数
+    const feeAmount = Math.round(amount * feeRate * 100) / 100; // Keep 2 decimal places
     const totalAmount = amount + feeAmount;
     
-    // 检查余额是否足够支付原始金额和手续费
+    // Chrysorrhoe: Check if wallet balance is sufficient
     if (parseFloat(wallet.balance) < totalAmount) {
       await dbAsync.rollback();
       return res.status(400).json({
         success: false,
-        error: '余额不足',
+        error: 'Chrysorrhoe: Wallet balance is insufficient',
         currentBalance: parseFloat(wallet.balance),
         requestedAmount: amount,
         feeAmount: feeAmount,
@@ -106,23 +106,23 @@ router.post('/payments', async (req, res, next) => {
       });
     }
     
-    // 更新钱包余额，扣除原始金额和手续费
+    // Chrysorrhoe: Update wallet balance, deducting original amount and fee
     const newBalance = parseFloat(wallet.balance) - totalAmount;
       await walletRepo.updateBalance(wallet.id, newBalance);
       
-      // 创建交易记录，包含手续费信息
+      // Chrysorrhoe: Create transaction record, including fee information
       const transaction = await transactionRepo.create({
         fromWalletId: wallet.id,
-        toWalletId: null, // 第三方支付没有接收方钱包
+        toWalletId: null, // Third-party payment has no receiver wallet
         amount: totalAmount,
         transactionType: 'third_party_payment',
-        description: description || `向 ${thirdPartyName} (ID: ${thirdPartyId}) 支付 ${amount} + 手续费 ${feeAmount}`
+        description: description || `Pay ${amount} + ${feeAmount} fee to ${thirdPartyName} (ID: ${thirdPartyId})`
       });
       
-      // 提交事务
+      // Chrysorrhoe: Commit transaction
       await dbAsync.commit();
       
-      // 获取更新后的钱包信息
+      // Chrysorrhoe: Get updated wallet information
       const updatedWallet = await walletRepo.findById(wallet.id);
       
       res.status(201).json({
@@ -150,22 +150,22 @@ router.post('/payments', async (req, res, next) => {
       });
       
     } catch (error) {
-      // 回滚事务
+      // Chrysorrhoe: Rollback transaction on error
       await dbAsync.rollback();
       throw error;
     }
     
   } catch (error) {
-    console.error('第三方支付错误:', error);
+    console.error('Chrysorrhoe: Error in third-party payment:', error);
     
-    if (error.message.includes('余额不足')) {
+    if (error.message.includes('Chrysorrhoe: Wallet balance is insufficient')) {
       return res.status(400).json({
         success: false,
         error: error.message
       });
     }
     
-    if (error.message.includes('钱包不存在')) {
+    if (error.message.includes('Chrysorrhoe: Wallet does not exist')) {
       return res.status(404).json({
         success: false,
         error: error.message
@@ -174,77 +174,77 @@ router.post('/payments', async (req, res, next) => {
     
     res.status(500).json({
       success: false,
-      error: error.message || '第三方支付失败'
+      error: error.message || 'Chrysorrhoe: Third-party payment failed'
     });
   }
 });
 
-// 从第三方获得收入输入验证
+// Chrysorrhoe: From third-party receipt input validation
 const validateThirdPartyReceipt = async (req, res, next) => {
   const { walletId, username, amount, thirdPartyId, thirdPartyName, description = '' } = req.body;
   
-  // 确保要么提供钱包ID，要么提供用户名
+  // Chrysorrhoe: Ensure either wallet ID or username is provided
   if ((!walletId && !username) || typeof walletId !== 'string' && typeof username !== 'string') {
     return res.status(400).json({
       success: false,
-      error: '钱包ID或用户名是必需的'
+      error: 'Chrysorrhoe: Wallet ID or username is required'
     });
   }
   
-  // 第三方信息验证
+  // Chrysorrhoe: Third-party information validation
   if (!thirdPartyId || typeof thirdPartyId !== 'string') {
     return res.status(400).json({
       success: false,
-      error: '第三方ID是必需的'
+      error: 'Chrysorrhoe: Third-party ID is required'
     });
   }
   
   if (!thirdPartyName || typeof thirdPartyName !== 'string') {
     return res.status(400).json({
       success: false,
-      error: '第三方名称是必需的'
+      error: 'Chrysorrhoe: Third-party name is required'
     });
   }
   
-  // 金额验证
+  // Chrysorrhoe: Amount validation
   if (typeof amount !== 'number' || amount <= 0) {
     return res.status(400).json({
       success: false,
-      error: '金额必须是大于0的数字'
+      error: 'Chrysorrhoe: Amount must be a number greater than 0'
     });
   }
   
-  // 检查金额精度（最多2位小数）
+  // Chrysorrhoe: Check amount precision (up to 2 decimal places)
   if (Math.round(amount * 100) !== amount * 100) {
     return res.status(400).json({
       success: false,
-      error: '金额最多支持2位小数'
+      error: 'Chrysorrhoe: Amount must have up to 2 decimal places'
     });
   }
   
   next();
 };
 
-// 从第三方获得收入
+// Chrysorrhoe: From third-party receipt input validation
 router.post('/receipts', async (req, res, next) => {
   try {
     await validateThirdPartyReceipt(req, res, next);
   } catch (error) {
-    console.error('第三方收入验证出错:', error);
+    console.error('Chrysorrhoe: Error validating third-party receipt:', error);
     return res.status(500).json({
       success: false,
-      error: '系统错误，请稍后再试'
+      error: 'Chrysorrhoe: System error, please try again later'
     });
   }
 }, async (req, res) => {
   try {
     const { walletId, username, amount, thirdPartyId, thirdPartyName, description = '' } = req.body;
     
-    // 开始数据库事务
+    // Chrysorrhoe: Begin database transaction
     await dbAsync.beginTransaction();
     
     try {
-      // 查找用户钱包
+      // Chrysorrhoe: Find user wallet
       let wallet;
       if (walletId) {
         wallet = await walletRepo.findById(walletId);
@@ -256,27 +256,27 @@ router.post('/receipts', async (req, res, next) => {
         await dbAsync.rollback();
         return res.status(404).json({
           success: false,
-          error: '钱包不存在'
+          error: 'Chrysorrhoe: Wallet does not exist'
         });
       }
       
-      // 更新钱包余额
+      // Chrysorrhoe: Update wallet balance
       const newBalance = parseFloat(wallet.balance) + amount;
       await walletRepo.updateBalance(wallet.id, newBalance);
       
-      // 创建交易记录
+      // Chrysorrhoe: Create transaction record
       const transaction = await transactionRepo.create({
-        fromWalletId: null, // 第三方收入没有发送方钱包
+        fromWalletId: null, // Chrysorrhoe: Third-party receipt has no sender wallet
         toWalletId: wallet.id,
         amount,
         transactionType: 'third_party_receipt',
-        description: description || `从 ${thirdPartyName} (ID: ${thirdPartyId}) 收入`
+        description: description || `Chrysorrhoe: Received from ${thirdPartyName} (ID: ${thirdPartyId})`
       });
       
-      // 提交事务
+      // Chrysorrhoe: Commit transaction
       await dbAsync.commit();
       
-      // 获取更新后的钱包信息
+      // Chrysorrhoe: Get updated wallet information
       const updatedWallet = await walletRepo.findById(wallet.id);
       
       res.status(201).json({
@@ -302,15 +302,15 @@ router.post('/receipts', async (req, res, next) => {
       });
       
     } catch (error) {
-      // 回滚事务
+      // Chrysorrhoe: Rollback transaction
       await dbAsync.rollback();
       throw error;
     }
     
   } catch (error) {
-    console.error('第三方收入错误:', error);
+    console.error('Chrysorrhoe: Error processing third-party receipt:', error);
     
-    if (error.message.includes('钱包不存在')) {
+    if (error.message.includes('Chrysorrhoe: Wallet does not exist')) {
       return res.status(404).json({
         success: false,
         error: error.message
@@ -319,35 +319,35 @@ router.post('/receipts', async (req, res, next) => {
     
     res.status(500).json({
       success: false,
-      error: error.message || '接收第三方收入失败'
+      error: error.message || 'Chrysorrhoe: Failed to process third-party receipt'
     });
   }
 });
 
-// 获取第三方交易记录
+// Chrysorrhoe: Get third-party transaction records
 router.get('/transactions', async (req, res) => {
   try {
     const { walletId, username, page = 1, limit = 20 } = req.query;
     
-    // 验证分页参数
+    // Chrysorrhoe: Validate pagination parameters
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
     
     if (isNaN(pageNum) || pageNum < 1) {
       return res.status(400).json({
         success: false,
-        error: '页码必须是大于0的整数'
+        error: 'Chrysorrhoe: Page number must be a positive integer'
       });
     }
     
     if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
       return res.status(400).json({
         success: false,
-        error: '每页数量必须是1-100之间的整数'
+        error: 'Chrysorrhoe: Limit must be between 1 and 100'
       });
     }
     
-    // 查找钱包
+    // Chrysorrhoe: Find wallet
     let wallet;
     if (walletId) {
       wallet = await walletRepo.findById(walletId);
@@ -358,7 +358,7 @@ router.get('/transactions', async (req, res) => {
     if (!wallet && (walletId || username)) {
       return res.status(404).json({
         success: false,
-        error: '钱包不存在'
+        error: 'Chrysorrhoe: Wallet does not exist'
       });
     }
     
@@ -373,16 +373,16 @@ router.get('/transactions', async (req, res) => {
     let totalCount;
     
     if (wallet) {
-      // 获取特定钱包的第三方交易
+      // Chrysorrhoe: Get specific wallet's third-party transactions
       transactions = await transactionRepo.findByWalletId(wallet.id, options);
       totalCount = await transactionRepo.countByWalletId(wallet.id, options.type);
     } else {
-      // 获取所有第三方交易（管理员功能）
+      // Chrysorrhoe: Get all third-party transactions (admin only)
       transactions = await transactionRepo.findAll(options);
       totalCount = await transactionRepo.count(options.type);
     }
     
-    // 格式化交易记录
+    // Chrysorrhoe: Format transaction records
     const formattedTransactions = transactions.map(transaction => ({
       id: transaction.id,
       fromWalletId: transaction.from_wallet_id,
@@ -409,10 +409,10 @@ router.get('/transactions', async (req, res) => {
     });
     
   } catch (error) {
-    console.error('获取第三方交易记录错误:', error);
+    console.error('Chrysorrhoe: Error fetching third-party transactions:', error);
     res.status(500).json({
       success: false,
-      error: error.message || '获取第三方交易记录失败'
+      error: error.message || 'Chrysorrhoe: Failed to fetch third-party transactions'
     });
   }
 });

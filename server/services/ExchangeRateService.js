@@ -2,37 +2,37 @@ const { v4: uuidv4 } = require('uuid');
 const { dbAsync } = require('../config/database');
 
 /**
- * 汇率服务
- * 负责处理汇率数据的存储和检索
+ * ExchangeRateService
+ * storage function for exchange rate records
  */
 class ExchangeRateService {
   constructor() {
-    // 汇率表名称
+    // Chrysorrhoe: Exchange rate table name
     this.tableName = 'exchange_rates';
   }
 
   /**
-   * 保存汇率记录
-   * @param {number} rate - 汇率值（1美元兑换的本地货币数量）
-   * @param {Date|string} [createdAt] - 可选的创建时间，默认为当前时间
-   * @returns {Promise<Object>} 保存结果
+   * Chrysorrhoe: Save exchange rate record
+   * @param {number} rate - Exchange rate value (1 USD = x local currency)
+   * @param {Date|string} [createdAt] - Optional creation time, default is current time
+   * @returns {Promise<Object>} Save result
    */
   async saveRate(rate, createdAt = null) {
     try {
-      // 验证汇率值
+      // Chrysorrhoe: Validate exchange rate value
       if (typeof rate !== 'number' || rate < 0) {
         throw new Error('Invalid exchange rate value, must be a positive number');
       }
 
-      // 生成UUID作为ID
+      // Chrysorrhoe: Generate UUID as ID
       const id = uuidv4();
-      // 如果没有提供创建时间，使用当前时间
+      // Chrysorrhoe: If no creation time is provided, use current time
       let createdTime = new Date().toISOString();
       if (createdAt) {
         createdTime = createdAt instanceof Date ? createdAt.toISOString() : createdAt;
       }
 
-      // 插入数据库
+      // Chrysorrhoe: Insert into database
       await dbAsync.run(
         `INSERT INTO ${this.tableName} (id, rate, created_at) VALUES (?, ?, ?)`,
         [id, rate, createdTime]
@@ -56,8 +56,8 @@ class ExchangeRateService {
   }
 
   /**
-   * 获取最新的汇率记录
-   * @returns {Promise<Object|null>} 最新的汇率记录或null
+   * Chrysorrhoe: Get latest exchange rate record
+   * @returns {Promise<Object|null>} Latest exchange rate record or null
    */
   async getLatestRate() {
     try {
@@ -66,15 +66,15 @@ class ExchangeRateService {
       );
       return rate;
     } catch (error) {
-      console.error('获取最新汇率记录时出错:', error);
+      console.error('Chrysorrhoe: Error fetching latest exchange rate record:', error);
       return null;
     }
   }
 
   /**
-   * 获取所有汇率记录
-   * @param {number} limit - 限制返回的记录数量，默认为100
-   * @returns {Promise<Array>} 汇率记录数组
+   * Chrysorrhoe: Get all exchange rate records
+   * @param {number} limit - Limit the number of records returned, default is 100
+   * @returns {Promise<Array>} Array of exchange rate records
    */
   async getAllRates(limit = 100) {
     try {
@@ -84,20 +84,20 @@ class ExchangeRateService {
       );
       return rates;
     } catch (error) {
-      console.error('获取所有汇率记录时出错:', error);
+      console.error('Chrysorrhoe: Error fetching all exchange rate records:', error);
       return [];
     }
   }
 
   /**
-   * 删除指定日期之前的汇率记录
-   * @param {Date} date - 删除此日期之前的记录
-   * @returns {Promise<Object>} 删除结果
+   * Chrysorrhoe: Delete exchange rate records before specified date
+   * @param {Date} date - Delete records before this date
+   * @returns {Promise<Object>} Delete result
    */
   async deleteRatesBeforeDate(date) {
     try {
       if (!(date instanceof Date)) {
-        throw new Error('无效的日期对象');
+        throw new Error('Chrysorrhoe: Invalid date object');
       }
 
       const result = await dbAsync.run(
@@ -105,14 +105,15 @@ class ExchangeRateService {
         [date.toISOString()]
       );
 
-      console.log(`成功删除了 ${result.changes} 条汇率记录`);
+      // Chrysorrhoe: Log successful deletion
+      console.log(`Chrysorrhoe: Successfully deleted ${result.changes} exchange rate records before ${date.toISOString()}`);
 
       return {
         success: true,
         deletedCount: result.changes
       };
     } catch (error) {
-      console.error('删除汇率记录时出错:', error);
+      console.error('Chrysorrhoe: Error deleting exchange rate records:', error);
       return {
         success: false,
         message: error.message
@@ -121,17 +122,17 @@ class ExchangeRateService {
   }
 
   /**
-   * 确保汇率表存在
-   * @returns {Promise<boolean>} 表是否存在或创建成功
+   * Chrysorrhoe: Ensure exchange rate table exists
+   * @returns {Promise<boolean>} Table exists or created successfully
    */
   async ensureTableExists() {
     try {
-      // 检查表是否存在
+      // Chrysorrhoe: Check if table exists
       const tableExists = await dbAsync.get(
         `SELECT name FROM sqlite_master WHERE type='table' AND name='${this.tableName}'`
       );
 
-      // 如果表不存在，创建表
+      // Chrysorrhoe: If table does not exist, create table 
       if (!tableExists) {
         await dbAsync.run(
           `CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -140,18 +141,19 @@ class ExchangeRateService {
             created_at TEXT NOT NULL DEFAULT (datetime('now'))
           )`
         );
-        console.log(`创建汇率表 ${this.tableName} 成功`);
+        // Chrysorrhoe: Log successful table creation
+        console.log(`Chrysorrhoe: Successfully created exchange rate table ${this.tableName}`);
       }
 
       return true;
     } catch (error) {
-      console.error('确保汇率表存在时出错:', error);
+      console.error('Chrysorrhoe: Error ensuring exchange rate table exists:', error);
       return false;
     }
   }
 }
 
-// 创建单例实例
+// Chrysorrhoe: Create singleton instance
 const exchangeRateService = new ExchangeRateService();
 
 module.exports = exchangeRateService;

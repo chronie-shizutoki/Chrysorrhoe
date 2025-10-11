@@ -2,8 +2,8 @@ const schedule = require('node-schedule');
 const InterestService = require('./InterestService');
 
 /**
- * 利息调度器
- * 负责安排和管理每月利息计算任务
+ * Chrysorrhoe: Interest scheduler
+ * Responsible for scheduling and managing monthly interest calculation tasks
  */
 class InterestScheduler {
   constructor() {
@@ -13,68 +13,71 @@ class InterestScheduler {
   }
 
   /**
-   * 启动利息调度器
-   * 设置每月1日 UTC+0 00:00 执行一次利息计算
-   * 同时设置每日检查是否有遗漏的利息需要补发
+   * Chrysorrhoe: Start interest scheduler
+   * Set up a monthly job to run at UTC+0 00:00 on the 1st of each month to calculate monthly interest
+   * Also set up a daily job to check for any missed interest payments at UTC+0 12:00
    */
   async start() {
     try {
-      // 确保利息交易类型已配置
+      // Chrysorrhoe: Ensure interest transaction types are configured
       await this.interestService.ensureInterestTransactionTypes();
       
-      console.log('启动利息调度器...');
+      console.log('Chrysorrhoe: Starting interest scheduler...');
       
-      // 每月1日 UTC+0 00:00 执行任务
-      // 格式: '秒 分 时 日 月 星期'
-      // 0 0 0 1 * * 表示每月1日00:00:00执行
+      // Chrysorrhoe: Set up monthly job to run at UTC+0 00:00 on the 1st of each month
+      // Format: 'sec min hour day month day-of-week'
+      // 0 0 0 1 * * Run at 00:00:00 UTC+0 on the 1st of each month
       this.monthlyJob = schedule.scheduleJob('0 0 0 1 * *', async () => {
-        console.log(`[${new Date().toISOString()}] 执行每月利息计算任务`);
+        console.log(`[${new Date().toISOString()}] Chrysorrhoe: Executing monthly interest calculation task`);
         
         try {
           const result = await this.interestService.processMonthlyInterest();
           if (result.success) {
-            console.log(`[${new Date().toISOString()}] 利息计算任务执行成功:`, result);
+            console.log(`[${new Date().toISOString()}] Chrysorrhoe: Monthly interest calculation task executed successfully:`, result);
           } else {
-            console.error(`[${new Date().toISOString()}] 利息计算任务执行失败:`, result.message);
+            console.error(`[${new Date().toISOString()}] Chrysorrhoe: Monthly interest calculation task execution failed:`, result.message);
           }
         } catch (error) {
-          console.error(`[${new Date().toISOString()}] 利息计算任务发生异常:`, error);
+          console.error(`[${new Date().toISOString()}] Chrysorrhoe: Monthly interest calculation task execution exception:`, error);
         }
       });
       
-      // 每日UTC+0 12:00检查是否有遗漏的利息需要补发
+      // Chrysorrhoe: Set up daily job to check for any missed interest payments at UTC+0 12:00
+      // Format: 'sec min hour day month day-of-week'
+      // 0 0 12 * * * Run at 12:00:00 UTC+0 every day
       this.checkJob = schedule.scheduleJob('0 0 12 * * *', async () => {
-        console.log(`[${new Date().toISOString()}] 执行利息补发检查任务`);
+        console.log(`[${new Date().toISOString()}] Chrysorrhoe: Executing interest payment check task`);
         
         try {
-          const result = await this.interestService.checkAnd补发Interest();
+          const result = await this.interestService.checkAndReissuePendingInterest();
           if (result.success) {
-            console.log(`[${new Date().toISOString()}] 利息补发检查任务执行成功:`, result);
+            console.log(`[${new Date().toISOString()}] Chrysorrhoe: Interest payment check task executed successfully:`, result);
           } else {
-            console.error(`[${new Date().toISOString()}] 利息补发检查任务执行失败:`, result.message);
+            console.error(`[${new Date().toISOString()}] Chrysorrhoe: Interest payment check task execution failed:`, result.message);
           }
         } catch (error) {
-          console.error(`[${new Date().toISOString()}] 利息补发检查任务发生异常:`, error);
+          console.error(`[${new Date().toISOString()}] Chrysorrhoe: Interest payment check task execution exception:`, error);
         }
       });
       
-      console.log('利息调度器已启动，将在每月1日 UTC+0 00:00 执行利息计算');
-      console.log('下次执行利息计算时间:', this.monthlyJob.nextInvocation());
-      console.log('利息补发检查调度已启动，将在每日 UTC+0 12:00 执行检查');
-      console.log('下次执行检查时间:', this.checkJob.nextInvocation());
+      console.log('Chrysorrhoe: Interest scheduler started, will execute monthly interest calculation on the 1st of each month at UTC+0 00:00');
+      console.log('Chrysorrhoe: Next monthly interest calculation time:', this.monthlyJob.nextInvocation());
+      console.log('Chrysorrhoe: Interest payment check scheduler started, will execute daily at UTC+0 12:00');
+      console.log('Chrysorrhoe: Next interest payment check time:', this.checkJob.nextInvocation());
       
-      // 启动时立即检查一次是否有遗漏的利息需要补发
+      // Chrysorrhoe: Start immediate check for any missed interest payments
       this.checkMissingInterest();
       
       return { success: true };
     } catch (error) {
-      console.error('启动利息调度器失败:', error);
+      console.error('Chrysorrhoe: Error starting interest scheduler:', error);
       return { success: false, error: error.message };
     }
   }
 
   /**
-   * 停止利息调度器
+   * Chrysorrhoe: Stop interest scheduler
+   * Cancel both monthly and daily jobs
    */
   stop() {
     if (this.monthlyJob) {
@@ -87,40 +90,40 @@ class InterestScheduler {
       this.checkJob = null;
     }
     
-    console.log('利息调度器已停止');
+    console.log('Chrysorrhoe: Interest scheduler stopped');
   }
 
   /**
-   * 立即执行一次利息计算（用于测试或手动触发）
-   * @returns {Promise<Object>} 执行结果
+   * Chrysorrhoe: Execute monthly interest calculation now (for testing or manual trigger)
+   * @returns {Promise<Object>} Execution result
    */
   async executeNow() {
-    console.log('手动触发利息计算...');
+    console.log('Chrysorrhoe: Manual trigger monthly interest calculation...');
     return await this.interestService.processMonthlyInterest();
   }
 
   /**
-   * 立即执行一次特定月份的利息计算
-   * @param {string} period - 月份，格式：YYYY-MM
-   * @returns {Promise<Object>} 执行结果
+   * Chrysorrhoe: Execute monthly interest calculation for a specific period (for testing or manual trigger)
+   * @param {string} period - Month period, format: YYYY-MM
+   * @returns {Promise<Object>} Execution result
    */
   async executeForPeriod(period) {
-    console.log(`手动触发${period}月份利息计算...`);
+    console.log(`Chrysorrhoe: Manual trigger ${period} monthly interest calculation...`);
     return await this.interestService.processMonthlyInterest(period);
   }
 
   /**
-   * 立即执行利息补发检查
-   * @returns {Promise<Object>} 执行结果
+   * Chrysorrhoe: Execute interest payment check now (for testing or manual trigger)
+   * @returns {Promise<Object>} Execution result
    */
   async checkMissingInterest() {
-    console.log('手动触发利息补发检查...');
-    return await this.interestService.checkAnd补发Interest();
+    console.log('Chrysorrhoe: Manual trigger interest payment check...');
+    return await this.interestService.checkAndReissuePendingInterest();
   }
 
   /**
-   * 获取下一次执行时间
-   * @returns {Date|null} 下一次执行时间
+   * Chrysorrhoe: Get next monthly interest calculation time
+   * @returns {Date|null} Next execution time
    */
   getNextExecutionTime() {
     if (this.monthlyJob) {
@@ -130,8 +133,8 @@ class InterestScheduler {
   }
 
   /**
-   * 获取下一次检查时间
-   * @returns {Date|null} 下一次检查时间
+   * Chrysorrhoe: Get next interest payment check time
+   * @returns {Date|null} Next check time
    */
   getNextCheckTime() {
     if (this.checkJob) {
@@ -141,7 +144,7 @@ class InterestScheduler {
   }
 }
 
-// 创建单例实例
+// Chrysorrhoe: Create singleton instance
 const interestScheduler = new InterestScheduler();
 
 module.exports = interestScheduler;

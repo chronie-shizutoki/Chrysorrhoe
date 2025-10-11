@@ -3,42 +3,42 @@ const WalletRepository = require('../repositories/WalletRepository');
 const TransactionRepository = require('../repositories/TransactionRepository');
 
 /**
- * 利息服务
- * 负责处理每月利息计算和发放
+ * Chrysorrhoe: Interest Service
+ * Responsible for processing monthly interest calculations and payments
  */
 class InterestService {
   constructor() {
     this.walletRepo = new WalletRepository();
     this.transactionRepo = new TransactionRepository();
-    // 默认月利率 (1% 年化利率，月化为约 0.083%)
+    // Chrysorrhoe: Default monthly interest rate (1% annual rate, monthly rate ~ 0.083%)
     this.monthlyInterestRate = 0.01 / 12;
   }
 
   /**
-   * 设置月利率
-   * @param {number} rate - 月利率（例如：0.0008表示0.08%）
+   * Chrysorrhoe: Set monthly interest rate
+   * @param {number} rate - Monthly interest rate (e.g. 0.0008 for 0.08%)
    */
   setMonthlyInterestRate(rate) {
     if (typeof rate !== 'number') {
-      throw new Error('利率必须是数字');
+      throw new Error('Chrysorrhoe: Interest rate must be a number');
     }
     this.monthlyInterestRate = rate;
   }
 
   /**
-   * 计算单个钱包的利息
-   * @param {Object} wallet - 钱包对象
-   * @returns {number} 计算的利息
+   * Chrysorrhoe: Calculate interest for a single wallet
+   * @param {Object} wallet - Wallet object
+   * @returns {number} Calculated interest
    */
   calculateInterest(wallet) {
     const balance = parseFloat(wallet.balance);
-    // 利息 = 余额 * 月利率
+    // Chrysorrhoe: Interest = Balance * Monthly Interest Rate
     return balance * this.monthlyInterestRate;
   }
 
   /**
-   * 初始化利息发放记录表
-   * 记录每次利息发放的状态，用于追踪和补发
+   * Chrysorrhoe: Initialize interest payment log table
+   * Records each interest payment status for tracking and reprocessing
    */
   async initInterestLogTable() {
     try {
@@ -59,14 +59,14 @@ class InterestService {
         CREATE INDEX IF NOT EXISTS idx_interest_logs_status ON interest_logs(status);
       `);
     } catch (error) {
-      console.error('初始化利息发放记录表失败:', error);
+      console.error('Chrysorrhoe: Error initializing interest payment log table:', error);
     }
   }
 
   /**
-   * 获取指定月份的利息发放记录
-   * @param {string} period - 期号，格式：YYYY-MM
-   * @returns {Promise<Object|null>} 利息发放记录
+   * Chrysorrhoe: Get interest payment log by period
+   * @param {string} period - Interest period, format: YYYY-MM
+   * @returns {Promise<Object|null>} Interest payment log record
    */
   async getInterestLogByPeriod(period) {
     try {
@@ -76,15 +76,15 @@ class InterestService {
       );
       return log || null;
     } catch (error) {
-      console.error('获取利息发放记录失败:', error);
+      console.error('Chrysorrhoe: Error fetching interest payment log:', error);
       return null;
     }
   }
 
   /**
-   * 创建新的利息发放记录
-   * @param {string} period - 期号
-   * @returns {Promise<string>} 记录ID
+   * Chrysorrhoe: Create new interest payment log record
+   * @param {string} period - Interest period
+   * @returns {Promise<string>} Record ID
    */
   async createInterestLog(period) {
     const { v4: uuidv4 } = require('uuid');
@@ -98,22 +98,22 @@ class InterestService {
       );
       return id;
     } catch (error) {
-      console.error('创建利息发放记录失败:', error);
+      console.error('Chrysorrhoe: Error creating interest payment log:', error);
       throw error;
     }
   }
 
   /**
-   * 更新利息发放记录
-   * @param {string} id - 记录ID
-   * @param {Object} updates - 更新数据
+   * Chrysorrhoe: Update interest payment log record
+   * @param {string} id - Record ID
+   * @param {Object} updates - Update data
    */
   async updateInterestLog(id, updates) {
     const allowedFields = ['status', 'total_wallets', 'processed_count', 'total_interest', 'error_message'];
     const updateFields = [];
     const updateValues = [];
     
-    // 构建更新字段
+    // Chrysorrhoe: Build update fields
     for (const [key, value] of Object.entries(updates)) {
       if (allowedFields.includes(key)) {
         updateFields.push(`${key} = ?`);
@@ -125,7 +125,7 @@ class InterestService {
       return;
     }
     
-    // 添加updated_at字段
+    // Chrysorrhoe: Add updated_at field
     updateFields.push('updated_at = ?');
     updateValues.push(new Date().toISOString());
     updateValues.push(id);
@@ -136,17 +136,17 @@ class InterestService {
         updateValues
       );
     } catch (error) {
-      console.error('更新利息发放记录失败:', error);
+      console.error('Chrysorrhoe: Error updating interest payment log:', error);
     }
   }
 
   /**
-   * 获取需要补发利息的月份
-   * @returns {Promise<Array<string>>} 需要补发的月份列表
+   * Chrysorrhoe: Get pending interest payment periods
+   * @returns {Promise<Array<string>>} Pending interest periods
    */
   async getPendingInterestPeriods() {
     try {
-      // 获取所有状态为PENDING或FAILED的记录
+      // Chrysorrhoe: Get all records with status PENDING or FAILED
       const logs = await dbAsync.all(
         `SELECT period FROM interest_logs 
          WHERE status IN ('PENDING', 'FAILED') 
@@ -154,48 +154,48 @@ class InterestService {
       );
       return logs.map(log => log.period);
     } catch (error) {
-      console.error('获取待处理利息发放记录失败:', error);
+      console.error('Chrysorrhoe: Error fetching pending interest periods:', error);
       return [];
     }
   }
 
   /**
-   * 处理所有钱包的每日利息
-   * @returns {Promise<Object>} 处理结果
-   * @deprecated 改用processMonthlyInterest
+   * Chrysorrhoe: Process daily interest payments for all wallets
+   * @returns {Promise<Object>} Processing result
+   * @deprecated Use processMonthlyInterest instead
    */
   async processDailyInterest() {
-    console.warn('processDailyInterest方法已废弃，请使用processMonthlyInterest');
+    console.warn('Chrysorrhoe: processDailyInterest method is deprecated. Please use processMonthlyInterest.');
     return await this.processMonthlyInterest();
   }
 
   /**
-   * 处理所有钱包的每月利息
-   * @param {string} targetPeriod - 可选，指定要处理的月份，格式：YYYY-MM
-   * @returns {Promise<Object>} 处理结果
+   * Chrysorrhoe: Process monthly interest payments for all wallets
+   * @param {string} targetPeriod - Optional, target month to process, format: YYYY-MM
+   * @returns {Promise<Object>} Processing result
    */
   async processMonthlyInterest(targetPeriod = null) {
-    // 如果未指定月份，使用当前月份
+    // Chrysorrhoe: If no month is specified, use the current month
     const period = targetPeriod || new Date().toISOString().slice(0, 7); // 格式：YYYY-MM
-    console.log(`开始处理${period}月份利息...`);
+    console.log(`Chrysorrhoe: Starting to process ${period} monthly interest payments...`);
     
-    // 初始化利息发放记录表
+    // Chrysorrhoe: Initialize interest payment log table
     await this.initInterestLogTable();
     
-    // 检查该月份的利息是否已经处理过
+    // Chrysorrhoe: Check if interest payments for this month have already been processed
     const existingLog = await this.getInterestLogByPeriod(period);
     if (existingLog && existingLog.status === 'COMPLETED') {
-      console.log(`${period}月份利息已经处理完成，无需重复处理`);
+      console.log(`Chrysorrhoe: ${period} monthly interest payments have already been processed.`);
       return {
         success: true,
-        message: `${period}月份利息已经处理完成`,
+        message: `Chrysorrhoe: ${period} monthly interest payments have already been processed.`,
         period,
         processedCount: existingLog.processed_count,
         totalInterest: existingLog.total_interest
       };
     }
     
-    // 创建或获取记录ID
+    // Chrysorrhoe: Create or get the interest payment log record ID
     let logId;
     if (existingLog) {
       logId = existingLog.id;
@@ -203,18 +203,18 @@ class InterestService {
       logId = await this.createInterestLog(period);
     }
     
-    // 更新记录状态为处理中
+    // Chrysorrhoe: Update record status to PROCESSING
     await this.updateInterestLog(logId, { status: 'PROCESSING' });
     
     try {
-      // 开始事务
+      // Chrysorrhoe: Start transaction
       await dbAsync.beginTransaction();
       
       try {
-        // 获取所有钱包
+        // Chrysorrhoe: Get all wallets
         const wallets = await this.walletRepo.findAll({ limit: null });
         
-        // 更新总钱包数
+        // Chrysorrhoe: Update total wallet count
         await this.updateInterestLog(logId, { total_wallets: wallets.length });
         
         if (!wallets || wallets.length === 0) {
@@ -226,7 +226,7 @@ class InterestService {
           });
           return {
             success: true,
-            message: '没有钱包需要处理利息',
+            message: 'Chrysorrhoe: No wallets need to process interest payments.',
             period,
             processedCount: 0,
             totalInterest: 0
@@ -236,20 +236,20 @@ class InterestService {
         let totalInterest = 0;
         let processedCount = 0;
 
-        // 为每个钱包计算并应用利息
+        // Chrysorrhoe: Calculate and apply interest for each wallet
         for (const wallet of wallets) {
           const interest = this.calculateInterest(wallet);
           
-          if (Math.abs(interest) > 0) { // 只处理有利息变动的钱包
+          if (Math.abs(interest) > 0) { // Chrysorrhoe: Only process wallets with interest changes
             const newBalance = parseFloat(wallet.balance) + interest;
             
-            // 更新钱包余额
+            // Chrysorrhoe: Update wallet balance
             await this.walletRepo.updateBalance(wallet.id, newBalance);
             
-            // 创建利息交易记录
+            // Chrysorrhoe: Create interest transaction record
             const description = interest > 0 
-              ? `${period}月利息收入: ${interest.toFixed(2)}` 
-              : `${period}月利息支出: ${Math.abs(interest).toFixed(2)}`;
+              ? `${period}Interest credit: ${interest.toFixed(2)}` 
+              : `${period}Interest debit: ${Math.abs(interest).toFixed(2)}`;
             
             if (interest > 0) {
               await this.transactionRepo.createInterestCredit(
@@ -270,30 +270,30 @@ class InterestService {
           }
         }
 
-        // 提交事务
+        // Chrysorrhoe: Commit transaction
         await dbAsync.commit();
         
-        // 更新记录为完成状态
+        // Chrysorrhoe: Update record status to COMPLETED
         await this.updateInterestLog(logId, {
           status: 'COMPLETED',
           processed_count: processedCount,
           total_interest: totalInterest
         });
         
-        console.log(`${period}月份利息处理完成: 共处理 ${processedCount} 个钱包，总利息 ${totalInterest.toFixed(2)}`);
+        console.log(`Chrysorrhoe: ${period} monthly interest payments processing completed: processed ${processedCount} wallets, total interest ${totalInterest.toFixed(2)}`);
         
         return {
           success: true,
-          message: '每月利息处理成功',
+          message: `Chrysorrhoe: ${period} monthly interest payments processing completed: processed ${processedCount} wallets, total interest ${totalInterest.toFixed(2)}`,
           period,
           processedCount,
           totalInterest
         };
         
       } catch (error) {
-        // 回滚事务
+        // Chrysorrhoe: Rollback transaction
         await dbAsync.rollback();
-        // 更新记录为失败状态
+        // Chrysorrhoe: Update record status to FAILED
         await this.updateInterestLog(logId, {
           status: 'FAILED',
           error_message: error.message
@@ -301,7 +301,8 @@ class InterestService {
         throw error;
       }
     } catch (error) {
-      console.error(`处理${period}月份利息时出错:`, error);
+      // Chrysorrhoe: Log error message
+      console.error(`Chrysorrhoe: Error processing ${period} monthly interest payments:`, error);
       return {
         success: false,
         message: error.message,
@@ -312,20 +313,20 @@ class InterestService {
   }
 
   /**
-   * 检查并补发遗漏的利息
-   * @returns {Promise<Object>} 补发结果
+   * Chrysorrhoe: Check and reissue pending interest payments
+   * @returns {Promise<Object>} Reissue result
    */
-  async checkAnd补发Interest() {
-    console.log('开始检查并补发遗漏的利息...');
+  async checkAndReissuePendingInterest() {
+    console.log('Chrysorrhoe: Start checking and reissuing pending interest payments...');
     
-    // 获取需要补发的月份
+    // Chrysorrhoe: Get pending interest periods
     const pendingPeriods = await this.getPendingInterestPeriods();
     
     if (pendingPeriods.length === 0) {
-      console.log('没有发现需要补发的利息');
+      console.log('Chrysorrhoe: No pending interest periods found.');
       return {
         success: true,
-        message: '没有需要补发的利息',
+        message: 'Chrysorrhoe: No pending interest periods found.',
         processedPeriods: []
       };
     }
@@ -334,7 +335,7 @@ class InterestService {
     let allSuccess = true;
     
     for (const period of pendingPeriods) {
-      console.log(`开始补发${period}月份的利息...`);
+      console.log(`Chrysorrhoe: Start reissuing interest payments for ${period}...`);
       
       try {
         const result = await this.processMonthlyInterest(period);
@@ -345,7 +346,7 @@ class InterestService {
             processedCount: result.processedCount,
             totalInterest: result.totalInterest
           });
-          console.log(`${period}月份利息补发成功`);
+          console.log(`Chrysorrhoe: ${period} monthly interest payments reissue successful`);
         } else {
           processedPeriods.push({
             period,
@@ -353,7 +354,7 @@ class InterestService {
             message: result.message
           });
           allSuccess = false;
-          console.error(`${period}月份利息补发失败:`, result.message);
+          console.error(`Chrysorrhoe: ${period} monthly interest payments reissue failed:`, result.message);
         }
       } catch (error) {
         processedPeriods.push({
@@ -362,27 +363,27 @@ class InterestService {
           message: error.message
         });
         allSuccess = false;
-        console.error(`${period}月份利息补发异常:`, error);
+        console.error(`Chrysorrhoe: ${period} monthly interest payments reissue exception:`, error);
       }
     }
     
-    console.log(`利息补发完成，共处理 ${pendingPeriods.length} 个月份`);
+    console.log(`Chrysorrhoe: Reissue completed, processed ${pendingPeriods.length} periods`);
     
     return {
       success: allSuccess,
-      message: allSuccess ? '所有遗漏利息补发成功' : '部分利息补发失败',
+      message: allSuccess ? 'Chrysorrhoe: All pending interest payments reissue successful' : 'Chrysorrhoe: Some pending interest payments reissue failed',
       processedPeriods
     };
   }
 
   /**
-   * 检查并创建必要的交易类型
-   * 确保transactions表支持interest_credit和interest_debit交易类型
+   * Chrysorrhoe: Check and create necessary transaction types
+   * Ensure transactions table supports interest_credit and interest_debit types
    */
   async ensureInterestTransactionTypes() {
-    // 在实际应用中，可能需要检查数据库约束或枚举类型
-    // 这里简化处理，因为当前的TransactionRepository允许任何交易类型
-    console.log('确保利息交易类型已配置');
+    // In a real application, you may need to check database constraints or enum types
+    // Here we simplify the process because the current TransactionRepository allows any transaction type
+    console.log('Chrysorrhoe: Interest transaction types ensured');
   }
 }
 

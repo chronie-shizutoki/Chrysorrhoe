@@ -3,20 +3,20 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 
-// 确保从正确的路径加载 .env 文件
+// ensure .env file is loaded from correct path
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const { initializeDatabase } = require('./config/initDatabase');
 
-// 导入利息调度器
+// Chrysorrhoe: Import interest scheduler
 const interestScheduler = require('./services/InterestScheduler');
-// 导入汇率调度器
+// Chrysorrhoe: Import exchange rate scheduler
 const exchangeRateScheduler = require('./services/ExchangeRateScheduler');
 
 const app = express();
 
-// 调试环境变量
-console.log('环境变量调试:');
+// Chrysorrhoe: Debug environment variables
+console.log('Chrysorrhoe: Environment variable debugging:');
 console.log('process.env.PORT:', process.env.PORT);
 console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
 
@@ -57,7 +57,7 @@ app.get('/api/status', async (req, res) => {
       timestamp: new Date().toISOString() 
     });
   } catch (error) {
-    console.error('获取数据库状态失败:', error);
+    console.error('Chrysorrhoe: Error fetching database status:', error);
     res.status(500).json({ 
       status: 'ERROR', 
       error: error.message,
@@ -88,48 +88,48 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// 初始化数据库和启动服务器
+// Chrysorrhoe: Initialize database and start server
 async function startServer() {
   try {
-    console.log('正在初始化数据库...');
+    console.log('Chrysorrhoe: Initializing database...');
     const dbInitialized = await initializeDatabase();
     
     if (!dbInitialized) {
-      console.error('数据库初始化失败，服务器启动中止');
+      console.error('Chrysorrhoe: Database initialization failed, server startup aborted');
       process.exit(1);
     }
     
     app.listen(PORT, '0.0.0.0', async () => {
-      console.log(`服务器运行在端口 ${PORT}`);
-      console.log(`环境: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`本地访问: http://localhost:${PORT}/api/health`);
-      console.log(`局域网访问: http://0.0.0.0:${PORT}/api/health`);
-      console.log(`数据库状态: http://localhost:${PORT}/api/status`);
+      console.log(`Chrysorrhoe: Server running on port ${PORT}`);
+      console.log(`Chrysorrhoe: Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`Chrysorrhoe: Local access: http://localhost:${PORT}/api/health`);
+      console.log(`Chrysorrhoe: LAN access: http://0.0.0.0:${PORT}/api/health`);
+      console.log(`Chrysorrhoe: Database status: http://localhost:${PORT}/api/status`);
       
-      // 启动利息调度器
+      // Chrysorrhoe: Start interest scheduler
       try {
         const schedulerResult = await interestScheduler.start();
         if (!schedulerResult.success) {
-          console.warn('利息调度器启动失败，但服务器继续运行');
+          console.warn('Chrysorrhoe: Interest scheduler startup failed, but server continues running');
         }
       } catch (error) {
-        console.error('启动利息调度器时发生异常:', error);
-        console.warn('利息调度器无法启动，但服务器继续运行');
+        console.error('Chrysorrhoe: Error starting interest scheduler:', error);
+        console.warn('Chrysorrhoe: Interest scheduler cannot start, but server continues running');
       }
-
-      // 启动汇率调度器
+      
+      // Chrysorrhoe: Start exchange rate scheduler
       try {
         const rateSchedulerResult = await exchangeRateScheduler.start();
         if (!rateSchedulerResult.success) {
-          console.warn('汇率调度器启动失败，但服务器继续运行');
+          console.warn('Chrysorrhoe: Exchange rate scheduler startup failed, but server continues running');
         }
       } catch (error) {
-        console.error('启动汇率调度器时发生异常:', error);
-        console.warn('汇率调度器无法启动，但服务器继续运行');
+        console.error('Chrysorrhoe: Error starting exchange rate scheduler:', error);
+        console.warn('Chrysorrhoe: Exchange rate scheduler cannot start, but server continues running');
       }
     });
   } catch (error) {
-    console.error('服务器启动失败:', error.message);
+    console.error('Chrysorrhoe: Server startup failed:', error.message);
     process.exit(1);
   }
 }
