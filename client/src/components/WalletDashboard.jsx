@@ -12,6 +12,7 @@ function WalletDashboard() {
   const { currentWallet, isLoading, error } = useWallet()
   const { formatCurrency } = useFormatting()
   const [showTransferForm, setShowTransferForm] = useState(false)
+  const [transferSuccess, setTransferSuccess] = useState(false)
 
   useEffect(() => {
     // If no wallet exists, redirect to setup
@@ -43,9 +44,14 @@ function WalletDashboard() {
   }
 
   const handleTransferSuccess = (result) => {
-    // Transfer was successful, form will close automatically
-    // The wallet balance will be updated by the walletService
+    // Transfer was successful, show success message
+    setTransferSuccess(true)
     console.log('Transfer successful:', result)
+    
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      setTransferSuccess(false)
+    }, 3000)
   }
 
   const handleHistoryClick = () => {
@@ -66,6 +72,12 @@ function WalletDashboard() {
             {t('wallet.username')}: {currentWallet.username}
           </p>
         </div>
+        
+        {transferSuccess && (
+          <div className="wallet-dashboard__success">
+            {t('transfer.success')}
+          </div>
+        )}
 
         {error && (
           <div className="wallet-dashboard__error">

@@ -91,6 +91,13 @@ function TransferForm({ onClose, onSuccess }) {
         if (onSuccess) {
           onSuccess(result)
         }
+        
+        // Close the modal to show the success message
+        setTimeout(() => {
+          if (onClose) {
+            onClose()
+          }
+        }, )
       }
     } catch (error) {
       setTransferResult({
