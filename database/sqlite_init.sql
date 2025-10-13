@@ -48,3 +48,28 @@ CREATE TRIGGER IF NOT EXISTS update_wallets_updated_at
 BEGIN
   UPDATE wallets SET updated_at = datetime('now') WHERE id = NEW.id;
 END;
+
+-- Create interest_logs table to track interest payment processing
+CREATE TABLE IF NOT EXISTS interest_logs (
+  id TEXT PRIMARY KEY,
+  period TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'PENDING',
+  total_wallets INTEGER DEFAULT 0,
+  processed_count INTEGER DEFAULT 0,
+  total_interest REAL DEFAULT 0.00,
+  error_message TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Create trigger to automatically update updated_at field in interest_logs table
+CREATE TRIGGER IF NOT EXISTS update_interest_logs_updated_at
+  AFTER UPDATE ON interest_logs
+  FOR EACH ROW
+BEGIN
+  UPDATE interest_logs SET updated_at = datetime('now') WHERE id = NEW.id;
+END;
+
+-- Create index for interest_logs table
+CREATE INDEX IF NOT EXISTS idx_interest_logs_status ON interest_logs(status);
+CREATE INDEX IF NOT EXISTS idx_interest_logs_period ON interest_logs(period);
