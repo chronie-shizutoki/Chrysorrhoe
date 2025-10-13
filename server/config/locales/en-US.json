@@ -1,4 +1,10 @@
 {
+  "info": {
+    "startInterestReissue": "Starting interest reissue process...",
+    "noPendingInterestPeriods": "No pending interest periods found",
+    "exchangeRateSaved": "Exchange rate saved successfully: 1 USD = {{rate}}",
+    "interestTransactionTypesEnsured": "Interest transaction types ensured"
+  },
   "errors": {
     "serverError": "Internal server error",
     "resourceNotFound": "Resource not found",

@@ -305,7 +305,8 @@ function getLanguageFromRequest(req) {
  * @returns {string} Translated text
  */
 function t(req, key, options = {}) {
-  const lang = getLanguageFromRequest(req);
+  // Handle null request by using default language
+  const lang = req ? getLanguageFromRequest(req) : DEFAULT_LANGUAGE;
   const translation = translations[lang];
   
   if (!translation) {

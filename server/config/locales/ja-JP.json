@@ -1,4 +1,10 @@
 {
+  "info": {
+    "startInterestReissue": "利息再発行処理を開始します...",
+    "noPendingInterestPeriods": "未処理の利息期間が見つかりません",
+    "exchangeRateSaved": "為替レートが正常に保存されました: 1 USD = {{rate}}",
+    "interestTransactionTypesEnsured": "利息取引タイプが保証されました"
+  },
   "errors": {
     "serverError": "サーバー内部エラー",
     "resourceNotFound": "リソースが見つかりません",

@@ -1,4 +1,10 @@
 {
+  "info": {
+    "startInterestReissue": "開始利息再發行處理...",
+    "noPendingInterestPeriods": "未處理的利息期間未找到",
+    "exchangeRateSaved": "匯率已成功保存: 1 USD = {{rate}}",
+    "interestTransactionTypesEnsured": "利息交易類型已確認"
+  },
   "errors": {
     "serverError": "伺服器內部錯誤",
     "resourceNotFound": "資源未找到",
