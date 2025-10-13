@@ -1,4 +1,5 @@
 import { walletAPI } from './api'
+import i18n from '../i18n/config'
 
 class WalletService {
   constructor(dispatch) {
@@ -15,7 +16,7 @@ class WalletService {
         localStorage.setItem('wallet', JSON.stringify(result.wallet))
         return result
       } else {
-        throw new Error('Failed to create wallet')
+        throw new Error(i18n.t('messages.walletCreationFailed'))
       }
     } catch (error) {
       this.dispatch({ type: 'SET_ERROR', payload: error.message })
@@ -35,7 +36,7 @@ class WalletService {
         localStorage.setItem('wallet', JSON.stringify(result.wallet))
         return result
       } else {
-        throw new Error('Wallet not found')
+        throw new Error(i18n.t('messages.walletNotFound'))
       }
     } catch (error) {
       this.dispatch({ type: 'SET_ERROR', payload: error.message })
@@ -69,7 +70,7 @@ class WalletService {
         await this.getWallet(fromWalletId)
         return result
       } else {
-        throw new Error('Transfer failed')
+        throw new Error(i18n.t('messages.transferFailed'))
       }
     } catch (error) {
       this.dispatch({ type: 'SET_ERROR', payload: error.message })
@@ -92,7 +93,7 @@ class WalletService {
         }
         return result
       } else {
-        throw new Error(result.error || 'Transfer failed')
+        throw new Error(result.error || i18n.t('messages.transferFailed'))
       }
     } catch (error) {
       this.dispatch({ type: 'SET_ERROR', payload: error.message })

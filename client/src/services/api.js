@@ -1,4 +1,5 @@
 import axios from 'axios'
+import i18n from '../i18n/config'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://192.168.0.197:3200/api'
 
@@ -39,13 +40,13 @@ api.interceptors.response.use(
       } else if (error.response.data.message) {
         errorMessage = error.response.data.message
       } else if (error.response.status === 404) {
-        errorMessage = 'Resource not found'
+        errorMessage = i18n.t('messages.resourceNotFound')
       } else if (error.response.status === 401) {
-        errorMessage = 'Authentication required'
+        errorMessage = i18n.t('messages.authenticationRequired')
       } else if (error.response.status === 403) {
-        errorMessage = 'Access denied'
+        errorMessage = i18n.t('messages.accessDenied')
       } else if (error.response.status === 500) {
-        errorMessage = 'Server error'
+        errorMessage = i18n.t('messages.serverError')
       }
     }
     

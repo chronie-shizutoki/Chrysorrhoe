@@ -62,7 +62,13 @@
 "success": "操作成功",
 "networkError": "ネットワーク接続エラー",
 "serverError": "サーバーエラー",
-"validationError": "有効な情報を入力してください"
+"validationError": "有効な情報を入力してください",
+"resourceNotFound": "リソースが見つかりません",
+"authenticationRequired": "認証が必要です",
+"accessDenied": "アクセスが拒否されました",
+"walletNotFound": "ウォレットが見つかりません",
+"transferFailed": "送金に失敗しました",
+"walletCreationFailed": "ウォレットの作成に失敗しました"
 },
 "validation": {
 "required": "この項目は必須です",

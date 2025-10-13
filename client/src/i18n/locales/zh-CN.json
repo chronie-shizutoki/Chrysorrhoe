@@ -62,7 +62,13 @@
 "success": "操作成功",
 "networkError": "网络连接异常",
 "serverError": "服务器错误",
-"validationError": "请输入有效信息"
+"validationError": "请输入有效信息",
+"resourceNotFound": "资源未找到",
+"authenticationRequired": "需要身份验证",
+"accessDenied": "访问被拒绝",
+"walletNotFound": "未找到钱包",
+"transferFailed": "转账失败",
+"walletCreationFailed": "创建钱包失败"
 },
 "validation": {
 "required": "请填写此字段",

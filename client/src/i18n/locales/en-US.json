@@ -62,7 +62,13 @@
 "success": "Operation successful",
 "networkError": "Network connection error",
 "serverError": "Server error",
-"validationError": "Please enter valid information"
+"validationError": "Please enter valid information",
+"resourceNotFound": "Resource not found",
+"authenticationRequired": "Authentication required",
+"accessDenied": "Access denied",
+"walletNotFound": "Wallet not found",
+"transferFailed": "Transfer failed",
+"walletCreationFailed": "Failed to create wallet"
 },
 "validation": {
 "required": "This field is required",

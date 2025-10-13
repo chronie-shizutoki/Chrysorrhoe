@@ -62,7 +62,13 @@
 "success": "操作成功",
 "networkError": "網路連線異常",
 "serverError": "伺服器錯誤",
-"validationError": "請輸入有效資訊"
+"validationError": "請輸入有效資訊",
+"resourceNotFound": "資源未找到",
+"authenticationRequired": "需要身份驗證",
+"accessDenied": "訪問被拒絕",
+"walletNotFound": "未找到錢包",
+"transferFailed": "轉帳失敗",
+"walletCreationFailed": "建立錢包失敗"
 },
 "validation": {
 "required": "請填寫此欄位",
