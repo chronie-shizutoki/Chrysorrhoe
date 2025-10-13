@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const WalletRepository = require('../repositories/WalletRepository');
+const { t } = require('../config/i18n');
 
 const walletRepo = new WalletRepository();
 
@@ -11,14 +12,14 @@ const validateCreateWallet = (req, res, next) => {
   if (!username || typeof username !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Username is required and must be a string'
+      error: t(req, 'errors.usernameRequired')
     });
   }
   
   if (username.trim().length < 2 || username.trim().length > 50) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Username length must be between 2-50 characters'
+      error: t(req, 'errors.usernameLength')
     });
   }
   
@@ -26,14 +27,14 @@ const validateCreateWallet = (req, res, next) => {
   if (!/^[a-zA-Z]+$/.test(username.trim())) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Username can only contain English letters'
+      error: t(req, 'errors.usernameEnglishOnly')
     });
   }
   
   if (initialBalance !== undefined && initialBalance !== 0) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Initial balance must be 0'
+      error: t(req, 'errors.initialBalanceMustBeZero')
     });
   }
   
@@ -46,7 +47,7 @@ const validateWalletId = (req, res, next) => {
   if (!walletId || typeof walletId !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Wallet ID is required'
+      error: t(req, 'errors.walletNotFound')
     });
   }
   
@@ -63,7 +64,7 @@ router.post('/', validateCreateWallet, async (req, res) => {
     if (existingWallet) {
       return res.status(409).json({
         success: false,
-        error: 'Chrysorrhoe: Username already exists'
+        error: t(req, 'errors.usernameExists')
       });
     }
     
@@ -87,7 +88,7 @@ router.post('/', validateCreateWallet, async (req, res) => {
     console.error('Chrysorrhoe: Error creating wallet:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to create wallet'
+      error: error.message || t(req, 'errors.walletCreationFailed')
     });
   }
 });
@@ -101,7 +102,7 @@ router.get('/:walletId', validateWalletId, async (req, res) => {
     if (!wallet) {
       return res.status(404).json({
         success: false,
-        error: 'Chrysorrhoe: Wallet does not exist'
+        error: t(req, 'errors.walletNotFound')
       });
     }
     
@@ -119,7 +120,7 @@ router.get('/:walletId', validateWalletId, async (req, res) => {
     console.error('Chrysorrhoe: Error fetching wallet:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to fetch wallet information'
+      error: error.message || t(req, 'errors.fetchWalletFailed')
     });
   }
 });
@@ -132,7 +133,7 @@ router.get('/username/:username', async (req, res) => {
     if (!username || typeof username !== 'string') {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Username is required'
+        error: t(req, 'errors.usernameRequired')
       });
     }
     
@@ -140,7 +141,7 @@ router.get('/username/:username', async (req, res) => {
     if (!wallet) {
       return res.status(404).json({
         success: false,
-        error: 'Chrysorrhoe: Wallet does not exist'
+        error: t(req, 'errors.walletNotFound')
       });
     }
     
@@ -158,7 +159,7 @@ router.get('/username/:username', async (req, res) => {
     console.error('Chrysorrhoe: Error fetching wallet:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to fetch wallet information'
+      error: error.message || t(req, 'errors.fetchWalletFailed')
     });
   }
 });
@@ -172,7 +173,7 @@ router.put('/:walletId/balance', validateWalletId, async (req, res) => {
     if (typeof amount !== 'number' || amount < 0) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Balance must be a non-negative number'
+        error: t(req, 'errors.balanceNonNegative')
       });
     }
     
@@ -193,12 +194,12 @@ router.put('/:walletId/balance', validateWalletId, async (req, res) => {
     if (error.message.includes('Chrysorrhoe: Wallet does not exist')) {
       return res.status(404).json({
         success: false,
-        error: error.message
+        error: t(req, 'errors.walletNotFound')
       });
     }
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to update wallet balance'
+      error: error.message || t(req, 'errors.updateBalanceFailed')
     });
   }
 });
@@ -216,14 +217,14 @@ router.get('/:walletId/transactions', validateWalletId, async (req, res) => {
     if (isNaN(pageNum) || pageNum < 1) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Page number must be a positive integer'
+        error: t(req, 'errors.pagePositiveInteger')
       });
     }
     
     if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Limit must be between 1 and 100'
+        error: t(req, 'errors.limitRange')
       });
     }
     
@@ -232,7 +233,7 @@ router.get('/:walletId/transactions', validateWalletId, async (req, res) => {
     if (!wallet) {
       return res.status(404).json({
         success: false,
-        error: 'Chrysorrhoe: Wallet does not exist'
+        error: t(req, 'errors.walletNotFound')
       });
     }
     
@@ -279,7 +280,7 @@ router.get('/:walletId/transactions', validateWalletId, async (req, res) => {
     console.error('Chrysorrhoe: Error fetching transaction history:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to fetch transaction history'
+      error: error.message || t(req, 'errors.fetchTransactionHistoryFailed')
     });
   }
 });
@@ -297,14 +298,14 @@ router.get('/:walletId/transactions/detailed', validateWalletId, async (req, res
     if (isNaN(pageNum) || pageNum < 1) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Page number must be a positive integer'
+        error: t(req, 'errors.pagePositiveInteger')
       });
     }
     
     if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Limit must be between 1 and 100'
+        error: t(req, 'errors.limitRange')
       });
     }
     
@@ -313,7 +314,7 @@ router.get('/:walletId/transactions/detailed', validateWalletId, async (req, res
     if (!wallet) {
       return res.status(404).json({
         success: false,
-        error: 'Chrysorrhoe: Wallet does not exist'
+        error: t(req, 'errors.walletNotFound')
       });
     }
     
@@ -367,7 +368,7 @@ router.get('/:walletId/transactions/detailed', validateWalletId, async (req, res
     console.error('Chrysorrhoe: Error fetching detailed transaction history:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to fetch detailed transaction history'
+      error: error.message || t(req, 'errors.fetchDetailedTransactionHistoryFailed')
     });
   }
 });

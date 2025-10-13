@@ -24,11 +24,11 @@ function ExchangeRateBanner() {
         setExchangeRate(data.data.rate)
         setLastUpdated(new Date(data.data.created_at))
       } else {
-        throw new Error(data.message || 'Failed to fetch exchange rate')
+        throw new Error(data.message || t('messages.exchangeRateFetchFailed'))
       }
     } catch (err) {
       console.error('Error fetching exchange rate:', err)
-      setError(err.message || 'Failed to fetch exchange rate data')
+      setError(err.message || t('messages.exchangeRateFetchFailed'))
       
       setExchangeRate(generateRandomRate())
       setLastUpdated(new Date())

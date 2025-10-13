@@ -1,5 +1,6 @@
 const LANGUAGE_STORAGE_KEY = 'language'
 const DEFAULT_LANGUAGE = 'en-US'
+import i18n from '../i18n/config';
 
 export const languageStorage = {
   // Get saved language from localStorage
@@ -7,7 +8,7 @@ export const languageStorage = {
     try {
       return localStorage.getItem(LANGUAGE_STORAGE_KEY) || DEFAULT_LANGUAGE
     } catch (error) {
-      console.warn('Failed to get language from localStorage:', error)
+      console.warn(i18n.t('messages.languageGetFailed'), error)
       return DEFAULT_LANGUAGE
     }
   },
@@ -18,7 +19,7 @@ export const languageStorage = {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
       return true
     } catch (error) {
-      console.warn('Failed to save language to localStorage:', error)
+      console.warn(i18n.t('messages.languageSaveFailed'), error)
       return false
     }
   },
@@ -29,7 +30,7 @@ export const languageStorage = {
       localStorage.removeItem(LANGUAGE_STORAGE_KEY)
       return true
     } catch (error) {
-      console.warn('Failed to remove language from localStorage:', error)
+      console.warn(i18n.t('messages.languageRemoveFailed'), error)
       return false
     }
   },
@@ -61,7 +62,7 @@ export const languageStorage = {
 
       return languageMap[browserLang] || languageMap[browserLang.split('-')[0]] || DEFAULT_LANGUAGE
     } catch (error) {
-      console.warn('Failed to get browser language:', error)
+      console.warn(i18n.t('messages.browserLanguageFailed'), error)
       return DEFAULT_LANGUAGE
     }
   }

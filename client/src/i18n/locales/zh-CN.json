@@ -68,14 +68,33 @@
 "accessDenied": "访问被拒绝",
 "walletNotFound": "未找到钱包",
 "transferFailed": "转账失败",
-"walletCreationFailed": "创建钱包失败"
+"walletCreationFailed": "创建钱包失败",
+"exchangeRateFetchFailed": "获取汇率失败",
+"localStorageNotAvailable": "localStorage不可用，数据将不会被持久化存储",
+"localStorageReadFailed": "读取localStorage数据失败：{{key}}",
+"localStorageSaveFailed": "保存数据到localStorage失败：{{key}}",
+"localStorageRemoveFailed": "从localStorage删除数据失败：{{key}}",
+"localStorageClearFailed": "清除localStorage失败",
+"localStorageInitialized": "本地存储已使用默认数据初始化",
+"dataImportFailed": "导入数据失败",
+"languageGetFailed": "从localStorage获取语言失败",
+"languageSaveFailed": "保存语言到localStorage失败",
+"languageRemoveFailed": "从localStorage删除语言失败",
+"browserLanguageFailed": "获取浏览器语言失败"
 },
 "validation": {
 "required": "请填写此字段",
 "minLength": "至少需要 {{min}} 个字符",
 "maxLength": "不能超过 {{max}} 个字符",
 "positiveNumber": "请输入正数",
-"invalidFormat": "格式不正确"
+"invalidFormat": "格式不正确",
+"invalidWalletId": "无效的钱包ID",
+"invalidUsername": "无效的用户名",
+"balanceNonNegative": "余额必须是非负数",
+"invalidTimestamp": "无效的时间戳",
+"invalidTransactionId": "无效的交易ID",
+"transactionAmountPositive": "交易金额必须是正数",
+"invalidTransactionType": "无效的交易类型"
 },
 "common": {
 "cancel": "取消",

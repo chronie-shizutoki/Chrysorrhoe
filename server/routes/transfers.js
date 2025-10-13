@@ -3,6 +3,7 @@ const router = express.Router();
 const { dbAsync } = require('../config/database');
 const WalletRepository = require('../repositories/WalletRepository');
 const TransactionRepository = require('../repositories/TransactionRepository');
+const { t } = require('../config/i18n');
 
 const walletRepo = new WalletRepository();
 const transactionRepo = new TransactionRepository();
@@ -15,14 +16,14 @@ const validateTransfer = async (req, res, next) => {
   if ((!fromWalletId && !fromUsername) || typeof fromWalletId !== 'string' && typeof fromUsername !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Sender wallet ID or username is required'
+      error: t(req, 'errors.senderWalletOrUsernameRequired')
     });
   }
   
   if ((!toWalletId && !toUsername) || typeof toWalletId !== 'string' && typeof toUsername !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Receiver wallet ID or username is required'
+      error: t(req, 'errors.receiverWalletOrUsernameRequired')
     });
   }
   
@@ -33,7 +34,7 @@ const validateTransfer = async (req, res, next) => {
       if (wallet && wallet.id !== fromWalletId) {
         return res.status(400).json({
           success: false,
-          error: 'Chrysorrhoe: Sender wallet ID does not match the provided username'
+          error: t(req, 'errors.senderWalletIdUsernameMismatch')
         });
       }
     } catch (error) {
@@ -47,7 +48,7 @@ const validateTransfer = async (req, res, next) => {
       if (wallet && wallet.id !== toWalletId) {
         return res.status(400).json({
           success: false,
-          error: 'Chrysorrhoe: Receiver wallet ID does not match the provided username'
+          error: t(req, 'errors.receiverWalletIdUsernameMismatch')
         });
       }
     } catch (error) {
@@ -60,14 +61,14 @@ const validateTransfer = async (req, res, next) => {
       (fromUsername && toUsername && fromUsername === toUsername)) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Cannot transfer to oneself'
+      error: t(req, 'errors.cannotTransferToSelf')
     });
   }
   
   if (typeof amount !== 'number' || amount <= 0) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Amount must be a number greater than 0'
+      error: t(req, 'errors.amountGreaterThanZero')
     });
   }
   
@@ -75,7 +76,7 @@ const validateTransfer = async (req, res, next) => {
   if (Math.round(amount * 100) !== amount * 100) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Amount must be up to 2 decimal places'
+      error: t(req, 'errors.amountPrecisionExceeded')
     });
   }
   
@@ -106,28 +107,28 @@ router.post('/by-username', async (req, res) => {
     if (!fromUsername || typeof fromUsername !== 'string') {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Sender username is required'
+        error: t(req, 'errors.senderUsernameRequired')
       });
     }
     
     if (!toUsername || typeof toUsername !== 'string') {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Receiver username is required'
+        error: t(req, 'errors.receiverUsernameRequired')
       });
     }
     
     if (fromUsername === toUsername) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Cannot transfer to oneself'
+        error: t(req, 'errors.cannotTransferToSelf')
       });
     }
     
     if (typeof amount !== 'number' || amount <= 0) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Amount must be a number greater than 0'
+        error: t(req, 'errors.amountGreaterThanZero')
       });
     }
     
@@ -136,7 +137,7 @@ router.post('/by-username', async (req, res) => {
     if (!fromWallet) {
       return res.status(404).json({
         success: false,
-        error: 'Chrysorrhoe: Sender username does not exist'
+        error: t(req, 'errors.senderUsernameDoesNotExist')
       });
     }
     
@@ -144,7 +145,7 @@ router.post('/by-username', async (req, res) => {
     if (!toWallet) {
       return res.status(404).json({
         success: false,
-        error: 'Chrysorrhoe: Receiver username does not exist'
+        error: t(req, 'errors.receiverUsernameDoesNotExist')
       });
     }
     
@@ -170,7 +171,7 @@ router.post('/by-username', async (req, res) => {
     console.error('Chrysorrhoe: Error executing transfer by username:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Transfer failed'
+      error: error.message || t(req, 'errors.transferFailed')
     });
   }
 });
@@ -196,7 +197,7 @@ async function executeTransfer(req, res) {
         await dbAsync.rollback();
         return res.status(404).json({
           success: false,
-          error: 'Chrysorrhoe: Sender wallet does not exist'
+          error: t(req, 'errors.senderWalletNotFound')
         });
       }
       
@@ -212,7 +213,7 @@ async function executeTransfer(req, res) {
         await dbAsync.rollback();
         return res.status(404).json({
           success: false,
-          error: 'Chrysorrhoe: Receiver wallet does not exist'
+          error: t(req, 'errors.receiverWalletNotFound')
         });
       }
       
@@ -221,7 +222,7 @@ async function executeTransfer(req, res) {
         await dbAsync.rollback();
         return res.status(400).json({
           success: false,
-          error: 'Chrysorrhoe: Cannot transfer to oneself'
+          error: t(req, 'errors.cannotTransferToSelf')
         });
       }
       
@@ -230,7 +231,7 @@ async function executeTransfer(req, res) {
         await dbAsync.rollback();
         return res.status(400).json({
           success: false,
-          error: 'Chrysorrhoe: Insufficient balance',
+          error: t(req, 'errors.insufficientBalance'),
           currentBalance: parseFloat(fromWallet.balance),
           requestedAmount: amount
         });
@@ -293,23 +294,23 @@ async function executeTransfer(req, res) {
     console.error('Chrysorrhoe: Error executing transfer:', error);
     
     // Chrysorrhoe: Handle Specific Error Types
-    if (error.message.includes('Chrysorrhoe: Insufficient balance')) {
+    if (error.message.includes('insufficient balance')) {
       return res.status(400).json({
         success: false,
-        error: error.message
+        error: t(req, 'errors.insufficientBalance')
       });
     }
     
-    if (error.message.includes('Chrysorrhoe: Wallet does not exist')) {
+    if (error.message.includes('wallet does not exist')) {
       return res.status(404).json({
         success: false,
-        error: error.message
+        error: t(req, 'errors.walletNotFound')
       });
     }
     
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Transfer failed'
+      error: error.message || t(req, 'errors.transferFailed')
     });
   }
 };

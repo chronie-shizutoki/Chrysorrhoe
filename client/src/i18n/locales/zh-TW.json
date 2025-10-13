@@ -68,14 +68,33 @@
 "accessDenied": "訪問被拒絕",
 "walletNotFound": "未找到錢包",
 "transferFailed": "轉帳失敗",
-"walletCreationFailed": "建立錢包失敗"
+"walletCreationFailed": "建立錢包失敗",
+"exchangeRateFetchFailed": "取得匯率失敗",
+"localStorageNotAvailable": "localStorage不可用，數據將不會被持久化儲存",
+"localStorageReadFailed": "讀取localStorage數據失敗：{{key}}",
+"localStorageSaveFailed": "儲存數據到localStorage失敗：{{key}}",
+"localStorageRemoveFailed": "從localStorage刪除數據失敗：{{key}}",
+"localStorageClearFailed": "清除localStorage失敗",
+"localStorageInitialized": "本機儲存已使用默認數據初始化",
+"dataImportFailed": "匯入數據失敗",
+"languageGetFailed": "從localStorage取得語言失敗",
+"languageSaveFailed": "儲存語言到localStorage失敗",
+"languageRemoveFailed": "從localStorage刪除語言失敗",
+"browserLanguageFailed": "取得瀏覽器語言失敗"
 },
 "validation": {
 "required": "請填寫此欄位",
 "minLength": "至少需要 {{min}} 個字元",
 "maxLength": "不能超過 {{max}} 個字元",
 "positiveNumber": "請輸入正數",
-"invalidFormat": "格式不正確"
+"invalidFormat": "格式不正確",
+"invalidWalletId": "無效的錢包ID",
+"invalidUsername": "無效的使用者名稱",
+"balanceNonNegative": "餘額必須是非負數",
+"invalidTimestamp": "無效的時間戳",
+"invalidTransactionId": "無效的交易ID",
+"transactionAmountPositive": "交易金額必須是正數",
+"invalidTransactionType": "無效的交易類型"
 },
 "common": {
 "cancel": "取消",

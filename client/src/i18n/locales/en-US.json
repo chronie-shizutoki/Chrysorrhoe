@@ -68,14 +68,33 @@
 "accessDenied": "Access denied",
 "walletNotFound": "Wallet not found",
 "transferFailed": "Transfer failed",
-"walletCreationFailed": "Failed to create wallet"
+"walletCreationFailed": "Failed to create wallet",
+"exchangeRateFetchFailed": "Failed to fetch exchange rate",
+"localStorageNotAvailable": "localStorage is not available, data will not be persisted",
+"localStorageReadFailed": "Failed to read data from localStorage: {{key}}",
+"localStorageSaveFailed": "Failed to save data to localStorage: {{key}}",
+"localStorageRemoveFailed": "Failed to remove data from localStorage: {{key}}",
+"localStorageClearFailed": "Failed to clear localStorage",
+"localStorageInitialized": "Local storage initialized with default data",
+"dataImportFailed": "Failed to import data",
+"languageGetFailed": "Failed to get language from localStorage",
+"languageSaveFailed": "Failed to save language to localStorage",
+"languageRemoveFailed": "Failed to remove language from localStorage",
+"browserLanguageFailed": "Failed to get browser language"
 },
 "validation": {
 "required": "This field is required",
 "minLength": "Minimum {{min}} characters required",
 "maxLength": "Cannot exceed {{max}} characters",
 "positiveNumber": "Please enter a positive number",
-"invalidFormat": "Invalid format"
+"invalidFormat": "Invalid format",
+"invalidWalletId": "Invalid wallet ID",
+"invalidUsername": "Invalid username",
+"balanceNonNegative": "Balance must be a non-negative number",
+"invalidTimestamp": "Invalid timestamp",
+"invalidTransactionId": "Invalid transaction ID",
+"transactionAmountPositive": "Transaction amount must be a positive number",
+"invalidTransactionType": "Invalid transaction type"
 },
 "common": {
 "cancel": "Cancel",

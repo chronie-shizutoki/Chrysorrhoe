@@ -3,6 +3,8 @@
  * Defines the data models for wallets and transactions for browser local storage
  */
 
+import i18n from '../i18n/config';
+
 // Storage key constants
 export const STORAGE_KEYS = {
   WALLETS: 'wallets',
@@ -43,19 +45,19 @@ export const validateWallet = (wallet) => {
   const errors = [];
   
   if (!wallet.id || typeof wallet.id !== 'string') {
-    errors.push('Invalid wallet ID');
+    errors.push(i18n.t('validation.invalidWalletId'));
   }
   
   if (!wallet.username || typeof wallet.username !== 'string' || wallet.username.length < 1) {
-    errors.push('Invalid username');
+    errors.push(i18n.t('validation.invalidUsername'));
   }
   
   if (typeof wallet.balance !== 'number' || wallet.balance < 0) {
-    errors.push('Balance must be a non-negative number');
+    errors.push(i18n.t('validation.balanceNonNegative'));
   }
   
   if (!wallet.createdAt || !wallet.updatedAt) {
-    errors.push('Invalid timestamp');
+    errors.push(i18n.t('validation.invalidTimestamp'));
   }
   
   return errors;
@@ -65,19 +67,19 @@ export const validateTransaction = (transaction) => {
   const errors = [];
   
   if (!transaction.id || typeof transaction.id !== 'string') {
-    errors.push('Invalid transaction ID');
+    errors.push(i18n.t('validation.invalidTransactionId'));
   }
   
   if (typeof transaction.amount !== 'number' || transaction.amount <= 0) {
-    errors.push('Transaction amount must be a positive number');
+    errors.push(i18n.t('validation.transactionAmountPositive'));
   }
   
   if (!['transfer', 'initial_deposit'].includes(transaction.transactionType)) {
-    errors.push('Invalid transaction type');
+    errors.push(i18n.t('validation.invalidTransactionType'));
   }
   
   if (!transaction.createdAt) {
-    errors.push('Invalid timestamp');
+    errors.push(i18n.t('validation.invalidTimestamp'));
   }
   
   return errors;

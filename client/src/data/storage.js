@@ -4,6 +4,7 @@
  */
 
 import { STORAGE_KEYS, AppSettingsSchema } from './schema.js';
+import i18n from '../i18n/config';
 
 class StorageManager {
   constructor() {
@@ -18,7 +19,7 @@ class StorageManager {
       localStorage.removeItem(test);
       return true;
     } catch (e) {
-      console.warn('localStorage is not available, data will not be persisted');
+      console.warn(i18n.t('messages.localStorageNotAvailable'));
       return false;
     }
   }
@@ -31,7 +32,7 @@ class StorageManager {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : null;
     } catch (error) {
-      console.error(`Failed to read data from localStorage: ${key}`, error);
+      console.error(i18n.t('messages.localStorageReadFailed', { key }), error);
       return null;
     }
   }
@@ -44,7 +45,7 @@ class StorageManager {
       localStorage.setItem(key, JSON.stringify(value));
       return true;
     } catch (error) {
-      console.error(`Failed to save data to localStorage: ${key}`, error);
+      console.error(i18n.t('messages.localStorageSaveFailed', { key }), error);
       return false;
     }
   }
@@ -57,7 +58,7 @@ class StorageManager {
       localStorage.removeItem(key);
       return true;
     } catch (error) {
-      console.error(`Failed to remove data from localStorage: ${key}`, error);
+      console.error(i18n.t('messages.localStorageRemoveFailed', { key }), error);
       return false;
     }
   }
@@ -72,7 +73,7 @@ class StorageManager {
       });
       return true;
     } catch (error) {
-      console.error('Failed to clear localStorage', error);
+      console.error(i18n.t('messages.localStorageClearFailed'), error);
       return false;
     }
   }
@@ -139,7 +140,7 @@ class StorageManager {
     // Ensure settings exist
     this.setAppSettings(settings);
 
-    console.log('Local storage initialized with default data');
+    console.log(i18n.t('messages.localStorageInitialized'));
     return true;
   }
 
@@ -161,7 +162,7 @@ class StorageManager {
       if (data.settings) this.setAppSettings(data.settings);
       return true;
     } catch (error) {
-      console.error('Failed to import data', error);
+      console.error(i18n.t('messages.dataImportFailed'), error);
       return false;
     }
   }

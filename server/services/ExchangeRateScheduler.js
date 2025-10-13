@@ -1,5 +1,6 @@
 const schedule = require('node-schedule');
 const exchangeRateService = require('./ExchangeRateService');
+const { t } = require('../config/i18n');
 
 /**
  * Chrysorrhoe exchange rate scheduler
@@ -132,7 +133,7 @@ class ExchangeRateScheduler {
       
       console.log(`[${new Date().toISOString()}] Chrysorrhoe: Daily exchange rate generation task completed, successfully generated ${successCount} records`);
     } catch (error) {
-      console.error(`[${new Date().toISOString()}] Chrysorrhoe: Failed to execute daily exchange rate generation task:`, error);
+      console.error(`[${new Date().toISOString()}] ${t(null, 'errors.exchangeRateTaskExecutionFailed')}:`, error);
       throw error;
     }
   }

@@ -68,14 +68,33 @@
 "accessDenied": "アクセスが拒否されました",
 "walletNotFound": "ウォレットが見つかりません",
 "transferFailed": "送金に失敗しました",
-"walletCreationFailed": "ウォレットの作成に失敗しました"
+"walletCreationFailed": "ウォレットの作成に失敗しました",
+"exchangeRateFetchFailed": "為替レートの取得に失敗しました",
+"localStorageNotAvailable": "localStorageが利用できません、データは永続化されません",
+"localStorageReadFailed": "localStorageからデータの読み込みに失敗しました：{{key}}",
+"localStorageSaveFailed": "localStorageへのデータ保存に失敗しました：{{key}}",
+"localStorageRemoveFailed": "localStorageからのデータ削除に失敗しました：{{key}}",
+"localStorageClearFailed": "localStorageのクリアに失敗しました",
+"localStorageInitialized": "ローカルストレージがデフォルトデータで初期化されました",
+"dataImportFailed": "データのインポートに失敗しました",
+"languageGetFailed": "localStorageから言語の取得に失敗しました",
+"languageSaveFailed": "localStorageへの言語保存に失敗しました",
+"languageRemoveFailed": "localStorageからの言語削除に失敗しました",
+"browserLanguageFailed": "ブラウザの言語の取得に失敗しました"
 },
 "validation": {
 "required": "この項目は必須です",
 "minLength": "最低{{min}}文字必要です",
 "maxLength": "{{max}}文字を超えることはできません",
 "positiveNumber": "正の数を入力してください",
-"invalidFormat": "形式が無効です"
+"invalidFormat": "形式が無効です",
+"invalidWalletId": "無効なウォレットID",
+"invalidUsername": "無効なユーザー名",
+"balanceNonNegative": "残高は非負の数でなければなりません",
+"invalidTimestamp": "無効なタイムスタンプ",
+"invalidTransactionId": "無効な取引ID",
+"transactionAmountPositive": "取引金額は正の数でなければなりません",
+"invalidTransactionType": "無効な取引タイプ"
 },
 "common": {
 "cancel": "キャンセル",

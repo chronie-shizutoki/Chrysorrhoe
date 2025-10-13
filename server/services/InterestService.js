@@ -1,6 +1,7 @@
 const { dbAsync } = require('../config/database');
 const WalletRepository = require('../repositories/WalletRepository');
 const TransactionRepository = require('../repositories/TransactionRepository');
+const { t } = require('../config/i18n');
 
 /**
  * Chrysorrhoe: Interest Service
@@ -20,7 +21,7 @@ class InterestService {
    */
   setMonthlyInterestRate(rate) {
     if (typeof rate !== 'number') {
-      throw new Error('Chrysorrhoe: Interest rate must be a number');
+      throw new Error(t(null, 'errors.interestRateMustBeNumber'));
     }
     this.monthlyInterestRate = rate;
   }
@@ -59,7 +60,7 @@ class InterestService {
         CREATE INDEX IF NOT EXISTS idx_interest_logs_status ON interest_logs(status);
       `);
     } catch (error) {
-      console.error('Chrysorrhoe: Error initializing interest payment log table:', error);
+      console.error(t(null, 'errors.interestLogTableInitFailed') + ':', error);
     }
   }
 
@@ -76,7 +77,7 @@ class InterestService {
       );
       return log || null;
     } catch (error) {
-      console.error('Chrysorrhoe: Error fetching interest payment log:', error);
+      console.error(t(null, 'errors.interestLogFetchFailed') + ':', error);
       return null;
     }
   }
@@ -98,7 +99,7 @@ class InterestService {
       );
       return id;
     } catch (error) {
-      console.error('Chrysorrhoe: Error creating interest payment log:', error);
+      console.error(t(null, 'errors.interestLogCreateFailed') + ':', error);
       throw error;
     }
   }
@@ -136,7 +137,7 @@ class InterestService {
         updateValues
       );
     } catch (error) {
-      console.error('Chrysorrhoe: Error updating interest payment log:', error);
+      console.error(t(null, 'errors.interestLogUpdateFailed') + ':', error);
     }
   }
 
@@ -154,7 +155,7 @@ class InterestService {
       );
       return logs.map(log => log.period);
     } catch (error) {
-      console.error('Chrysorrhoe: Error fetching pending interest periods:', error);
+      console.error(t(null, 'errors.pendingInterestFetchFailed') + ':', error);
       return [];
     }
   }
@@ -165,7 +166,7 @@ class InterestService {
    * @deprecated Use processMonthlyInterest instead
    */
   async processDailyInterest() {
-    console.warn('Chrysorrhoe: processDailyInterest method is deprecated. Please use processMonthlyInterest.');
+    console.warn(t(null, 'errors.processDailyInterestDeprecated'));
     return await this.processMonthlyInterest();
   }
 
@@ -177,7 +178,7 @@ class InterestService {
   async processMonthlyInterest(targetPeriod = null) {
     // Chrysorrhoe: If no month is specified, use the current month
     const period = targetPeriod || new Date().toISOString().slice(0, 7); // 格式：YYYY-MM
-    console.log(`Chrysorrhoe: Starting to process ${period} monthly interest payments...`);
+    console.log(t(null, 'info.startInterestProcessing', { period }));
     
     // Chrysorrhoe: Initialize interest payment log table
     await this.initInterestLogTable();
@@ -185,10 +186,10 @@ class InterestService {
     // Chrysorrhoe: Check if interest payments for this month have already been processed
     const existingLog = await this.getInterestLogByPeriod(period);
     if (existingLog && existingLog.status === 'COMPLETED') {
-      console.log(`Chrysorrhoe: ${period} monthly interest payments have already been processed.`);
+      console.log(t(null, 'info.interestAlreadyProcessed', { period }));
       return {
         success: true,
-        message: `Chrysorrhoe: ${period} monthly interest payments have already been processed.`,
+        message: t(null, 'info.interestAlreadyProcessed', { period }),
         period,
         processedCount: existingLog.processed_count,
         totalInterest: existingLog.total_interest
@@ -226,7 +227,7 @@ class InterestService {
           });
           return {
             success: true,
-            message: 'Chrysorrhoe: No wallets need to process interest payments.',
+            message: t(null, 'info.noWalletsForInterest'),
             period,
             processedCount: 0,
             totalInterest: 0
@@ -280,11 +281,11 @@ class InterestService {
           total_interest: totalInterest
         });
         
-        console.log(`Chrysorrhoe: ${period} monthly interest payments processing completed: processed ${processedCount} wallets, total interest ${totalInterest.toFixed(2)}`);
+        console.log(t(null, 'info.interestProcessingCompleted', { period, processedCount, totalInterest: totalInterest.toFixed(2) }));
         
         return {
           success: true,
-          message: `Chrysorrhoe: ${period} monthly interest payments processing completed: processed ${processedCount} wallets, total interest ${totalInterest.toFixed(2)}`,
+          message: t(null, 'info.interestProcessingCompleted', { period, processedCount, totalInterest: totalInterest.toFixed(2) }),
           period,
           processedCount,
           totalInterest
@@ -302,7 +303,7 @@ class InterestService {
       }
     } catch (error) {
       // Chrysorrhoe: Log error message
-      console.error(`Chrysorrhoe: Error processing ${period} monthly interest payments:`, error);
+      console.error(t(null, 'errors.interestProcessingError', { period }) + ':', error);
       return {
         success: false,
         message: error.message,
@@ -317,16 +318,16 @@ class InterestService {
    * @returns {Promise<Object>} Reissue result
    */
   async checkAndReissuePendingInterest() {
-    console.log('Chrysorrhoe: Start checking and reissuing pending interest payments...');
+    console.log(t(null, 'info.startInterestReissue'));
     
     // Chrysorrhoe: Get pending interest periods
     const pendingPeriods = await this.getPendingInterestPeriods();
     
     if (pendingPeriods.length === 0) {
-      console.log('Chrysorrhoe: No pending interest periods found.');
+      console.log(t(null, 'info.noPendingInterestPeriods'));
       return {
         success: true,
-        message: 'Chrysorrhoe: No pending interest periods found.',
+        message: t(null, 'info.noPendingInterestPeriods'),
         processedPeriods: []
       };
     }
@@ -335,7 +336,7 @@ class InterestService {
     let allSuccess = true;
     
     for (const period of pendingPeriods) {
-      console.log(`Chrysorrhoe: Start reissuing interest payments for ${period}...`);
+      console.log(t(null, 'info.startInterestReissueForPeriod', { period }));
       
       try {
         const result = await this.processMonthlyInterest(period);
@@ -346,7 +347,7 @@ class InterestService {
             processedCount: result.processedCount,
             totalInterest: result.totalInterest
           });
-          console.log(`Chrysorrhoe: ${period} monthly interest payments reissue successful`);
+          console.log(t(null, 'info.interestReissueSuccessful', { period }));
         } else {
           processedPeriods.push({
             period,
@@ -354,7 +355,7 @@ class InterestService {
             message: result.message
           });
           allSuccess = false;
-          console.error(`Chrysorrhoe: ${period} monthly interest payments reissue failed:`, result.message);
+            console.error(t(null, 'errors.interestReissueFailed', { period }) + ':', result.message);
         }
       } catch (error) {
         processedPeriods.push({
@@ -363,15 +364,15 @@ class InterestService {
           message: error.message
         });
         allSuccess = false;
-        console.error(`Chrysorrhoe: ${period} monthly interest payments reissue exception:`, error);
+          console.error(t(null, 'errors.interestReissueException', { period }) + ':', error);
       }
     }
     
-    console.log(`Chrysorrhoe: Reissue completed, processed ${pendingPeriods.length} periods`);
+    console.log(t(null, 'info.interestReissueCompleted', { count: pendingPeriods.length }));
     
     return {
       success: allSuccess,
-      message: allSuccess ? 'Chrysorrhoe: All pending interest payments reissue successful' : 'Chrysorrhoe: Some pending interest payments reissue failed',
+      message: allSuccess ? t(null, 'info.allInterestReissueSuccessful') : t(null, 'errors.someInterestReissueFailed'),
       processedPeriods
     };
   }
@@ -383,7 +384,7 @@ class InterestService {
   async ensureInterestTransactionTypes() {
     // In a real application, you may need to check database constraints or enum types
     // Here we simplify the process because the current TransactionRepository allows any transaction type
-    console.log('Chrysorrhoe: Interest transaction types ensured');
+    console.log(t(null, 'info.interestTransactionTypesEnsured'));
   }
 }
 

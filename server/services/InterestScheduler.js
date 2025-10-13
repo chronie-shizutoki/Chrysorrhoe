@@ -1,5 +1,6 @@
 const schedule = require('node-schedule');
 const InterestService = require('./InterestService');
+const { t } = require('../config/i18n');
 
 /**
  * Chrysorrhoe: Interest scheduler
@@ -35,10 +36,10 @@ class InterestScheduler {
           if (result.success) {
             console.log(`[${new Date().toISOString()}] Chrysorrhoe: Monthly interest calculation task executed successfully:`, result);
           } else {
-            console.error(`[${new Date().toISOString()}] Chrysorrhoe: Monthly interest calculation task execution failed:`, result.message);
+            console.error(`[${new Date().toISOString()}] ${t(null, 'errors.interestCalculationFailed')}:`, result.message);
           }
         } catch (error) {
-          console.error(`[${new Date().toISOString()}] Chrysorrhoe: Monthly interest calculation task execution exception:`, error);
+          console.error(`[${new Date().toISOString()}] ${t(null, 'errors.interestCalculationException')}:`, error);
         }
       });
       
@@ -53,10 +54,10 @@ class InterestScheduler {
           if (result.success) {
             console.log(`[${new Date().toISOString()}] Chrysorrhoe: Interest payment check task executed successfully:`, result);
           } else {
-            console.error(`[${new Date().toISOString()}] Chrysorrhoe: Interest payment check task execution failed:`, result.message);
+            console.error(`[${new Date().toISOString()}] ${t(null, 'errors.interestPaymentCheckFailed')}:`, result.message);
           }
         } catch (error) {
-          console.error(`[${new Date().toISOString()}] Chrysorrhoe: Interest payment check task execution exception:`, error);
+          console.error(`[${new Date().toISOString()}] ${t(null, 'errors.interestPaymentCheckException')}:`, error);
         }
       });
       
@@ -70,7 +71,7 @@ class InterestScheduler {
       
       return { success: true };
     } catch (error) {
-      console.error('Chrysorrhoe: Error starting interest scheduler:', error);
+      console.error(t(null, 'errors.interestSchedulerStartFailed') + ':', error);
       return { success: false, error: error.message };
     }
   }

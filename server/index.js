@@ -7,6 +7,7 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const { initializeDatabase } = require('./config/initDatabase');
+const { initTranslations } = require('./config/i18n');
 
 // Chrysorrhoe: Import interest scheduler
 const interestScheduler = require('./services/InterestScheduler');
@@ -74,64 +75,69 @@ app.use('/api/interests', require('./routes/interests'));
 app.use('/api/exchange-rates', require('./routes/exchangeRates'));
 app.use('/api/third-party', require('./routes/thirdPartyPayments'));
 
+const { t } = require('./config/i18n');
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
-    error: 'Something went wrong!',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+    error: t(req, 'errors.serverError'),
+    message: process.env.NODE_ENV === 'development' ? err.message : t(req, 'errors.serverError')
   });
 });
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  res.status(404).json({ error: t(req, 'errors.routeNotFound') });
 });
 
 // Chrysorrhoe: Initialize database and start server
 async function startServer() {
-  try {
-    console.log('Chrysorrhoe: Initializing database...');
-    const dbInitialized = await initializeDatabase();
-    
-    if (!dbInitialized) {
-      console.error('Chrysorrhoe: Database initialization failed, server startup aborted');
+    try {
+      console.log('Chrysorrhoe: Initializing database...');
+      const dbInitialized = await initializeDatabase();
+      
+      // Initialize translations
+      await initTranslations();
+      
+      if (!dbInitialized) {
+        console.error('Chrysorrhoe: Database initialization failed, server startup aborted');
+        process.exit(1);
+      }
+      
+      app.listen(PORT, '0.0.0.0', async () => {
+        console.log(`Chrysorrhoe: Server running on port ${PORT}`);
+        console.log(`Chrysorrhoe: Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`Chrysorrhoe: Local access: http://localhost:${PORT}/api/health`);
+        console.log(`Chrysorrhoe: LAN access: http://0.0.0.0:${PORT}/api/health`);
+        console.log(`Chrysorrhoe: Database status: http://localhost:${PORT}/api/status`);
+        
+        // Chrysorrhoe: Start interest scheduler
+        try {
+          const schedulerResult = await interestScheduler.start();
+          if (!schedulerResult.success) {
+            console.warn('Chrysorrhoe: Interest scheduler startup failed, but server continues running');
+          }
+        } catch (error) {
+          console.error('Chrysorrhoe: Error starting interest scheduler:', error);
+          console.warn('Chrysorrhoe: Interest scheduler cannot start, but server continues running');
+        }
+        
+        // Chrysorrhoe: Start exchange rate scheduler
+        try {
+          const rateSchedulerResult = await exchangeRateScheduler.start();
+          if (!rateSchedulerResult.success) {
+            console.warn('Chrysorrhoe: Exchange rate scheduler startup failed, but server continues running');
+          }
+        } catch (error) {
+          console.error('Chrysorrhoe: Error starting exchange rate scheduler:', error);
+          console.warn('Chrysorrhoe: Exchange rate scheduler cannot start, but server continues running');
+        }
+      });
+    } catch (error) {
+      console.error('Chrysorrhoe: Server startup failed:', error.message);
       process.exit(1);
     }
-    
-    app.listen(PORT, '0.0.0.0', async () => {
-      console.log(`Chrysorrhoe: Server running on port ${PORT}`);
-      console.log(`Chrysorrhoe: Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`Chrysorrhoe: Local access: http://localhost:${PORT}/api/health`);
-      console.log(`Chrysorrhoe: LAN access: http://0.0.0.0:${PORT}/api/health`);
-      console.log(`Chrysorrhoe: Database status: http://localhost:${PORT}/api/status`);
-      
-      // Chrysorrhoe: Start interest scheduler
-      try {
-        const schedulerResult = await interestScheduler.start();
-        if (!schedulerResult.success) {
-          console.warn('Chrysorrhoe: Interest scheduler startup failed, but server continues running');
-        }
-      } catch (error) {
-        console.error('Chrysorrhoe: Error starting interest scheduler:', error);
-        console.warn('Chrysorrhoe: Interest scheduler cannot start, but server continues running');
-      }
-      
-      // Chrysorrhoe: Start exchange rate scheduler
-      try {
-        const rateSchedulerResult = await exchangeRateScheduler.start();
-        if (!rateSchedulerResult.success) {
-          console.warn('Chrysorrhoe: Exchange rate scheduler startup failed, but server continues running');
-        }
-      } catch (error) {
-        console.error('Chrysorrhoe: Error starting exchange rate scheduler:', error);
-        console.warn('Chrysorrhoe: Exchange rate scheduler cannot start, but server continues running');
-      }
-    });
-  } catch (error) {
-    console.error('Chrysorrhoe: Server startup failed:', error.message);
-    process.exit(1);
   }
-}
 
 startServer();

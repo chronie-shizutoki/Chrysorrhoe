@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const { dbAsync } = require('../config/database');
+const { t } = require('../config/i18n');
 
 /**
  * ExchangeRateService
@@ -21,7 +22,7 @@ class ExchangeRateService {
     try {
       // Chrysorrhoe: Validate exchange rate value
       if (typeof rate !== 'number' || rate < 0) {
-        throw new Error('Invalid exchange rate value, must be a positive number');
+        throw new Error(t(null, 'errors.invalidExchangeRateValue'));
       }
 
       // Chrysorrhoe: Generate UUID as ID
@@ -38,7 +39,7 @@ class ExchangeRateService {
         [id, rate, createdTime]
       );
 
-      console.log(`Successfully saved exchange rate record: 1 USD = ${rate} local currency`);
+      console.log(t(null, 'info.exchangeRateSaved', { rate }));
 
       return {
         success: true,
@@ -47,7 +48,7 @@ class ExchangeRateService {
         createdAt: createdTime
       };
     } catch (error) {
-      console.error('Error saving exchange rate record:', error);
+      console.error(t(null, 'errors.exchangeRateSaveError') + ':', error);
       return {
         success: false,
         message: error.message
@@ -66,7 +67,7 @@ class ExchangeRateService {
       );
       return rate;
     } catch (error) {
-      console.error('Chrysorrhoe: Error fetching latest exchange rate record:', error);
+      console.error(t(null, 'errors.exchangeRateFetchLatestError') + ':', error);
       return null;
     }
   }
@@ -84,7 +85,7 @@ class ExchangeRateService {
       );
       return rates;
     } catch (error) {
-      console.error('Chrysorrhoe: Error fetching all exchange rate records:', error);
+      console.error(t(null, 'errors.exchangeRateFetchAllError') + ':', error);
       return [];
     }
   }
@@ -97,7 +98,7 @@ class ExchangeRateService {
   async deleteRatesBeforeDate(date) {
     try {
       if (!(date instanceof Date)) {
-        throw new Error('Chrysorrhoe: Invalid date object');
+        throw new Error(t(null, 'errors.invalidDateObject'));
       }
 
       const result = await dbAsync.run(
@@ -106,14 +107,14 @@ class ExchangeRateService {
       );
 
       // Chrysorrhoe: Log successful deletion
-      console.log(`Chrysorrhoe: Successfully deleted ${result.changes} exchange rate records before ${date.toISOString()}`);
+      console.log(t(null, 'info.exchangeRateRecordsDeleted', { count: result.changes, date: date.toISOString() }));
 
       return {
         success: true,
         deletedCount: result.changes
       };
     } catch (error) {
-      console.error('Chrysorrhoe: Error deleting exchange rate records:', error);
+      console.error(t(null, 'errors.exchangeRateDeleteError') + ':', error);
       return {
         success: false,
         message: error.message
@@ -142,12 +143,12 @@ class ExchangeRateService {
           )`
         );
         // Chrysorrhoe: Log successful table creation
-        console.log(`Chrysorrhoe: Successfully created exchange rate table ${this.tableName}`);
+        console.log(t(null, 'info.exchangeRateTableCreated', { tableName: this.tableName }));
       }
 
       return true;
     } catch (error) {
-      console.error('Chrysorrhoe: Error ensuring exchange rate table exists:', error);
+      console.error(t(null, 'errors.exchangeRateTableEnsureError') + ':', error);
       return false;
     }
   }
