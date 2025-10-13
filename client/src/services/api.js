@@ -28,7 +28,33 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error('API Error:', error.response?.data || error.message)
-    return Promise.reject(error)
+    
+    // Extract friendly error message from server response if available
+    let errorMessage = error.message
+    if (error.response && error.response.data) {
+      if (typeof error.response.data === 'string') {
+        errorMessage = error.response.data
+      } else if (error.response.data.error) {
+        errorMessage = error.response.data.error
+      } else if (error.response.data.message) {
+        errorMessage = error.response.data.message
+      } else if (error.response.status === 404) {
+        errorMessage = 'Resource not found'
+      } else if (error.response.status === 401) {
+        errorMessage = 'Authentication required'
+      } else if (error.response.status === 403) {
+        errorMessage = 'Access denied'
+      } else if (error.response.status === 500) {
+        errorMessage = 'Server error'
+      }
+    }
+    
+    // Create a new error with the friendly message
+    const friendlyError = new Error(errorMessage)
+    friendlyError.originalError = error
+    friendlyError.status = error.response?.status
+    
+    return Promise.reject(friendlyError)
   }
 )
 
