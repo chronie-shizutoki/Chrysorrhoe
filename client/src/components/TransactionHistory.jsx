@@ -202,28 +202,26 @@ const TransactionHistory = () => {
 
           {pagination.totalPages > 1 && (
             <div className="pagination-controls">
+              <button
+                onClick={() => loadTransactions(pagination.currentPage - 1)}
+                disabled={!pagination.hasPreviousPage || loadingMore}
+                className="pagination-button"
+              >
+                {t('common.previous')}
+              </button>
               <div className="pagination-info">
                 {t('transaction.page', { 
                   current: pagination.currentPage, 
                   total: pagination.totalPages 
                 })}
               </div>
-              <div className="pagination-buttons">
-                <button
-                  onClick={() => loadTransactions(pagination.currentPage - 1)}
-                  disabled={!pagination.hasPreviousPage || loadingMore}
-                  className="pagination-button"
-                >
-                  {t('common.previous')}
-                </button>
-                <button 
-                  onClick={handleLoadMore}
-                  disabled={!pagination.hasNextPage || loadingMore}
-                  className="pagination-button load-more-button"
-                >
-                  {loadingMore ? t('messages.loading') : t('common.next')}
-                </button>
-              </div>
+              <button 
+                onClick={handleLoadMore}
+                disabled={!pagination.hasNextPage || loadingMore}
+                className="pagination-button load-more-button"
+              >
+                {loadingMore ? t('messages.loading') : t('common.next')}
+              </button>
             </div>
           )}
         </>

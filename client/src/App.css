@@ -1420,8 +1420,8 @@ body {
     align-items: center;
     justify-content: space-between;
   }
-  
-  .transaction-history-header h2 {
+
+    .transaction-history-header h2 {
     font-size: 1.75rem;
   }
   
@@ -1434,10 +1434,6 @@ body {
   .transaction-amount {
     text-align: right;
     min-width: 100px;
-  }
-  
-  .transfer-form {
-    max-width: min(600px, 60vw);
   }
   
   .transfer-form__actions {
@@ -1467,6 +1463,33 @@ body {
     display: inline;
     margin: 0 0 0 0.5rem;
   }
+}
+
+@media (max-width: 767px) {
+  .wallet-setup__container {
+    width: 100%
+  }
+
+  .transfer-form {
+    max-width: 100% !important;
+  }
+
+      .transaction-history-header {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .transaction-history-title {
+      display: flex;
+      align-items: flex-start;
+      text-align: left;
+      width: 100%;
+    }
+    
+    .pagination-info {
+      margin-top: 0.5rem;
+    }
 }
 
 @media (min-width: 1200px) {
@@ -1505,10 +1528,8 @@ body {
 /* Pagination Controls */
 .pagination-controls {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   margin-top: 2rem;
   padding: 1rem;
   background: var(--glass-bg);
@@ -1517,6 +1538,10 @@ body {
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
+}
+
+.pagination-info {
+  white-space: nowrap;
 }
 
 .pagination-buttons {
@@ -1532,6 +1557,7 @@ body {
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.2);
   color: var(--color-primary);
