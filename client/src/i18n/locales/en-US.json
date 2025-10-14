@@ -1,18 +1,13 @@
 {
 "wallet": {
 "title": "𝙲𝚑𝚛𝚢𝚜𝚘𝚛𝚛𝚑𝚘𝚎",
-"balance": "Balance",
 "transfer": "Account Transfer",
 "history": "Transaction History",
 "create": "Create Account",
 "username": "Username",
 "initialBalance": "Initial Balance",
 "currentBalance": "Balance",
-"dashboard": "",
-"setup": "Setup",
 "noWallet": "No Account Found",
-"createFirst": "Please create an account first",
-"initialBalanceNote": "The initial balance for a new account is 0.00",
 "login": "Login",
 "enterUsername": "Enter username",
 "noAccount": "No 𝙲𝚑𝚛𝚢𝚜𝚘𝚛𝚛𝚑𝚘𝚎 account?",
@@ -81,10 +76,10 @@
 "localStorageClearFailed": "Failed to clear localStorage",
 "localStorageInitialized": "Local storage initialized with default data",
 "dataImportFailed": "Failed to import data",
-"languageGetFailed": "Failed to get language from localStorage",
-"languageSaveFailed": "Failed to save language to localStorage",
-"languageRemoveFailed": "Failed to remove language from localStorage",
-"browserLanguageFailed": "Failed to get browser language"
+"languageGetFailed": "Failed to get language preference",
+"languageSaveFailed": "Failed to save language preference",
+"languageRemoveFailed": "Failed to remove language preference",
+"browserLanguageFailed": "Failed to get browser language preference"
 },
 "validation": {
 "required": "This field is required",

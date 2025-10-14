@@ -67,7 +67,6 @@ function WalletDashboard() {
     <div className="wallet-dashboard">
       <div className="wallet-dashboard__container">
         <div className="wallet-dashboard__header">
-          <h1 className="wallet-dashboard__title">{t('wallet.dashboard')}</h1>
           <p className="wallet-dashboard__username">
             {t('wallet.username')}: {currentWallet.username}
           </p>

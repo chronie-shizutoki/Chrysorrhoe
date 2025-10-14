@@ -113,7 +113,7 @@ function WalletSetup() {
               value={formData.username}
               onChange={handleInputChange}
               className={`form-input ${validationErrors.username ? 'form-input--error' : ''}`}
-              placeholder={mode === 'login' ? t('wallet.enterUsername') : t('wallet.username')}
+              placeholder={t('wallet.enterUsername')}
             />
             {validationErrors.username && (
               <span className="form-error">{validationErrors.username}</span>
