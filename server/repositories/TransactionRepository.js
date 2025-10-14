@@ -2,13 +2,13 @@ const { dbAsync } = require('../config/database');
 const { v4: uuidv4 } = require('uuid');
 
 /**
- * Chrysorrhoe Transaction Data Access Layer
+ * Transaction Data Access Layer  
  * Provides database operations methods for transactions
  */
 class TransactionRepository {
   
   /**
-   * Chrysorrhoe Create New Transaction Record
+   * Create New Transaction Record
    * @param {Object} transactionData - Transaction data
    * @param {string|null} transactionData.fromWalletId - Sender wallet ID
    * @param {string|null} transactionData.toWalletId - Receiver wallet ID
@@ -30,12 +30,12 @@ class TransactionRepository {
     // Check transaction type
     const validTypes = ['transfer', 'initial_deposit', 'interest_credit', 'interest_debit', 'third_party_payment', 'third_party_receipt'];
     if (!validTypes.includes(transactionType)) {
-      throw new Error('Chrysorrhoe Invalid transaction type');
+      throw new Error('Invalid transaction type');
     }
     
     // Check transaction amount
     if (typeof amount !== 'number' || amount <= 0) {
-      throw new Error('Chrysorrhoe Transaction amount must be greater than 0');
+      throw new Error('Transaction amount must be greater than 0');
     }
     
     const id = uuidv4();
@@ -50,12 +50,12 @@ class TransactionRepository {
       
       return await this.findById(id);
     } catch (error) {
-      throw new Error(`Chrysorrhoe Create transaction record failed: ${error.message}`);
+      throw new Error(`Create transaction record failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Find Transaction by ID
+   * Find Transaction by ID
    * @param {string} id - Transaction ID
    * @returns {Promise<Object|null>} Transaction object or null
    */
@@ -73,12 +73,12 @@ class TransactionRepository {
       );
       return transaction || null;
     } catch (error) {
-      throw new Error(`Chrysorrhoe Find transaction by ID failed: ${error.message}`);
+      throw new Error(`Find transaction by ID failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Find Transactions by Wallet ID
+   * Find Transactions by Wallet ID
    * @param {string} walletId - Wallet ID
    * @param {Object} options - Query options
    * @param {number} options.limit - Limit number
@@ -119,12 +119,12 @@ class TransactionRepository {
       const transactions = await dbAsync.all(sql, params);
       return transactions;
     } catch (error) {
-      throw new Error(`Chrysorrhoe Find transactions by wallet ID failed: ${error.message}`);
+      throw new Error(`Find transactions by wallet ID failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Get All Transactions
+   * Get All Transactions
    * @param {Object} options - Query options
    * @param {number} options.limit - Limit number
    * @param {number} options.offset - Offset number
@@ -163,14 +163,14 @@ class TransactionRepository {
       const transactions = await dbAsync.all(sql, params);
       return transactions;
     } catch (error) {
-      throw new Error(`Chrysorrhoe Get all transactions failed: ${error.message}`);
+      throw new Error(`Get all transactions failed: ${error.message}`);
     }
   }
 
 
 
   /**
-   * Chrysorrhoe Count All Transactions
+   * Count All Transactions
    * @param {string} type - Optional transaction type filter
    * @returns {Promise<number>} Transaction count
    */
@@ -192,12 +192,12 @@ class TransactionRepository {
       const result = await dbAsync.get(sql, params);
       return result.count;
     } catch (error) {
-      throw new Error(`Chrysorrhoe Count all transactions failed: ${error.message}`);
+      throw new Error(`Count all transactions failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Count Transactions by Wallet ID
+   * Count Transactions by Wallet ID
    * @param {string} walletId - Wallet ID
    * @param {string|Array} type - Optional transaction type filter
    * @returns {Promise<number>} Transaction count
@@ -220,12 +220,12 @@ class TransactionRepository {
       const result = await dbAsync.get(sql, params);
       return result.count;
     } catch (error) {
-      throw new Error(`Chrysorrhoe Count transactions by wallet ID failed: ${error.message}`);
+      throw new Error(`Count transactions by wallet ID failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Get Wallet Stats
+   * Get Wallet Stats
    * @param {string} walletId - Wallet ID
    * @returns {Promise<Object>} Statistics
    */
@@ -260,12 +260,12 @@ class TransactionRepository {
         totalReceived: receivedResult.total
       };
     } catch (error) {
-      throw new Error(`Chrysorrhoe Get wallet stats failed: ${error.message}`);
+      throw new Error(`Get wallet stats failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Get Transactions by Date Range
+   * Get Transactions by Date Range
    * @param {string} walletId - Wallet ID
    * @param {string} startDate - Start date (ISO string)
    * @param {string} endDate - End date (ISO string)
@@ -288,12 +288,12 @@ class TransactionRepository {
       );
       return transactions;
     } catch (error) {
-      throw new Error(`Chrysorrhoe Get transactions by date range failed: ${error.message}`);
+      throw new Error(`Get transactions by date range failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Delete Transaction
+   * Delete Transaction
    * @param {string} id - Transaction ID
    * @returns {Promise<boolean>} Whether deletion was successful
    */
@@ -305,12 +305,12 @@ class TransactionRepository {
       );
       return result.changes > 0;
     } catch (error) {
-      throw new Error(`Chrysorrhoe Delete transaction failed: ${error.message}`);
+      throw new Error(`Delete transaction failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Create Transfer Transaction
+   * Create Transfer Transaction
    * @param {string} fromWalletId - Sender wallet ID
    * @param {string} toWalletId - Receiver wallet ID
    * @param {number} amount - Transfer amount
@@ -328,7 +328,7 @@ class TransactionRepository {
   }
 
   /**
-   * Chrysorrhoe Create Initial Deposit Transaction
+   * Create Initial Deposit Transaction
    * @param {string} toWalletId - Receiver wallet ID
    * @param {number} amount - Deposit amount
    * @param {string} description - Transaction description
@@ -345,7 +345,7 @@ class TransactionRepository {
   }
 
   /**
-   * Chrysorrhoe Create Interest Credit Transaction
+   * Create Interest Credit Transaction
    * @param {string} toWalletId - Receiver wallet ID
    * @param {number} amount - Interest amount
    * @param {string} description - Transaction description
@@ -362,13 +362,13 @@ class TransactionRepository {
   }
 
   /**
-   * Chrysorrhoe Create Interest Debit Transaction
+   * Create Interest Debit Transaction
    * @param {string} toWalletId - Receiver wallet ID
    * @param {number} amount - Interest amount
    * @param {string} description - Transaction description
    * @returns {Promise<Object>} Created transaction object
    */
-  async createInterestDebit(toWalletId, amount, description = 'interest_debit') {
+  async createInterestDebit(toWalletId, amount, description = '利息支出') {
     return await this.create({
       fromWalletId: null,
       toWalletId,

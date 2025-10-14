@@ -4,7 +4,7 @@ const path = require('path');
 // Ensure the .env file is loaded from the correct path
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
-// Chrysorrhoe Database File Path
+// Database File Path
 const dbPath = path.join(__dirname, '..', 'data', 'wallet.db');
 
 // Create database connection
@@ -18,7 +18,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
   }
 });
 
-// Chrysorrhoe Database Operations Promise Wrapper
+// Database Operations Promise Wrapper
 const dbAsync = {
   // Execute query and return all results
   all: (sql, params = []) => {

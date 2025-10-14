@@ -3,7 +3,7 @@ const path = require('path');
 const { db, dbAsync } = require('./database');
 
 /**
- * Chrysorrhoe Database Initialization Module
+ * Database Initialization Module
  * Responsible for creating table structures, indices, and triggers
  */
 
@@ -12,7 +12,7 @@ const ensureDataDirectory = () => {
   const dataDir = path.join(__dirname, '..', 'data');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
-    console.log('Chrysorrhoe data directory created:', dataDir);
+    console.log('Data directory created:', dataDir);
   }
 };
 
@@ -22,7 +22,7 @@ const readInitScript = () => {
   try {
     return fs.readFileSync(sqlPath, 'utf8');
   } catch (error) {
-    console.error('Chrysorrhoe error reading initialization script:', error.message);
+    console.error('Error reading initialization script:', error.message);
     return null;
   }
 };
@@ -92,45 +92,45 @@ const executeSqlScript = async (sqlScript) => {
       try {
         await dbAsync.run(statement);
         const preview = statement.replace(/\s+/g, ' ').substring(0, 50);
-        console.log('Chrysorrhoe SQL statement executed successfully:', preview + '...');
+        console.log('SQL statement executed successfully:', preview + '...');
       } catch (error) {
         const preview = statement.replace(/\s+/g, ' ').substring(0, 50);
-        console.error('Chrysorrhoe SQL statement execution failed:', preview + '...', error.message);
-        console.error('Chrysorrhoe complete statement:', statement);
+        console.error('SQL statement execution failed:', preview + '...', error.message);
+        console.error('Complete statement:', statement);
         throw error;
       }
     }
   }
 };
 
-// Chrysorrhoe Verify Table Structures
+// Verify Table Structures
 const verifyTables = async () => {
   try {
     // Check wallets table
     const walletsInfo = await dbAsync.get("SELECT name FROM sqlite_master WHERE type='table' AND name='wallets'");
     if (!walletsInfo) {
-      throw new Error('Chrysorrhoe wallets table does not exist');
+      throw new Error('Wallets table does not exist');
     }
 
     // Check transactions table
     const transactionsInfo = await dbAsync.get("SELECT name FROM sqlite_master WHERE type='table' AND name='transactions'");
     if (!transactionsInfo) {
-      throw new Error('Chrysorrhoe transactions table does not exist');
+      throw new Error('Transactions table does not exist');
     }
 
     // Check indices
     const indexes = await dbAsync.all("SELECT name FROM sqlite_master WHERE type='index' AND name LIKE 'idx_%'");
-    console.log('Chrysorrhoe created indices:', indexes.map(idx => idx.name));
+    console.log('Created indices:', indexes.map(idx => idx.name));
 
-    console.log('Chrysorrhoe database table structure verification successful');
+    console.log('Database table structure verification successful');
     return true;
   } catch (error) {
-    console.error('Chrysorrhoe database table structure verification failed:', error.message);
+    console.error('Database table structure verification failed:', error.message);
     return false;
   }
 };
 
-// Chrysorrhoe Get Database Statistics
+// Get Database Statistics
 const getDatabaseStats = async () => {
   try {
     const walletCount = await dbAsync.get('SELECT COUNT(*) as count FROM wallets');
@@ -141,15 +141,15 @@ const getDatabaseStats = async () => {
       transactions: transactionCount.count
     };
   } catch (error) {
-    console.error('Chrysorrhoe database statistics retrieval failed:', error.message);
+    console.error('Database statistics retrieval failed:', error.message);
     return null;
   }
 };
 
-// Chrysorrhoe Main Initialization Function
+// Main Initialization Function
 const initializeDatabase = async () => {
   try {
-    console.log('Chrysorrhoe starting database initialization...');
+    console.log('Starting database initialization...');
     
     // 1. Ensure data directory exists
     ensureDataDirectory();
@@ -157,7 +157,7 @@ const initializeDatabase = async () => {
     // 2. Read initialization script
     const sqlScript = readInitScript();
     if (!sqlScript) {
-      throw new Error('Chrysorrhoe error reading initialization script');
+      throw new Error('Error reading initialization script');
     }
     
     // 3. Execute initialization script
@@ -166,35 +166,35 @@ const initializeDatabase = async () => {
     // 4. Verify table structures
     const isValid = await verifyTables();
     if (!isValid) {
-      throw new Error('Chrysorrhoe database table structure verification failed');
+      throw new Error('Database table structure verification failed');
     }
     
     // 5. Display statistics
     const stats = await getDatabaseStats();
     if (stats) {
-      console.log('Chrysorrhoe database statistics:', stats);
+      console.log('Database statistics:', stats);
     }
     
-    console.log('Chrysorrhoe database initialization completed successfully');
+    console.log('Database initialization completed successfully');
     return true;
   } catch (error) {
-    console.error('Chrysorrhoe database initialization failed:', error.message);
+    console.error('Database initialization failed:', error.message);
     return false;
   }
 };
 
-// Chrysorrhoe Reset Database (Delete all data)
+// Reset Database (Delete all data)
 const resetDatabase = async () => {
   try {
-    console.log('Chrysorrhoe starting database reset...');
+    console.log('Starting database reset...');
     
     await dbAsync.run('DELETE FROM transactions');
     await dbAsync.run('DELETE FROM wallets');
     
-    console.log('Chrysorrhoe database reset completed successfully');
+    console.log('Database reset completed successfully');
     return true;
   } catch (error) {
-    console.error('Chrysorrhoe database reset failed:', error.message);
+    console.error('Database reset failed:', error.message);
     return false;
   }
 };

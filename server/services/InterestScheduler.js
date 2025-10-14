@@ -3,7 +3,7 @@ const InterestService = require('./InterestService');
 const { t } = require('../config/i18n');
 
 /**
- * Chrysorrhoe: Interest scheduler
+ * Interest scheduler 
  * Responsible for scheduling and managing monthly interest calculation tasks
  */
 class InterestScheduler {
@@ -14,27 +14,27 @@ class InterestScheduler {
   }
 
   /**
-   * Chrysorrhoe: Start interest scheduler
+   * Start interest scheduler 
    * Set up a monthly job to run at UTC+0 00:00 on the 1st of each month to calculate monthly interest
    * Also set up a daily job to check for any missed interest payments at UTC+0 12:00
    */
   async start() {
     try {
-      // Chrysorrhoe: Ensure interest transaction types are configured
+      // Ensure interest transaction types are configured
       await this.interestService.ensureInterestTransactionTypes();
       
-      console.log('Chrysorrhoe: Starting interest scheduler...');
+      console.log('Starting interest scheduler...');
       
-      // Chrysorrhoe: Set up monthly job to run at UTC+0 00:00 on the 1st of each month
+      // Set up monthly job to run at UTC+0 00:00 on the 1st of each month
       // Format: 'sec min hour day month day-of-week'
       // 0 0 0 1 * * Run at 00:00:00 UTC+0 on the 1st of each month
       this.monthlyJob = schedule.scheduleJob('0 0 0 1 * *', async () => {
-        console.log(`[${new Date().toISOString()}] Chrysorrhoe: Executing monthly interest calculation task`);
+        console.log(`[${new Date().toISOString()}] Executing monthly interest calculation task`);
         
         try {
           const result = await this.interestService.processMonthlyInterest();
           if (result.success) {
-            console.log(`[${new Date().toISOString()}] Chrysorrhoe: Monthly interest calculation task executed successfully:`, result);
+            console.log(`[${new Date().toISOString()}] Monthly interest calculation task executed successfully:`, result);
           } else {
             console.error(`[${new Date().toISOString()}] ${t(null, 'errors.interestCalculationFailed')}:`, result.message);
           }
@@ -43,16 +43,16 @@ class InterestScheduler {
         }
       });
       
-      // Chrysorrhoe: Set up daily job to check for any missed interest payments at UTC+0 12:00
+      // Set up daily job to check for any missed interest payments at UTC+0 12:00
       // Format: 'sec min hour day month day-of-week'
       // 0 0 12 * * * Run at 12:00:00 UTC+0 every day
       this.checkJob = schedule.scheduleJob('0 0 12 * * *', async () => {
-        console.log(`[${new Date().toISOString()}] Chrysorrhoe: Executing interest payment check task`);
+        console.log(`[${new Date().toISOString()}] Executing interest payment check task`);
         
         try {
           const result = await this.interestService.checkAndReissuePendingInterest();
           if (result.success) {
-            console.log(`[${new Date().toISOString()}] Chrysorrhoe: Interest payment check task executed successfully:`, result);
+            console.log(`[${new Date().toISOString()}] Interest payment check task executed successfully:`, result);
           } else {
             console.error(`[${new Date().toISOString()}] ${t(null, 'errors.interestPaymentCheckFailed')}:`, result.message);
           }
@@ -61,12 +61,12 @@ class InterestScheduler {
         }
       });
       
-      console.log('Chrysorrhoe: Interest scheduler started, will execute monthly interest calculation on the 1st of each month at UTC+0 00:00');
-      console.log('Chrysorrhoe: Next monthly interest calculation time:', this.monthlyJob.nextInvocation());
-      console.log('Chrysorrhoe: Interest payment check scheduler started, will execute daily at UTC+0 12:00');
-      console.log('Chrysorrhoe: Next interest payment check time:', this.checkJob.nextInvocation());
+      console.log('Interest scheduler started, will execute monthly interest calculation on the 1st of each month at UTC+0 00:00');
+      console.log('Next monthly interest calculation time:', this.monthlyJob.nextInvocation());
+      console.log('Interest payment check scheduler started, will execute daily at UTC+0 12:00');
+      console.log('Next interest payment check time:', this.checkJob.nextInvocation());
       
-      // Chrysorrhoe: Start immediate check for any missed interest payments
+      // Start immediate check for any missed interest payments
       this.checkMissingInterest();
       
       return { success: true };
@@ -77,7 +77,7 @@ class InterestScheduler {
   }
 
   /**
-   * Chrysorrhoe: Stop interest scheduler
+   * Stop interest scheduler
    * Cancel both monthly and daily jobs
    */
   stop() {
@@ -91,39 +91,39 @@ class InterestScheduler {
       this.checkJob = null;
     }
     
-    console.log('Chrysorrhoe: Interest scheduler stopped');
+    console.log('Interest scheduler stopped');
   }
 
   /**
-   * Chrysorrhoe: Execute monthly interest calculation now (for testing or manual trigger)
+   * Execute monthly interest calculation now (for testing or manual trigger)
    * @returns {Promise<Object>} Execution result
    */
   async executeNow() {
-    console.log('Chrysorrhoe: Manual trigger monthly interest calculation...');
+    console.log('Manual trigger monthly interest calculation...');
     return await this.interestService.processMonthlyInterest();
   }
 
   /**
-   * Chrysorrhoe: Execute monthly interest calculation for a specific period (for testing or manual trigger)
+   * Execute monthly interest calculation for a specific period (for testing or manual trigger)
    * @param {string} period - Month period, format: YYYY-MM
    * @returns {Promise<Object>} Execution result
    */
   async executeForPeriod(period) {
-    console.log(`Chrysorrhoe: Manual trigger ${period} monthly interest calculation...`);
+    console.log(`Manual trigger ${period} monthly interest calculation...`);
     return await this.interestService.processMonthlyInterest(period);
   }
 
   /**
-   * Chrysorrhoe: Execute interest payment check now (for testing or manual trigger)
+   * Execute interest payment check now (for testing or manual trigger)
    * @returns {Promise<Object>} Execution result
    */
   async checkMissingInterest() {
-    console.log('Chrysorrhoe: Manual trigger interest payment check...');
+    console.log('Manual trigger interest payment check...');
     return await this.interestService.checkAndReissuePendingInterest();
   }
 
   /**
-   * Chrysorrhoe: Get next monthly interest calculation time
+   * Get next monthly interest calculation time
    * @returns {Date|null} Next execution time
    */
   getNextExecutionTime() {
@@ -134,7 +134,7 @@ class InterestScheduler {
   }
 
   /**
-   * Chrysorrhoe: Get next interest payment check time
+   * Get next interest payment check time
    * @returns {Date|null} Next check time
    */
   getNextCheckTime() {
@@ -145,7 +145,7 @@ class InterestScheduler {
   }
 }
 
-// Chrysorrhoe: Create singleton instance
+// Create singleton instance
 const interestScheduler = new InterestScheduler();
 
 module.exports = interestScheduler;

@@ -8,32 +8,32 @@ const { t } = require('../config/i18n');
  */
 class ExchangeRateService {
   constructor() {
-    // Chrysorrhoe: Exchange rate table name
+    // Exchange rate table name
     this.tableName = 'exchange_rates';
   }
 
   /**
-   * Chrysorrhoe: Save exchange rate record
+   * Save exchange rate record
    * @param {number} rate - Exchange rate value (1 USD = x local currency)
    * @param {Date|string} [createdAt] - Optional creation time, default is current time
    * @returns {Promise<Object>} Save result
    */
   async saveRate(rate, createdAt = null) {
     try {
-      // Chrysorrhoe: Validate exchange rate value
+      // Validate exchange rate value
       if (typeof rate !== 'number' || rate < 0) {
         throw new Error(t(null, 'errors.invalidExchangeRateValue'));
       }
 
-      // Chrysorrhoe: Generate UUID as ID
+      // Generate UUID as ID
       const id = uuidv4();
-      // Chrysorrhoe: If no creation time is provided, use current time
+      // If no creation time is provided, use current time
       let createdTime = new Date().toISOString();
       if (createdAt) {
         createdTime = createdAt instanceof Date ? createdAt.toISOString() : createdAt;
       }
 
-      // Chrysorrhoe: Insert into database
+      // Insert into database
       await dbAsync.run(
         `INSERT INTO ${this.tableName} (id, rate, created_at) VALUES (?, ?, ?)`,
         [id, rate, createdTime]
@@ -57,7 +57,7 @@ class ExchangeRateService {
   }
 
   /**
-   * Chrysorrhoe: Get latest exchange rate record
+   * Get latest exchange rate record
    * @returns {Promise<Object|null>} Latest exchange rate record or null
    */
   async getLatestRate() {
@@ -73,7 +73,7 @@ class ExchangeRateService {
   }
 
   /**
-   * Chrysorrhoe: Get all exchange rate records
+   * Get all exchange rate records
    * @param {number} limit - Limit the number of records returned, default is 100
    * @returns {Promise<Array>} Array of exchange rate records
    */
@@ -91,7 +91,7 @@ class ExchangeRateService {
   }
 
   /**
-   * Chrysorrhoe: Delete exchange rate records before specified date
+   * Delete exchange rate records before specified date
    * @param {Date} date - Delete records before this date
    * @returns {Promise<Object>} Delete result
    */
@@ -106,7 +106,7 @@ class ExchangeRateService {
         [date.toISOString()]
       );
 
-      // Chrysorrhoe: Log successful deletion
+      // Log successful deletion
       console.log(t(null, 'info.exchangeRateRecordsDeleted', { count: result.changes, date: date.toISOString() }));
 
       return {
@@ -123,17 +123,17 @@ class ExchangeRateService {
   }
 
   /**
-   * Chrysorrhoe: Ensure exchange rate table exists
+   * Ensure exchange rate table exists
    * @returns {Promise<boolean>} Table exists or created successfully
    */
   async ensureTableExists() {
     try {
-      // Chrysorrhoe: Check if table exists
+      // Check if table exists
       const tableExists = await dbAsync.get(
         `SELECT name FROM sqlite_master WHERE type='table' AND name='${this.tableName}'`
       );
 
-      // Chrysorrhoe: If table does not exist, create table 
+      // If table does not exist, create table  
       if (!tableExists) {
         await dbAsync.run(
           `CREATE TABLE IF NOT EXISTS ${this.tableName} (
@@ -142,7 +142,7 @@ class ExchangeRateService {
             created_at TEXT NOT NULL DEFAULT (datetime('now'))
           )`
         );
-        // Chrysorrhoe: Log successful table creation
+        // Log successful table creation
         console.log(t(null, 'info.exchangeRateTableCreated', { tableName: this.tableName }));
       }
 
@@ -154,7 +154,7 @@ class ExchangeRateService {
   }
 }
 
-// Chrysorrhoe: Create singleton instance
+// Create singleton instance
 const exchangeRateService = new ExchangeRateService();
 
 module.exports = exchangeRateService;

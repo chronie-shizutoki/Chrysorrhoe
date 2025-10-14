@@ -4,7 +4,7 @@ const exchangeRateService = require('../services/ExchangeRateService');
 
 /**
  * @route   GET /api/exchange-rates/latest
- * @desc    Chrysorrhoe: Get latest exchange rate record
+ * @desc    Get latest exchange rate record
  * @access  Public
  */
 router.get('/latest', async (req, res) => {
@@ -19,21 +19,21 @@ router.get('/latest', async (req, res) => {
     } else {
       res.status(404).json({
         success: false,
-        message: 'Chrysorrhoe: No exchange rate record found'
+        message: 'No exchange rate record found'
       });
     }
   } catch (error) {
-    console.error('Chrysorrhoe: Error fetching latest exchange rate:', error);
+    console.error('Error fetching latest exchange rate:', error);
     res.status(500).json({
       success: false,
-      message: 'Chrysorrhoe: Server internal error'
+      message: 'Server internal error'
     });
   }
 });
 
 /**
  * @route   GET /api/exchange-rates
- * @desc    Chrysorrhoe: Get exchange rate record list
+ * @desc    Get exchange rate record list
  * @access  Public
  * @query   {number} limit - Limit the number of records returned (optional, default is 100)
  */
@@ -48,17 +48,17 @@ router.get('/', async (req, res) => {
       count: rates.length
     });
   } catch (error) {
-    console.error('Chrysorrhoe: Error fetching exchange rate list:', error);
+    console.error('Error fetching exchange rate list:', error);
     res.status(500).json({
       success: false,
-      message: 'Chrysorrhoe: Server internal error'
+      message: 'Server internal error'
     });
   }
 });
 
 /**
  * @route   POST /api/exchange-rates/refresh
- * @desc    Chrysorrhoe: Manually refresh exchange rates (generate new random rates and save)
+ * @desc    Manually refresh exchange rates (generate new random rates and save)
  * @access  Admin/Public (depending on actual requirements)
  */
 router.post('/refresh', async (req, res) => {
@@ -69,35 +69,35 @@ router.post('/refresh', async (req, res) => {
     if (result.success) {
       res.status(200).json({
         success: true,
-        message: 'Chrysorrhoe: Exchange rates successfully refreshed',
+        message: 'Exchange rates successfully refreshed',
         data: result
       });
     } else {
       res.status(500).json({
         success: false,
-        message: result.message || 'Chrysorrhoe: Failed to refresh exchange rates'
+        message: result.message || 'Failed to refresh exchange rates'
       });
     }
   } catch (error) {
-    console.error('Chrysorrhoe: Error refreshing exchange rates:', error);
+    console.error('Error refreshing exchange rates:', error);
     res.status(500).json({
       success: false,
-      message: 'Chrysorrhoe: Server internal error'
+      message: 'Server internal error'
     });
   }
 });
 
 /**
  * @route   DELETE /api/exchange-rates/cleanup
- * @desc    Chrysorrhoe: Clean up old exchange rate records
+ * @desc    Clean up old exchange rate records
  * @access  Admin
  * @body    {string} beforeDate - Delete records before this date (ISO format string)
  */
 router.delete('/cleanup', async (req, res) => {
   try {
-    // Chrysorrhoe: Add admin permission check here (e.g., using middleware)
+    // Add admin permission check here (e.g., using middleware)
     // Example: if (!req.user || req.user.role !== 'admin') {
-    //   return res.status(403).json({ success: false, message: 'Chrysorrhoe: Admin access required' });
+    //   return res.status(403).json({ success: false, message: 'Admin access required' });
     // }
     
     const { beforeDate } = req.body;
@@ -105,7 +105,7 @@ router.delete('/cleanup', async (req, res) => {
     if (!beforeDate) {
       return res.status(400).json({
         success: false,
-        message: 'Chrysorrhoe: Must provide cleanup date'
+        message: 'Must provide cleanup date'
       });
     }
     
@@ -114,7 +114,7 @@ router.delete('/cleanup', async (req, res) => {
     if (isNaN(date.getTime())) {
       return res.status(400).json({
         success: false,
-        message: 'Chrysorrhoe: Invalid date format'
+        message: 'Invalid date format'
       });
     }
     
@@ -123,19 +123,19 @@ router.delete('/cleanup', async (req, res) => {
     if (result.success) {
       res.status(200).json({
         success: true,
-        message: `Chrysorrhoe: Successfully deleted ${result.deletedCount} exchange rate records`
+        message: `Successfully deleted ${result.deletedCount} exchange rate records`
       });
     } else {
       res.status(500).json({
         success: false,
-        message: result.message || 'Chrysorrhoe: Failed to clean up exchange rate records'
+        message: result.message || 'Failed to clean up exchange rate records'
       });
     }
   } catch (error) {
-    console.error('Chrysorrhoe: Error cleaning up exchange rates:', error);
+    console.error('Error cleaning up exchange rates:', error);
     res.status(500).json({
       success: false,
-      message: 'Chrysorrhoe: Server internal error'
+      message: 'Server internal error'
     });
   }
 });

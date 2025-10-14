@@ -4,19 +4,19 @@ const TransactionRepository = require('../repositories/TransactionRepository');
 const { t } = require('../config/i18n');
 
 /**
- * Chrysorrhoe: Interest Service
+ * Interest Service
  * Responsible for processing monthly interest calculations and payments
  */
 class InterestService {
   constructor() {
     this.walletRepo = new WalletRepository();
     this.transactionRepo = new TransactionRepository();
-    // Chrysorrhoe: Default monthly interest rate (1% annual rate, monthly rate ~ 0.083%)
+    // Default monthly interest rate (1% annual rate, monthly rate ~ 0.083%)
     this.monthlyInterestRate = 0.01 / 12;
   }
 
   /**
-   * Chrysorrhoe: Set monthly interest rate
+   * Set monthly interest rate
    * @param {number} rate - Monthly interest rate (e.g. 0.0008 for 0.08%)
    */
   setMonthlyInterestRate(rate) {
@@ -27,18 +27,18 @@ class InterestService {
   }
 
   /**
-   * Chrysorrhoe: Calculate interest for a single wallet
+   * Calculate interest for a single wallet
    * @param {Object} wallet - Wallet object
    * @returns {number} Calculated interest
    */
   calculateInterest(wallet) {
     const balance = parseFloat(wallet.balance);
-    // Chrysorrhoe: Interest = Balance * Monthly Interest Rate
+    // Interest = Balance * Monthly Interest Rate
     return balance * this.monthlyInterestRate;
   }
 
   /**
-   * Chrysorrhoe: Initialize interest payment log table
+   * Initialize interest payment log table
    * Records each interest payment status for tracking and reprocessing
    */
   async initInterestLogTable() {
@@ -65,7 +65,7 @@ class InterestService {
   }
 
   /**
-   * Chrysorrhoe: Get interest payment log by period
+   * Get interest payment log by period
    * @param {string} period - Interest period, format: YYYY-MM
    * @returns {Promise<Object|null>} Interest payment log record
    */
@@ -83,7 +83,7 @@ class InterestService {
   }
 
   /**
-   * Chrysorrhoe: Create new interest payment log record
+   * Create new interest payment log record
    * @param {string} period - Interest period
    * @returns {Promise<string>} Record ID
    */
@@ -105,7 +105,7 @@ class InterestService {
   }
 
   /**
-   * Chrysorrhoe: Update interest payment log record
+   * Update interest payment log record
    * @param {string} id - Record ID
    * @param {Object} updates - Update data
    */
@@ -114,7 +114,7 @@ class InterestService {
     const updateFields = [];
     const updateValues = [];
     
-    // Chrysorrhoe: Build update fields
+    // Build update fields
     for (const [key, value] of Object.entries(updates)) {
       if (allowedFields.includes(key)) {
         updateFields.push(`${key} = ?`);
@@ -126,7 +126,7 @@ class InterestService {
       return;
     }
     
-    // Chrysorrhoe: Add updated_at field
+    // Add updated_at field
     updateFields.push('updated_at = ?');
     updateValues.push(new Date().toISOString());
     updateValues.push(id);
@@ -142,12 +142,12 @@ class InterestService {
   }
 
   /**
-   * Chrysorrhoe: Get pending interest payment periods
+   * Get pending interest payment periods
    * @returns {Promise<Array<string>>} Pending interest periods
    */
   async getPendingInterestPeriods() {
     try {
-      // Chrysorrhoe: Get all records with status PENDING or FAILED
+      // Get all records with status PENDING or FAILED
       const logs = await dbAsync.all(
         `SELECT period FROM interest_logs 
          WHERE status IN ('PENDING', 'FAILED') 
@@ -161,7 +161,7 @@ class InterestService {
   }
 
   /**
-   * Chrysorrhoe: Process daily interest payments for all wallets
+   * Process daily interest payments for all wallets
    * @returns {Promise<Object>} Processing result
    * @deprecated Use processMonthlyInterest instead
    */
@@ -171,19 +171,19 @@ class InterestService {
   }
 
   /**
-   * Chrysorrhoe: Process monthly interest payments for all wallets
+   * Process monthly interest payments for all wallets
    * @param {string} targetPeriod - Optional, target month to process, format: YYYY-MM
    * @returns {Promise<Object>} Processing result
    */
   async processMonthlyInterest(targetPeriod = null) {
-    // Chrysorrhoe: If no month is specified, use the current month
+    // If no month is specified, use the current month
     const period = targetPeriod || new Date().toISOString().slice(0, 7); // 格式：YYYY-MM
     console.log(t(null, 'info.startInterestProcessing', { period }));
     
-    // Chrysorrhoe: Initialize interest payment log table
+    // Initialize interest payment log table
     await this.initInterestLogTable();
     
-    // Chrysorrhoe: Check if interest payments for this month have already been processed
+    // Check if interest payments for this month have already been processed
     const existingLog = await this.getInterestLogByPeriod(period);
     if (existingLog && existingLog.status === 'COMPLETED') {
       console.log(t(null, 'info.interestAlreadyProcessed', { period }));
@@ -196,7 +196,7 @@ class InterestService {
       };
     }
     
-    // Chrysorrhoe: Create or get the interest payment log record ID
+    // Create or get the interest payment log record ID
     let logId;
     if (existingLog) {
       logId = existingLog.id;
@@ -204,18 +204,18 @@ class InterestService {
       logId = await this.createInterestLog(period);
     }
     
-    // Chrysorrhoe: Update record status to PROCESSING
+    // Update record status to PROCESSING
     await this.updateInterestLog(logId, { status: 'PROCESSING' });
     
     try {
-      // Chrysorrhoe: Start transaction
+      // Start transaction
       await dbAsync.beginTransaction();
       
       try {
-        // Chrysorrhoe: Get all wallets
+        // Get all wallets
         const wallets = await this.walletRepo.findAll({ limit: null });
         
-        // Chrysorrhoe: Update total wallet count
+        // Update total wallet count
         await this.updateInterestLog(logId, { total_wallets: wallets.length });
         
         if (!wallets || wallets.length === 0) {
@@ -237,17 +237,17 @@ class InterestService {
         let totalInterest = 0;
         let processedCount = 0;
 
-        // Chrysorrhoe: Calculate and apply interest for each wallet
+        // Calculate and apply interest for each wallet
         for (const wallet of wallets) {
           const interest = this.calculateInterest(wallet);
           
-          if (Math.abs(interest) > 0) { // Chrysorrhoe: Only process wallets with interest changes
+          if (Math.abs(interest) > 0) { // Only process wallets with interest changes
             const newBalance = parseFloat(wallet.balance) + interest;
             
-            // Chrysorrhoe: Update wallet balance
+            // Update wallet balance
             await this.walletRepo.updateBalance(wallet.id, newBalance);
             
-            // Chrysorrhoe: Create interest transaction record
+            // Create interest transaction record
             const description = interest > 0 
               ? `${period}Interest credit: ${interest.toFixed(2)}` 
               : `${period}Interest debit: ${Math.abs(interest).toFixed(2)}`;
@@ -271,10 +271,10 @@ class InterestService {
           }
         }
 
-        // Chrysorrhoe: Commit transaction
+        // Commit transaction
         await dbAsync.commit();
         
-        // Chrysorrhoe: Update record status to COMPLETED
+        // Update record status to COMPLETED
         await this.updateInterestLog(logId, {
           status: 'COMPLETED',
           processed_count: processedCount,
@@ -292,9 +292,9 @@ class InterestService {
         };
         
       } catch (error) {
-        // Chrysorrhoe: Rollback transaction
+        // Rollback transaction
         await dbAsync.rollback();
-        // Chrysorrhoe: Update record status to FAILED
+        // Update record status to FAILED
         await this.updateInterestLog(logId, {
           status: 'FAILED',
           error_message: error.message
@@ -302,7 +302,7 @@ class InterestService {
         throw error;
       }
     } catch (error) {
-      // Chrysorrhoe: Log error message
+      // Log error message
       console.error(t(null, 'errors.interestProcessingError', { period }) + ':', error);
       return {
         success: false,
@@ -314,13 +314,13 @@ class InterestService {
   }
 
   /**
-   * Chrysorrhoe: Check and reissue pending interest payments
+   * Check and reissue pending interest payments
    * @returns {Promise<Object>} Reissue result
    */
   async checkAndReissuePendingInterest() {
     console.log(t(null, 'info.startInterestReissue'));
     
-    // Chrysorrhoe: Get pending interest periods
+    // Get pending interest periods
     const pendingPeriods = await this.getPendingInterestPeriods();
     
     if (pendingPeriods.length === 0) {
@@ -378,7 +378,7 @@ class InterestService {
   }
 
   /**
-   * Chrysorrhoe: Check and create necessary transaction types
+   * Check and create necessary transaction types
    * Ensure transactions table supports interest_credit and interest_debit types
    */
   async ensureInterestTransactionTypes() {

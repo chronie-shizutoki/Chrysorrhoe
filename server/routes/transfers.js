@@ -8,11 +8,11 @@ const { t } = require('../config/i18n');
 const walletRepo = new WalletRepository();
 const transactionRepo = new TransactionRepository();
 
-// Chrysorrhoe: Transfer Funds Input Validation Middleware
+// Transfer Funds Input Validation Middleware
 const validateTransfer = async (req, res, next) => {
   const { fromWalletId, toWalletId, fromUsername, toUsername, amount } = req.body;
   
-  // Chrysorrhoe: Ensure either wallet ID or username is provided, and they are strings
+  // Ensure either wallet ID or username is provided, and they are strings
   if ((!fromWalletId && !fromUsername) || typeof fromWalletId !== 'string' && typeof fromUsername !== 'string') {
     return res.status(400).json({
       success: false,
@@ -27,7 +27,7 @@ const validateTransfer = async (req, res, next) => {
     });
   }
   
-  // Chrysorrhoe: If both wallet ID and username are provided, check if they match
+  // If both wallet ID and username are provided, check if they match
   if (fromWalletId && fromUsername) {
     try {
       const wallet = await walletRepo.findByUsername(fromUsername);
@@ -38,7 +38,7 @@ const validateTransfer = async (req, res, next) => {
         });
       }
     } catch (error) {
-      console.error('Chrysorrhoe: Error validating sender wallet ID with username:', error);
+      console.error('Error validating sender wallet ID with username:', error);
     }
   }
   
@@ -52,11 +52,11 @@ const validateTransfer = async (req, res, next) => {
         });
       }
     } catch (error) {
-      console.error('Chrysorrhoe: Error validating receiver wallet ID with username:', error);
+      console.error('Error validating receiver wallet ID with username:', error);
     }
   }
   
-  // Chrysorrhoe: Cannot transfer to oneself
+  // Cannot transfer to oneself
   if ((fromWalletId && toWalletId && fromWalletId === toWalletId) || 
       (fromUsername && toUsername && fromUsername === toUsername)) {
     return res.status(400).json({
@@ -72,7 +72,7 @@ const validateTransfer = async (req, res, next) => {
     });
   }
   
-  // Chrysorrhoe: Check amount precision (up to 2 decimal places)
+  // Check amount precision (up to 2 decimal places)  
   if (Math.round(amount * 100) !== amount * 100) {
     return res.status(400).json({
       success: false,
@@ -83,27 +83,27 @@ const validateTransfer = async (req, res, next) => {
   next();
 };
 
-// Chrysorrhoe: Execute Transfer - Supports Wallet ID or Username 
+// Execute Transfer - Supports Wallet ID or Username 
 router.post('/', async (req, res, next) => {
   try {
     await validateTransfer(req, res, next);
   } catch (error) {
-    console.error('Chrysorrhoe: Error validating transfer:', error);
+    console.error('Error validating transfer:', error);
     return res.status(500).json({
       success: false,
-      error: 'Chrysorrhoe: System error, please try again later'
+      error: 'System error, please try again later'
     });
   }
 }, async (req, res) => {
   await executeTransfer(req, res);
 });
 
-// Chrysorrhoe: Transfer Funds by Username (Convenient Interface)
+// Transfer Funds by Username (Convenient Interface)
 router.post('/by-username', async (req, res) => {
   try {
     const { fromUsername, toUsername, amount, description = '' } = req.body;
     
-    // Chrysorrhoe: Input Validation
+    // Input Validation
     if (!fromUsername || typeof fromUsername !== 'string') {
       return res.status(400).json({
         success: false,
@@ -132,7 +132,7 @@ router.post('/by-username', async (req, res) => {
       });
     }
     
-    // Chrysorrhoe: Find Wallets by Usernames
+    // Find Wallets by Usernames
     const fromWallet = await walletRepo.findByUsername(fromUsername);
     if (!fromWallet) {
       return res.status(404).json({
@@ -149,7 +149,7 @@ router.post('/by-username', async (req, res) => {
       });
     }
     
-    // Chrysorrhoe: Execute Transfer Logic (Reuse Main Transfer Logic)
+    // Execute Transfer Logic (Reuse Main Transfer Logic)
     const transferData = {
       fromWalletId: fromWallet.id,
       toWalletId: toWallet.id,
@@ -157,18 +157,18 @@ router.post('/by-username', async (req, res) => {
       description
     };
     
-    // Chrysorrhoe: Create New Request Object to Reuse Validation and Transfer Logic
+    // Create New Request Object to Reuse Validation and Transfer Logic
     const mockReq = { body: transferData };
     const mockRes = res;
     
-    // Chrysorrhoe: Validate Transfer Data
+    // Validate Transfer Data
     validateTransfer(mockReq, mockRes, async () => {
-      // Chrysorrhoe: Execute Transfer Logic
+      // Execute Transfer Logic
       await executeTransfer(mockReq, mockRes);
     });
     
   } catch (error) {
-    console.error('Chrysorrhoe: Error executing transfer by username:', error);
+    console.error('Error executing transfer by username:', error);
     res.status(500).json({
       success: false,
       error: error.message || t(req, 'errors.transferFailed')
@@ -176,16 +176,16 @@ router.post('/by-username', async (req, res) => {
   }
 });
 
-// Chrysorrhoe: Extract Transfer Execution Logic into Separate Function
+// Extract Transfer Execution Logic into Separate Function
 async function executeTransfer(req, res) {
   try {
     const { fromWalletId, toWalletId, fromUsername, toUsername, amount, description = '' } = req.body;
     
-    // Chrysorrhoe: Start Database Transaction
+    // Start Database Transaction
     await dbAsync.beginTransaction();
     
     try {
-      // Chrysorrhoe: Validate Sender Wallet Existence
+      // Validate Sender Wallet Existence
       let fromWallet;
       if (fromWalletId) {
         fromWallet = await walletRepo.findById(fromWalletId);
@@ -201,7 +201,7 @@ async function executeTransfer(req, res) {
         });
       }
       
-      // Chrysorrhoe: Validate Receiver Wallet Existence
+      // Validate Receiver Wallet Existence
       let toWallet;
       if (toWalletId) {
         toWallet = await walletRepo.findById(toWalletId);
@@ -217,7 +217,7 @@ async function executeTransfer(req, res) {
         });
       }
       
-      // Chrysorrhoe: Ensure Cannot Transfer to Self (Extra Check for Mixed ID/Username)
+      // Validate Cannot Transfer to Self (Extra Check for Mixed ID/Username)
       if (fromWallet.id === toWallet.id) {
         await dbAsync.rollback();
         return res.status(400).json({
@@ -226,7 +226,7 @@ async function executeTransfer(req, res) {
         });
       }
       
-      // Chrysorrhoe: Check Sufficient Balance
+      // Check Sufficient Balance 
       if (parseFloat(fromWallet.balance) < amount) {
         await dbAsync.rollback();
         return res.status(400).json({
@@ -237,27 +237,27 @@ async function executeTransfer(req, res) {
         });
       }
       
-      // Chrysorrhoe: Update Sender Balance
+      // Update Sender Balance
       const newFromBalance = parseFloat(fromWallet.balance) - amount;
       await walletRepo.updateBalance(fromWallet.id, newFromBalance);
       
-      // Chrysorrhoe: Update Receiver Balance
+      // Update Receiver Balance
       const newToBalance = parseFloat(toWallet.balance) + amount;
       await walletRepo.updateBalance(toWallet.id, newToBalance);
       
-      // Chrysorrhoe: Create Transaction Record
+      // Create Transaction Record
       const transaction = await transactionRepo.create({
         fromWalletId: fromWallet.id,
         toWalletId: toWallet.id,
         amount,
         transactionType: 'transfer',
-        description: description || `Chrysorrhoe: Transfer from ${fromWallet.username} to ${toWallet.username}`
+        description: description || `Transfer from ${fromWallet.username} to ${toWallet.username}`
       });
       
-      // Chrysorrhoe: Commit Transaction
+      // Commit Transaction
       await dbAsync.commit();
       
-      // Chrysorrhoe: Get Updated Wallet Information
+      // Get Updated Wallet Information
       const updatedFromWallet = await walletRepo.findById(fromWallet.id);
       const updatedToWallet = await walletRepo.findById(toWallet.id);
       
@@ -285,15 +285,15 @@ async function executeTransfer(req, res) {
       });
       
     } catch (error) {
-      // Chrysorrhoe: Rollback transaction on error
+      // Rollback transaction on error
       await dbAsync.rollback();
       throw error;
     }
     
   } catch (error) {
-    console.error('Chrysorrhoe: Error executing transfer:', error);
+    console.error('Error executing transfer:', error);
     
-    // Chrysorrhoe: Handle Specific Error Types
+    // Handle Specific Error Types
     if (error.message.includes('insufficient balance')) {
       return res.status(400).json({
         success: false,
@@ -315,6 +315,6 @@ async function executeTransfer(req, res) {
   }
 };
 
-// Chrysorrhoe: Export executeTransfer function for testing
+// Export executeTransfer function for testing
 module.exports = router;
 module.exports.executeTransfer = executeTransfer;

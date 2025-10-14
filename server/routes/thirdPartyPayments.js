@@ -7,72 +7,72 @@ const TransactionRepository = require('../repositories/TransactionRepository');
 const walletRepo = new WalletRepository();
 const transactionRepo = new TransactionRepository();
 
-// Chrysorrhoe: Third-party payment input validation middleware
+// Third-party payment input validation middleware
 const validateThirdPartyPayment = async (req, res, next) => {
   const { walletId, username, amount, thirdPartyId, thirdPartyName, description = '' } = req.body;
   
-  // Chrysorrhoe: Ensure either walletId or username is provided, and they are strings
+  // Ensure either walletId or username is provided, and they are strings
   if ((!walletId && !username) || typeof walletId !== 'string' && typeof username !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Wallet ID or username is required'
+      error: 'Wallet ID or username is required'
     });
   }
   
-  // Chrysorrhoe: Third-party information validation
+  // Third-party information validation
   if (!thirdPartyId || typeof thirdPartyId !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Third-party ID is required'
+      error: 'Third-party ID is required'
     });
   }
   
   if (!thirdPartyName || typeof thirdPartyName !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Third-party name is required'
+      error: 'Third-party name is required'
     });
   }
   
-  // Chrysorrhoe: Amount validation
+  // Amount validation
   if (typeof amount !== 'number' || amount <= 0) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Amount must be a number greater than 0'
+      error: 'Amount must be a number greater than 0'
     });
   }
   
-  // Chrysorrhoe: Check amount precision (up to 2 decimal places)
+  // Check amount precision (up to 2 decimal places)
   if (Math.round(amount * 100) !== amount * 100) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Amount must have up to 2 decimal places'
+      error: 'Amount must have up to 2 decimal places'
     });
   }
   
   next();
 };
 
-// Chrysorrhoe: Third-party payment endpoint
+// Third-party payment endpoint
 router.post('/payments', async (req, res, next) => {
   try {
     await validateThirdPartyPayment(req, res, next);
   } catch (error) {
-    console.error('Chrysorrhoe: Error validating third-party payment:', error);
+    console.error('Error validating third-party payment:', error);
     return res.status(500).json({
       success: false,
-      error: 'Chrysorrhoe: System error, please try again later'
+      error: 'System error, please try again later'
     });
   }
 }, async (req, res) => {
   try {
     const { walletId, username, amount, thirdPartyId, thirdPartyName, description = '' } = req.body;
     
-    // Chrysorrhoe: Begin database transaction
+    // Begin database transaction
     await dbAsync.beginTransaction();
     
     try {
-      // Chrysorrhoe: Find user wallet
+      // Find user wallet
       let wallet;
       if (walletId) {
         wallet = await walletRepo.findById(walletId);
@@ -84,21 +84,21 @@ router.post('/payments', async (req, res, next) => {
         await dbAsync.rollback();
         return res.status(404).json({
           success: false,
-          error: 'Chrysorrhoe: Wallet does not exist'
+          error: 'Wallet does not exist'
         });
       }
       
-      // Chrysorrhoe: Calculate 30% extra fee
+      // Calculate 30% extra fee
     const feeRate = 0.3;
     const feeAmount = Math.round(amount * feeRate * 100) / 100; // Keep 2 decimal places
     const totalAmount = amount + feeAmount;
     
-    // Chrysorrhoe: Check if wallet balance is sufficient
+    // Check if wallet balance is sufficient
     if (parseFloat(wallet.balance) < totalAmount) {
       await dbAsync.rollback();
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Wallet balance is insufficient',
+        error: 'Wallet balance is insufficient',
         currentBalance: parseFloat(wallet.balance),
         requestedAmount: amount,
         feeAmount: feeAmount,
@@ -106,11 +106,11 @@ router.post('/payments', async (req, res, next) => {
       });
     }
     
-    // Chrysorrhoe: Update wallet balance, deducting original amount and fee
+    // Update wallet balance, deducting original amount and fee
     const newBalance = parseFloat(wallet.balance) - totalAmount;
       await walletRepo.updateBalance(wallet.id, newBalance);
       
-      // Chrysorrhoe: Create transaction record, including fee information
+      // Create transaction record, including fee information
       const transaction = await transactionRepo.create({
         fromWalletId: wallet.id,
         toWalletId: null, // Third-party payment has no receiver wallet
@@ -120,10 +120,10 @@ router.post('/payments', async (req, res, next) => {
         thirdPartyName: thirdPartyName
       });
       
-      // Chrysorrhoe: Commit transaction
+      // Commit transaction
       await dbAsync.commit();
       
-      // Chrysorrhoe: Get updated wallet information
+      // Get updated wallet information
       const updatedWallet = await walletRepo.findById(wallet.id);
       
       res.status(201).json({
@@ -151,22 +151,22 @@ router.post('/payments', async (req, res, next) => {
       });
       
     } catch (error) {
-      // Chrysorrhoe: Rollback transaction on error
+      // Rollback transaction on error
       await dbAsync.rollback();
       throw error;
     }
     
   } catch (error) {
-    console.error('Chrysorrhoe: Error in third-party payment:', error);
+    console.error('Error in third-party payment:', error);
     
-    if (error.message.includes('Chrysorrhoe: Wallet balance is insufficient')) {
+    if (error.message.includes('Wallet balance is insufficient')) {
       return res.status(400).json({
         success: false,
         error: error.message
       });
     }
     
-    if (error.message.includes('Chrysorrhoe: Wallet does not exist')) {
+    if (error.message.includes('Wallet does not exist')) {
       return res.status(404).json({
         success: false,
         error: error.message
@@ -175,77 +175,77 @@ router.post('/payments', async (req, res, next) => {
     
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Third-party payment failed'
+      error: error.message || 'Third-party payment failed'
     });
   }
 });
 
-// Chrysorrhoe: From third-party receipt input validation
+// From third-party receipt input validation
 const validateThirdPartyReceipt = async (req, res, next) => {
   const { walletId, username, amount, thirdPartyId, thirdPartyName, description = '' } = req.body;
   
-  // Chrysorrhoe: Ensure either wallet ID or username is provided
+  // Ensure either wallet ID or username is provided
   if ((!walletId && !username) || typeof walletId !== 'string' && typeof username !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Wallet ID or username is required'
+      error: 'Wallet ID or username is required'
     });
   }
   
-  // Chrysorrhoe: Third-party information validation
+  // Third-party information validation
   if (!thirdPartyId || typeof thirdPartyId !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Third-party ID is required'
+      error: 'Third-party ID is required'
     });
   }
   
   if (!thirdPartyName || typeof thirdPartyName !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Third-party name is required'
+      error: 'Third-party name is required'
     });
   }
   
-  // Chrysorrhoe: Amount validation
+  // Amount validation
   if (typeof amount !== 'number' || amount <= 0) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Amount must be a number greater than 0'
+      error: 'Amount must be a number greater than 0'
     });
   }
   
-  // Chrysorrhoe: Check amount precision (up to 2 decimal places)
+  // Check amount precision (up to 2 decimal places)
   if (Math.round(amount * 100) !== amount * 100) {
     return res.status(400).json({
       success: false,
-      error: 'Chrysorrhoe: Amount must have up to 2 decimal places'
+      error: 'Amount must have up to 2 decimal places'
     });
   }
   
   next();
 };
 
-// Chrysorrhoe: From third-party receipt input validation
+// From third-party receipt input validation
 router.post('/receipts', async (req, res, next) => {
   try {
     await validateThirdPartyReceipt(req, res, next);
   } catch (error) {
-    console.error('Chrysorrhoe: Error validating third-party receipt:', error);
+    console.error('Error validating third-party receipt:', error);
     return res.status(500).json({
       success: false,
-      error: 'Chrysorrhoe: System error, please try again later'
+      error: 'System error, please try again later'
     });
   }
 }, async (req, res) => {
   try {
     const { walletId, username, amount, thirdPartyId, thirdPartyName, description = '' } = req.body;
     
-    // Chrysorrhoe: Begin database transaction
+    // Begin database transaction
     await dbAsync.beginTransaction();
     
     try {
-      // Chrysorrhoe: Find user wallet
+      // Find user wallet
       let wallet;
       if (walletId) {
         wallet = await walletRepo.findById(walletId);
@@ -257,28 +257,28 @@ router.post('/receipts', async (req, res, next) => {
         await dbAsync.rollback();
         return res.status(404).json({
           success: false,
-          error: 'Chrysorrhoe: Wallet does not exist'
+          error: 'Wallet does not exist'
         });
       }
       
-      // Chrysorrhoe: Update wallet balance
+      // Update wallet balance
       const newBalance = parseFloat(wallet.balance) + amount;
       await walletRepo.updateBalance(wallet.id, newBalance);
       
-      // Chrysorrhoe: Create transaction record
+      // Create transaction record
       const transaction = await transactionRepo.create({
-        fromWalletId: null, // Chrysorrhoe: Third-party receipt has no sender wallet
+        fromWalletId: null, // Third-party receipt has no sender wallet
         toWalletId: wallet.id,
         amount,
         transactionType: 'third_party_receipt',
-        description: description || `Chrysorrhoe: Received from ${thirdPartyName} (ID: ${thirdPartyId})`,
+        description: description || `Received from ${thirdPartyName} (ID: ${thirdPartyId})`,
         thirdPartyName: thirdPartyName
       });
       
-      // Chrysorrhoe: Commit transaction
+      // Commit transaction
       await dbAsync.commit();
       
-      // Chrysorrhoe: Get updated wallet information
+      // Get updated wallet information
       const updatedWallet = await walletRepo.findById(wallet.id);
       
       res.status(201).json({
@@ -304,15 +304,15 @@ router.post('/receipts', async (req, res, next) => {
       });
       
     } catch (error) {
-      // Chrysorrhoe: Rollback transaction
+      // Rollback transaction
       await dbAsync.rollback();
       throw error;
     }
     
   } catch (error) {
-    console.error('Chrysorrhoe: Error processing third-party receipt:', error);
+    console.error('Error processing third-party receipt:', error);
     
-    if (error.message.includes('Chrysorrhoe: Wallet does not exist')) {
+    if (error.message.includes('Wallet does not exist')) {  
       return res.status(404).json({
         success: false,
         error: error.message
@@ -321,35 +321,35 @@ router.post('/receipts', async (req, res, next) => {
     
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to process third-party receipt'
+      error: error.message || 'Failed to process third-party receipt'
     });
   }
 });
 
-// Chrysorrhoe: Get third-party transaction records
+// Get third-party transaction records
 router.get('/transactions', async (req, res) => {
   try {
     const { walletId, username, page = 1, limit = 10 } = req.query;
     
-    // Chrysorrhoe: Validate pagination parameters
+    // Validate pagination parameters
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
     
     if (isNaN(pageNum) || pageNum < 1) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Page number must be a positive integer'
+        error: 'Page number must be a positive integer'
       });
     }
     
     if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Limit must be between 1 and 100'
+        error: 'Limit must be between 1 and 100'
       });
     }
     
-    // Chrysorrhoe: Find wallet
+    // Find wallet
     let wallet;
     if (walletId) {
       wallet = await walletRepo.findById(walletId);
@@ -360,7 +360,7 @@ router.get('/transactions', async (req, res) => {
     if (!wallet && (walletId || username)) {
       return res.status(404).json({
         success: false,
-        error: 'Chrysorrhoe: Wallet does not exist'
+        error: 'Wallet does not exist'  
       });
     }
     
@@ -375,16 +375,16 @@ router.get('/transactions', async (req, res) => {
     let totalCount;
     
     if (wallet) {
-      // Chrysorrhoe: Get specific wallet's third-party transactions
+      // Get specific wallet's third-party transactions
       transactions = await transactionRepo.findByWalletId(wallet.id, options);
       totalCount = await transactionRepo.countByWalletId(wallet.id, options.type);
     } else {
-      // Chrysorrhoe: Get all third-party transactions (admin only)
+      // Get all third-party transactions (admin only)
       transactions = await transactionRepo.findAll(options);
       totalCount = await transactionRepo.count(options.type);
     }
     
-    // Chrysorrhoe: Format transaction records
+    // Format transaction records
     const formattedTransactions = transactions.map(transaction => ({
       id: transaction.id,
       fromWalletId: transaction.from_wallet_id,
@@ -412,10 +412,10 @@ router.get('/transactions', async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Chrysorrhoe: Error fetching third-party transactions:', error);
+    console.error('Error fetching third-party transactions:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to fetch third-party transactions'
+      error: error.message || 'Failed to fetch third-party transactions'
     });
   }
 });

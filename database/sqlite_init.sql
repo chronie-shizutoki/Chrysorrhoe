@@ -1,5 +1,5 @@
--- SQLite Chrysorrhoe Database Initialization Script
--- Used to create the necessary tables and indices for the Chrysorrhoe wallet application
+-- SQLite Database Initialization Script
+-- Used to create the necessary tables and indices for the wallet application
 
 -- Create wallets table
 CREATE TABLE IF NOT EXISTS wallets (

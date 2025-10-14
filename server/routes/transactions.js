@@ -4,7 +4,7 @@ const TransactionRepository = require('../repositories/TransactionRepository');
 
 const transactionRepo = new TransactionRepository();
 
-// Chrysorrhoe: Get single transaction details
+// Get single transaction details
 router.get('/:transactionId', async (req, res) => {
   try {
     const { transactionId } = req.params;
@@ -12,7 +12,7 @@ router.get('/:transactionId', async (req, res) => {
     if (!transactionId || typeof transactionId !== 'string') {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Transaction ID is required'
+        error: 'Transaction ID is required'
       });
     }
     
@@ -20,7 +20,7 @@ router.get('/:transactionId', async (req, res) => {
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        error: 'Chrysorrhoe: Transaction not found'
+        error: 'Transaction not found'
       });
     }
     
@@ -41,34 +41,34 @@ router.get('/:transactionId', async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Chrysorrhoe: Error fetching transaction details:', error);
+    console.error('Error fetching transaction details:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to fetch transaction details'
+      error: error.message || 'Failed to fetch transaction details'
     });
   }
 });
 
-// Chrysorrhoe: Get all transaction records (admin only)
+// Get all transaction records (admin only)
 router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 10, type } = req.query;
     
-    // Chrysorrhoe: Validate pagination parameters
+    // Validate pagination parameters
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
     
     if (isNaN(pageNum) || pageNum < 1) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Page number must be a positive integer'
+        error: 'Page number must be a positive integer'
       });
     }
     
     if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
       return res.status(400).json({
         success: false,
-        error: 'Chrysorrhoe: Limit must be between 1 and 100'
+        error: 'Limit must be between 1 and 100'
       });
     }
     
@@ -76,7 +76,7 @@ router.get('/', async (req, res) => {
     const transactions = await transactionRepo.findAll({ limit: limitNum, offset, type });
     const totalCount = await transactionRepo.count(type);
     
-    // Chrysorrhoe: Format transaction records
+    // Format transaction records
     const formattedTransactions = transactions.map(transaction => ({
       id: transaction.id,
       fromWalletId: transaction.from_wallet_id,
@@ -106,10 +106,10 @@ router.get('/', async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Chrysorrhoe: Error fetching transaction records:', error);
+    console.error('Error fetching transaction records:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Chrysorrhoe: Failed to fetch transaction records'
+      error: error.message || 'Failed to fetch transaction records'
     });
   }
 });
