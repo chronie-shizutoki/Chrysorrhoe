@@ -52,7 +52,7 @@ router.get('/:transactionId', async (req, res) => {
 // Chrysorrhoe: Get all transaction records (admin only)
 router.get('/', async (req, res) => {
   try {
-    const { page = 1, limit = 20, type } = req.query;
+    const { page = 1, limit = 10, type } = req.query;
     
     // Chrysorrhoe: Validate pagination parameters
     const pageNum = parseInt(page);

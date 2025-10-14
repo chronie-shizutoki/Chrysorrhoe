@@ -98,7 +98,7 @@ export const walletAPI = {
   },
 
   // Get transaction history
-  getTransactionHistory: async (walletId, page = 1, limit = 20) => {
+  getTransactionHistory: async (walletId, page = 1, limit = 10) => {
     const response = await api.get(`/wallets/${walletId}/transactions/detailed`, {
       params: { page, limit }
     })

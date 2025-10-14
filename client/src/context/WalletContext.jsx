@@ -16,7 +16,7 @@ const initialState = {
     totalTransactions: 0,
     hasNextPage: false,
     hasPreviousPage: false,
-    limit: 20
+    limit: 10
   }
 }
 

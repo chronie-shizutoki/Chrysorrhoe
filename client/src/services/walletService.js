@@ -103,7 +103,7 @@ class WalletService {
     }
   }
 
-  async getTransactionHistory(walletId, page = 1, limit = 20) {
+  async getTransactionHistory(walletId, page = 1, limit = 10 ) {
     try {
       this.dispatch({ type: 'SET_LOADING', payload: true })
       const result = await walletAPI.getTransactionHistory(walletId, page, limit)

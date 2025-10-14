@@ -87,7 +87,7 @@ class TransactionRepository {
    * @returns {Promise<Array>} Transaction list
    */
   async findByWalletId(walletId, options = {}) {
-    const { limit = 20, offset = 0, type } = options;
+    const { limit = 10, offset = 0, type } = options;
     
     let sql = `
       SELECT t.*, 

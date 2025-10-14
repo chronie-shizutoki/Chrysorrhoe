@@ -93,15 +93,15 @@ This will start:
 - **GET /api/wallets/:walletId/transactions**
   - Description: Get wallet transaction history
   - Path Parameters: `walletId` (Wallet unique identifier)
-  - Query Parameters: `page=1`, `limit=20` (Pagination parameters, limit range 1-100)
-  - Response: `{"success":true,"transactions":[],"pagination":{"currentPage":1,"totalPages":1,"totalTransactions":10,"limit":20,"hasNextPage":false,"hasPreviousPage":false}}`
+  - Query Parameters: `page=1`, `limit=10` (Pagination parameters, limit range 1-100)
+  - Response: `{"success":true,"transactions":[],"pagination":{"currentPage":1,"totalPages":1,"totalTransactions":10,"limit":10,"hasNextPage":false,"hasPreviousPage":false}}`
   - Errors: 400 (Invalid pagination parameters), 404 (Wallet not found), 500 (Server error)
 
 - **GET /api/wallets/:walletId/transactions/detailed**
   - Description: Get wallet detailed transaction history (includes recipient username)
   - Path Parameters: `walletId` (Wallet unique identifier)
-  - Query Parameters: `page=1`, `limit=20` (Pagination parameters, limit range 1-100)
-  - Response: `{"success":true,"transactions":[],"pagination":{"currentPage":1,"totalPages":1,"totalTransactions":10,"limit":20,"hasNextPage":false,"hasPreviousPage":false}}`
+  - Query Parameters: `page=1`, `limit=10` (Pagination parameters, limit range 1-100)
+  - Response: `{"success":true,"transactions":[],"pagination":{"currentPage":1,"totalPages":1,"totalTransactions":10,"limit":10,"hasNextPage":false,"hasPreviousPage":false}}`
   - Errors: 400 (Invalid pagination parameters), 404 (Wallet not found), 500 (Server error)
 
 #### Transaction Operations
@@ -113,8 +113,8 @@ This will start:
 
 - **GET /api/transactions**
   - Description: Get all transaction records (supports pagination and type filtering)
-  - Query Parameters: `page=1`, `limit=20`, `type=transfer` (Optional, filter by transaction type)
-  - Response: `{"success":true,"transactions":[],"pagination":{"currentPage":1,"totalPages":1,"totalTransactions":10,"limit":20,"hasNextPage":false,"hasPreviousPage":false}}`
+  - Query Parameters: `page=1`, `limit=10`, `type=transfer` (Optional, filter by transaction type)
+  - Response: `{"success":true,"transactions":[],"pagination":{"currentPage":1,"totalPages":1,"totalTransactions":10,"limit":10,"hasNextPage":false,"hasPreviousPage":false}}`
   - Errors: 400 (Invalid pagination parameters), 500 (Server error)
 
 #### Transfer Operations
@@ -138,8 +138,8 @@ This will start:
 
 - **GET /api/exchange-rates**
   - Description: Get the list of exchange rate records
-  - Query Parameters: `page=1`, `limit=20` (Pagination parameters, limit range 1-100)
-  - Response: `{"success":true,"rates":[],"pagination":{"currentPage":1,"totalPages":1,"totalRecords":10,"limit":20,"hasNextPage":false,"hasPreviousPage":false}}`
+  - Query Parameters: `page=1`, `limit=10` (Pagination parameters, limit range 1-100)
+  - Response: `{"success":true,"rates":[],"pagination":{"currentPage":1,"totalPages":1,"totalRecords":10,"limit":10,"hasNextPage":false,"hasPreviousPage":false}}`
   - Errors: 500 (Server error)
 
 - **POST /api/exchange-rates/refresh**
@@ -179,7 +179,7 @@ This will start:
 
 - **GET /api/third-party/transactions**
   - Description: Get third-party transaction records
-  - Query Parameters: `walletId=<wallet-id>`, `username=<username>`, `page=1`, `limit=20` (Wallet ID or username is optional. Pagination parameters.)
+  - Query Parameters: `walletId=<wallet-id>`, `username=<username>`, `page=1`, `limit=10` (Wallet ID or username is optional. Pagination parameters.)
   - Response: `{"success":true,"transactions":[],"pagination":{...}}`
   - Errors: 400 (Invalid pagination parameters), 404 (Wallet not found), 500 (Server error)
 

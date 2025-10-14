@@ -1,5 +1,5 @@
 /**
- * Chrysorrhoe Repository Module Export
+ * Repository Module Export
  * Provides a unified data access layer interface
  */
 
@@ -11,7 +11,7 @@ const walletRepository = new WalletRepository();
 const transactionRepository = new TransactionRepository();
 
 /**
- * Chrysorrhoe Database Service Class
+ * Database Service Class
  * Provides a unified database operation interface
  */
 class DatabaseService {
@@ -21,7 +21,7 @@ class DatabaseService {
   }
 
   /**
-   * Chrysorrhoe Execute Transfer Operation (Includes Transaction)
+   * Execute Transfer Operation (Includes Transaction)
    * @param {string} fromWalletId - Sender wallet ID
    * @param {string} toWalletId - Receiver wallet ID
    * @param {number} amount - Transfer amount
@@ -48,12 +48,12 @@ class DatabaseService {
         toWallet: transferResult.toWallet
       };
     } catch (error) {
-      throw new Error(`Chrysorrhoe Transfer Operation Failed: ${error.message}`);
+      throw new Error(`Transfer Operation Failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Create Wallet with Initial Deposit
+   * Create Wallet with Initial Deposit
    * @param {string} username - Username
    * @param {number} initialBalance - Initial balance
    * @returns {Promise<Object>} Creation result
@@ -69,7 +69,7 @@ class DatabaseService {
         transaction = await this.transactions.createInitialDeposit(
           wallet.id, 
           initialBalance, 
-          'Chrysorrhoe Initial Deposit'
+          'Initial Deposit'
         );
       }
       
@@ -79,12 +79,12 @@ class DatabaseService {
         transaction
       };
     } catch (error) {
-      throw new Error(`Chrysorrhoe Create Wallet with Initial Deposit Failed: ${error.message}`);
+      throw new Error(`Create Wallet with Initial Deposit Failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Get Wallet Details (Includes Statistics)
+   * Get Wallet Details (Includes Statistics)
    * @param {string} walletId - Wallet ID
    * @returns {Promise<Object>} Wallet details
    */
@@ -92,7 +92,7 @@ class DatabaseService {
     try {
       const wallet = await this.wallets.findById(walletId);
       if (!wallet) {
-        throw new Error('Chrysorrhoe Wallet Does Not Exist');
+        throw new Error('Wallet Does Not Exist');
       }
       
       const stats = await this.transactions.getWalletStats(walletId);
@@ -102,18 +102,18 @@ class DatabaseService {
         stats
       };
     } catch (error) {
-      throw new Error(`Chrysorrhoe Get Wallet Details Failed: ${error.message}`);
+      throw new Error(`Get Wallet Details Failed: ${error.message}`);
     }
   }
 
   /**
-   * Chrysorrhoe Get Wallet Transaction History (Pagination)
+   * Get Wallet Transaction History (Pagination)
    * @param {string} walletId - Wallet ID
    * @param {number} page - Page number (starting from 1)
    * @param {number} pageSize - Number of items per page
    * @returns {Promise<Object>} Paged transaction data
    */
-  async getWalletTransactionHistory(walletId, page = 1, pageSize = 20) {
+  async getWalletTransactionHistory(walletId, page = 1, pageSize = 10) {
     try {
       const offset = (page - 1) * pageSize;
       const transactions = await this.transactions.findByWalletId(walletId, {
@@ -136,7 +136,7 @@ class DatabaseService {
         }
       };
     } catch (error) {
-      throw new Error(`Chrysorrhoe Get Wallet Transaction History Failed: ${error.message}`);
+      throw new Error(`Get Wallet Transaction History Failed: ${error.message}`);
     }
   }
 }

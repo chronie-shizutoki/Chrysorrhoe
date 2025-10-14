@@ -208,7 +208,7 @@ router.put('/:walletId/balance', validateWalletId, async (req, res) => {
 router.get('/:walletId/transactions', validateWalletId, async (req, res) => {
   try {
     const { walletId } = req.params;
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
     
     // Chrysorrhoe: Validate Pagination Parameters
     const pageNum = parseInt(page);
@@ -289,7 +289,7 @@ router.get('/:walletId/transactions', validateWalletId, async (req, res) => {
 router.get('/:walletId/transactions/detailed', validateWalletId, async (req, res) => {
   try {
     const { walletId } = req.params;
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
     
     // Chrysorrhoe: Validate Pagination Parameters
     const pageNum = parseInt(page);

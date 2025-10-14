@@ -329,7 +329,7 @@ router.post('/receipts', async (req, res, next) => {
 // Chrysorrhoe: Get third-party transaction records
 router.get('/transactions', async (req, res) => {
   try {
-    const { walletId, username, page = 1, limit = 20 } = req.query;
+    const { walletId, username, page = 1, limit = 10 } = req.query;
     
     // Chrysorrhoe: Validate pagination parameters
     const pageNum = parseInt(page);
