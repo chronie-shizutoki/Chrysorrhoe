@@ -49,198 +49,200 @@ async function initTranslations() {
  */
 function getDefaultTranslations(lang) {
   const enTranslations = {
-    errors: {
-      // General errors
-      serverError: 'Internal server error',
-      resourceNotFound: 'Resource not found',
-      routeNotFound: 'Route not found',
-      authenticationRequired: 'Authentication required',
-      accessDenied: 'Access denied',
-      
-      // Wallet-related errors
-      walletNotFound: 'Wallet does not exist',
-      usernameRequired: 'Username is required',
-      usernameMustBeString: 'Username must be a string',
-      usernameLength: 'Username length must be between 2-50 characters',
-      usernameEnglishOnly: 'Username can only contain English letters',
-      usernameExists: 'Username already exists',
-      initialBalanceMustBeZero: 'Initial balance must be 0',
-      failedToCreateWallet: 'Failed to create wallet',
-      failedToFetchWallet: 'Failed to fetch wallet information',
-      
-      // Transfer-related errors
-      senderWalletRequired: 'Sender wallet ID or username is required',
-      receiverWalletRequired: 'Receiver wallet ID or username is required',
-      senderWalletMismatch: 'Sender wallet ID does not match the provided username',
-      receiverWalletMismatch: 'Receiver wallet ID does not match the provided username',
-      cannotTransferToSelf: 'Cannot transfer to oneself',
-      amountMustBePositive: 'Amount must be a number greater than 0',
-      amountDecimalPlaces: 'Amount must be up to 2 decimal places',
-      insufficientBalance: 'Insufficient balance',
-      transferFailed: 'Transfer failed',
-      systemError: 'System error, please try again later',
-      
-      // Pagination related errors
-      pageMustBePositive: 'Page number must be a positive integer',
-      limitRange: 'Limit must be between 1 and 100',
-      
-      // Third-party payment related errors
-      thirdPartyPaymentFailed: 'Third-party payment failed',
-      
-      // Exchange rate related errors
-      noExchangeRateRecord: 'No exchange rate record found',
-      mustProvideCleanupDate: 'Must provide cleanup date',
-      invalidDateFormat: 'Invalid date format',
-      failedToRefreshExchangeRates: 'Failed to refresh exchange rates',
-      failedToCleanupExchangeRates: 'Failed to clean up exchange rate records'
-    }
-  };
+  "errors": {
+    // General errors
+    serverError: 'An internal server error occurred',
+    resourceNotFound: 'The requested resource was not found',
+    routeNotFound: 'The requested route was not found',
+    authenticationRequired: 'Authentication is required to access this resource',
+    accessDenied: 'You do not have permission to access this resource',
+    
+    // Wallet-related errors
+    walletNotFound: 'Wallet not found',
+    usernameRequired: 'Username is required',
+    usernameMustBeString: 'Username must be a text value',
+    usernameLength: 'Username must be between 2 and 50 characters',
+    usernameEnglishOnly: 'Username can only contain English letters',
+    usernameExists: 'This username is already taken',
+    initialBalanceMustBeZero: 'Initial balance must be set to 0',
+    failedToCreateWallet: 'Unable to create wallet',
+    failedToFetchWallet: 'Unable to retrieve wallet information',
+    
+    // Transfer-related errors
+    senderWalletRequired: 'Please provide sender wallet ID or username',
+    receiverWalletRequired: 'Please provide recipient wallet ID or username',
+    senderWalletMismatch: 'Sender wallet ID doesn\'t match the username provided',
+    receiverWalletMismatch: 'Recipient wallet ID doesn\'t match the username provided',
+    cannotTransferToSelf: 'Transfers to your own wallet are not allowed',
+    amountMustBePositive: 'Amount must be greater than zero',
+    amountDecimalPlaces: 'Amount can have up to 2 decimal places',
+    insufficientBalance: 'Your account has insufficient funds',
+    transferFailed: 'The transfer could not be completed',
+    systemError: 'A system error occurred. Please try again later',
+    
+    // Pagination related errors
+    pageMustBePositive: 'Page number must be a positive number',
+    limitRange: 'Page size must be between 1 and 100',
+    
+    // Third-party payment related errors
+    thirdPartyPaymentFailed: 'Payment processing failed',
+    
+    // Exchange rate related errors
+    noExchangeRateRecord: 'No exchange rate data available',
+    mustProvideCleanupDate: 'Please specify a date for cleanup',
+    invalidDateFormat: 'The date format is invalid',
+    failedToRefreshExchangeRates: 'Unable to update exchange rates',
+    failedToCleanupExchangeRates: 'Unable to clean up exchange rate history'
+  }
+};
   
   // Return the corresponding translation based on the language
   const langMap = {
     'en-US': enTranslations,
     'zh-CN': {
       errors: {
-        // 通用错误
-        serverError: '服务器内部错误',
-        resourceNotFound: '资源未找到',
-        routeNotFound: '路由未找到',
-        authenticationRequired: '需要身份验证',
-        accessDenied: '访问被拒绝',
-        
-        // 钱包相关错误
-        walletNotFound: '钱包不存在',
-        usernameRequired: '用户名是必需的',
-        usernameMustBeString: '用户名必须是字符串',
-        usernameLength: '用户名长度必须在2-50个字符之间',
-        usernameEnglishOnly: '用户名只能包含英文字母',
-        usernameExists: '用户名已存在',
-        initialBalanceMustBeZero: '初始余额必须为0',
-        failedToCreateWallet: '创建钱包失败',
-        failedToFetchWallet: '获取钱包信息失败',
-        
-        // 转账相关错误
-        senderWalletRequired: '发送方钱包ID或用户名是必需的',
-        receiverWalletRequired: '接收方钱包ID或用户名是必需的',
-        senderWalletMismatch: '发送方钱包ID与提供的用户名不匹配',
-        receiverWalletMismatch: '接收方钱包ID与提供的用户名不匹配',
-        cannotTransferToSelf: '不能转账给自己',
-        amountMustBePositive: '金额必须是大于0的数字',
-        amountDecimalPlaces: '金额最多保留2位小数',
-        insufficientBalance: '余额不足',
-        transferFailed: '转账失败',
-        systemError: '系统错误，请稍后再试',
-        
-        // 分页相关错误
-        pageMustBePositive: '页码必须是正整数',
-        limitRange: '限制数量必须在1到100之间',
-        
-        // 第三方支付相关错误
-        thirdPartyPaymentFailed: '第三方支付失败',
-        
-        // 汇率相关错误
-        noExchangeRateRecord: '未找到汇率记录',
-        mustProvideCleanupDate: '必须提供清理日期',
-        invalidDateFormat: '无效的日期格式',
-        failedToRefreshExchangeRates: '刷新汇率失败',
-        failedToCleanupExchangeRates: '清理汇率记录失败'
-      }
-    },
-    'zh-TW': {
-      errors: {
-        // 通用错误
-        serverError: '伺服器內部錯誤',
-        resourceNotFound: '資源未找到',
-        routeNotFound: '路由未找到',
-        authenticationRequired: '需要身份驗證',
-        accessDenied: '訪問被拒絕',
-        
-        // 錢包相關錯誤
-        walletNotFound: '錢包不存在',
-        usernameRequired: '使用者名稱是必需的',
-        usernameMustBeString: '使用者名稱必須是字串',
-        usernameLength: '使用者名稱長度必須在2-50個字元之間',
-        usernameEnglishOnly: '使用者名稱只能包含英文字母',
-        usernameExists: '使用者名稱已存在',
-        initialBalanceMustBeZero: '初始餘額必須為0',
-        failedToCreateWallet: '建立錢包失敗',
-        failedToFetchWallet: '獲取錢包資訊失敗',
-        
-        // 轉賬相關錯誤
-        senderWalletRequired: '發送方錢包ID或使用者名稱是必需的',
-        receiverWalletRequired: '接收方錢包ID或使用者名稱是必需的',
-        senderWalletMismatch: '發送方錢包ID與提供的使用者名稱不匹配',
-        receiverWalletMismatch: '接收方錢包ID與提供的使用者名稱不匹配',
-        cannotTransferToSelf: '不能轉賬給自己',
-        amountMustBePositive: '金額必須是大於0的數字',
-        amountDecimalPlaces: '金額最多保留2位小數',
-        insufficientBalance: '餘額不足',
-        transferFailed: '轉賬失敗',
-        systemError: '系統錯誤，請稍後再試',
-        
-        // 分頁相關錯誤
-        pageMustBePositive: '頁碼必須是正整數',
-        limitRange: '限制數量必須在1到100之間',
-        
-        // 第三方支付相關錯誤
-        thirdPartyPaymentFailed: '第三方支付失敗',
-        
-        // 匯率相關錯誤
-        noExchangeRateRecord: '未找到匯率記錄',
-        mustProvideCleanupDate: '必須提供清理日期',
-        invalidDateFormat: '無效的日期格式',
-        failedToRefreshExchangeRates: '刷新匯率失敗',
-        failedToCleanupExchangeRates: '清理匯率記錄失敗'
-      }
-    },
-    'ja-JP': {
-      errors: {
-        // 通用エラー
-        serverError: 'サーバー内部エラー',
-        resourceNotFound: 'リソースが見つかりません',
-        routeNotFound: 'ルートが見つかりません',
-        authenticationRequired: '認証が必要です',
-        accessDenied: 'アクセスが拒否されました',
-        
-        // ウォレット関連のエラー
-        walletNotFound: 'ウォレットが存在しません',
-        usernameRequired: 'ユーザー名は必須です',
-        usernameMustBeString: 'ユーザー名は文字列でなければなりません',
-        usernameLength: 'ユーザー名の長さは2〜50文字でなければなりません',
-        usernameEnglishOnly: 'ユーザー名には英字のみ使用できます',
-        usernameExists: 'ユーザー名は既に存在します',
-        initialBalanceMustBeZero: '初期残高は0でなければなりません',
-        failedToCreateWallet: 'ウォレットの作成に失敗しました',
-        failedToFetchWallet: 'ウォレット情報の取得に失敗しました',
-        
-        // 転送関連のエラー
-        senderWalletRequired: '送信者のウォレットIDまたはユーザー名が必要です',
-        receiverWalletRequired: '受信者のウォレットIDまたはユーザー名が必要です',
-        senderWalletMismatch: '送信者のウォレットIDが提供されたユーザー名と一致しません',
-        receiverWalletMismatch: '受信者のウォレットIDが提供されたユーザー名と一致しません',
-        cannotTransferToSelf: '自分に送金することはできません',
-        amountMustBePositive: '金額は0より大きい数字でなければなりません',
-        amountDecimalPlaces: '金額は最大2桁の小数でなければなりません',
-        insufficientBalance: '残高が不足しています',
-        transferFailed: '送金に失敗しました',
-        systemError: 'システムエラーが発生しました。後でもう一度お試しください',
-        
-        // ページネーション関連のエラー
-        pageMustBePositive: 'ページ番号は正の整数でなければなりません',
-        limitRange: '制限数は1から100の間でなければなりません',
-        
-        // サードパーティ決済関連のエラー
-        thirdPartyPaymentFailed: 'サードパーティ決済に失敗しました',
-        
-        // 為替レート関連のエラー
-        noExchangeRateRecord: '為替レートの記録が見つかりません',
-        mustProvideCleanupDate: 'クリーンアップ日を指定する必要があります',
-        invalidDateFormat: '無効な日付形式',
-        failedToRefreshExchangeRates: '為替レートの更新に失敗しました',
-        failedToCleanupExchangeRates: '為替レートのレコードのクリーンアップに失敗しました'
-      }
-    }
-  };
+    // 通用错误
+    serverError: '服务器发生内部错误',
+    resourceNotFound: '请求的资源不存在',
+    routeNotFound: '请求的路由不存在',
+    authenticationRequired: '需要登录才能访问此资源',
+    accessDenied: '您没有权限访问此资源',
+    
+    // 钱包相关错误
+    walletNotFound: '钱包不存在',
+    usernameRequired: '请输入用户名',
+    usernameMustBeString: '用户名必须是文本格式',
+    usernameLength: '用户名长度需在2-50个字符之间',
+    usernameEnglishOnly: '用户名只能包含英文字母',
+    usernameExists: '该用户名已被使用',
+    initialBalanceMustBeZero: '初始余额必须设置为0',
+    failedToCreateWallet: '无法创建钱包',
+    failedToFetchWallet: '无法获取钱包信息',
+    
+    // 转账相关错误
+    senderWalletRequired: '请提供发送方钱包ID或用户名',
+    receiverWalletRequired: '请提供接收方钱包ID或用户名',
+    senderWalletMismatch: '发送方钱包ID与用户名不匹配',
+    receiverWalletMismatch: '接收方钱包ID与用户名不匹配',
+    cannotTransferToSelf: '不能向自己的钱包转账',
+    amountMustBePositive: '金额必须大于零',
+    amountDecimalPlaces: '金额最多支持2位小数',
+    insufficientBalance: '账户余额不足',
+    transferFailed: '转账操作未能完成',
+    systemError: '系统发生错误，请稍后重试',
+    
+    // 分页相关错误
+    pageMustBePositive: '页码必须是正数',
+    limitRange: '每页数量需在1到100之间',
+    
+    // 第三方支付相关错误
+    thirdPartyPaymentFailed: '支付处理失败',
+    
+    // 汇率相关错误
+    noExchangeRateRecord: '暂无汇率数据',
+    mustProvideCleanupDate: '请指定清理日期',
+    invalidDateFormat: '日期格式不正确',
+    failedToRefreshExchangeRates: '无法更新汇率数据',
+    failedToCleanupExchangeRates: '无法清理汇率历史记录'
+  }
+},
+
+'zh-TW': {
+  errors: {
+    // 通用錯誤
+    serverError: '伺服器發生內部錯誤',
+    resourceNotFound: '請求的資源不存在',
+    routeNotFound: '請求的路由不存在',
+    authenticationRequired: '需要登入才能存取此資源',
+    accessDenied: '您沒有權限存取此資源',
+    
+    // 錢包相關錯誤
+    walletNotFound: '錢包不存在',
+    usernameRequired: '請輸入使用者名稱',
+    usernameMustBeString: '使用者名稱必須是文字格式',
+    usernameLength: '使用者名稱長度需在2-50個字元之間',
+    usernameEnglishOnly: '使用者名稱只能包含英文字母',
+    usernameExists: '該使用者名稱已被使用',
+    initialBalanceMustBeZero: '初始餘額必須設定為0',
+    failedToCreateWallet: '無法建立錢包',
+    failedToFetchWallet: '無法取得錢包資訊',
+    
+    // 轉帳相關錯誤
+    senderWalletRequired: '請提供發送方錢包ID或使用者名稱',
+    receiverWalletRequired: '請提供接收方錢包ID或使用者名稱',
+    senderWalletMismatch: '發送方錢包ID與使用者名稱不符',
+    receiverWalletMismatch: '接收方錢包ID與使用者名稱不符',
+    cannotTransferToSelf: '無法向自己的錢包轉帳',
+    amountMustBePositive: '金額必須大於零',
+    amountDecimalPlaces: '金額最多支援2位小數',
+    insufficientBalance: '帳戶餘額不足',
+    transferFailed: '轉帳操作未能完成',
+    systemError: '系統發生錯誤，請稍後重試',
+    
+    // 分頁相關錯誤
+    pageMustBePositive: '頁碼必須是正數',
+    limitRange: '每頁數量需在1到100之間',
+    
+    // 第三方支付相關錯誤
+    thirdPartyPaymentFailed: '支付處理失敗',
+    
+    // 匯率相關錯誤
+    noExchangeRateRecord: '暫無匯率資料',
+    mustProvideCleanupDate: '請指定清理日期',
+    invalidDateFormat: '日期格式不正確',
+    failedToRefreshExchangeRates: '無法更新匯率資料',
+    failedToCleanupExchangeRates: '無法清理匯率歷史記錄'
+  }
+},
+
+'ja-JP': {
+  errors: {
+    // 一般エラー
+    serverError: 'サーバー内部でエラーが発生しました',
+    resourceNotFound: '要求されたリソースが見つかりません',
+    routeNotFound: '要求されたルートが見つかりません',
+    authenticationRequired: 'このリソースにアクセスするには認証が必要です',
+    accessDenied: 'このリソースへのアクセス権限がありません',
+    
+    // ウォレット関連エラー
+    walletNotFound: 'ウォレットが見つかりません',
+    usernameRequired: 'ユーザー名を入力してください',
+    usernameMustBeString: 'ユーザー名は文字列で指定してください',
+    usernameLength: 'ユーザー名は2文字以上50文字以内で入力してください',
+    usernameEnglishOnly: 'ユーザー名は英字のみ使用できます',
+    usernameExists: 'このユーザー名は既に使用されています',
+    initialBalanceMustBeZero: '初期残高は0に設定する必要があります',
+    failedToCreateWallet: 'ウォレットを作成できませんでした',
+    failedToFetchWallet: 'ウォレット情報を取得できませんでした',
+    
+    // 送金関連エラー
+    senderWalletRequired: '送金元のウォレットIDまたはユーザー名を指定してください',
+    receiverWalletRequired: '送金先のウォレットIDまたはユーザー名を指定してください',
+    senderWalletMismatch: '送金元のウォレットIDとユーザー名が一致しません',
+    receiverWalletMismatch: '送金先のウォレットIDとユーザー名が一致しません',
+    cannotTransferToSelf: '自分自身のウォレットへの送金はできません',
+    amountMustBePositive: '金額は0より大きい値を指定してください',
+    amountDecimalPlaces: '金額は小数点以下2桁までで指定してください',
+    insufficientBalance: '残高が不足しています',
+    transferFailed: '送金を完了できませんでした',
+    systemError: 'システムエラーが発生しました。しばらく経ってから再度お試しください',
+    
+    // ページネーション関連エラー
+    pageMustBePositive: 'ページ番号は正の数を指定してください',
+    limitRange: '表示件数は1から100の間で指定してください',
+    
+    // サードパーティ決済関連エラー
+    thirdPartyPaymentFailed: '決済処理に失敗しました',
+    
+    // 為替レート関連エラー
+    noExchangeRateRecord: '為替レートデータがありません',
+    mustProvideCleanupDate: '削除対象の日付を指定してください',
+    invalidDateFormat: '日付の形式が正しくありません',
+    failedToRefreshExchangeRates: '為替レートを更新できませんでした',
+    failedToCleanupExchangeRates: '為替レート履歴を削除できませんでした'
+  }
+}
+};
   
   return langMap[lang] || enTranslations;
 }
