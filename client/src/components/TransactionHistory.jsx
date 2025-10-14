@@ -10,7 +10,6 @@ const TransactionHistory = () => {
   const navigate = useNavigate()
   const { currentWallet, transactions, pagination, walletService, isLoading, error } = useWallet()
   const { formatCurrency, formatDateTime } = useFormatting()
-  const [currentPage, setCurrentPage] = useState(1)
   const [loadingMore, setLoadingMore] = useState(false)
 
   useEffect(() => {
@@ -31,7 +30,6 @@ const TransactionHistory = () => {
         setLoadingMore(true)
         await walletService.getTransactionHistory(currentWallet.id, page)
       }
-      setCurrentPage(page)
     } catch (error) {
       console.error('Failed to load transactions:', error)
     } finally {
@@ -40,8 +38,8 @@ const TransactionHistory = () => {
   }
 
   const handleLoadMore = () => {
-    if (currentPage < pagination.totalPages && !loadingMore) {
-      loadTransactions(currentPage + 1)
+    if (pagination.hasNextPage && !loadingMore) {
+      loadTransactions(pagination.currentPage + 1)
     }
   }
 
@@ -125,7 +123,7 @@ const TransactionHistory = () => {
     )
   }
 
-  if (isLoading && currentPage === 1) {
+  if (isLoading && pagination.currentPage === 1) {
     return <Loading />
   }
 
@@ -202,15 +200,30 @@ const TransactionHistory = () => {
             ))}
           </div>
 
-          {currentPage < pagination.totalPages && (
-            <div className="load-more-container">
-              <button 
-                onClick={handleLoadMore}
-                disabled={loadingMore}
-                className="load-more-button"
-              >
-                {loadingMore ? t('messages.loading') : t('transaction.loadMore')}
-              </button>
+          {pagination.totalPages > 1 && (
+            <div className="pagination-controls">
+              <div className="pagination-info">
+                {t('transaction.page', { 
+                  current: pagination.currentPage, 
+                  total: pagination.totalPages 
+                })}
+              </div>
+              <div className="pagination-buttons">
+                <button
+                  onClick={() => loadTransactions(pagination.currentPage - 1)}
+                  disabled={!pagination.hasPreviousPage || loadingMore}
+                  className="pagination-button"
+                >
+                  {t('common.previous')}
+                </button>
+                <button 
+                  onClick={handleLoadMore}
+                  disabled={!pagination.hasNextPage || loadingMore}
+                  className="pagination-button load-more-button"
+                >
+                  {loadingMore ? t('messages.loading') : t('common.next')}
+                </button>
+              </div>
             </div>
           )}
         </>

@@ -108,14 +108,20 @@ class WalletService {
       this.dispatch({ type: 'SET_LOADING', payload: true })
       const result = await walletAPI.getTransactionHistory(walletId, page, limit)
       
+      // 提取API返回的分页信息
+      const paginationData = result.pagination || {
+        currentPage: result.page || page,
+        totalPages: Math.ceil(result.total / limit),
+        totalTransactions: result.total || 0,
+        limit: limit,
+        hasNextPage: result.hasNextPage || result.page < Math.ceil(result.total / limit),
+        hasPreviousPage: result.hasPreviousPage || result.page > 1
+      }
+      
       this.dispatch({ type: 'SET_TRANSACTIONS', payload: result.transactions })
       this.dispatch({ 
         type: 'SET_PAGINATION', 
-        payload: {
-          currentPage: result.page,
-          totalPages: Math.ceil(result.total / limit),
-          totalTransactions: result.total
-        }
+        payload: paginationData
       })
       
       return result

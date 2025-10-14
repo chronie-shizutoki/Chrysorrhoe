@@ -13,7 +13,10 @@ const initialState = {
   pagination: {
     currentPage: 1,
     totalPages: 1,
-    totalTransactions: 0
+    totalTransactions: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+    limit: 20
   }
 }
 
