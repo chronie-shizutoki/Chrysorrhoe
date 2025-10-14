@@ -17,7 +17,7 @@
 "enterUsername": "Enter username",
 "noAccount": "No 𝙲𝚑𝚛𝚢𝚜𝚘𝚛𝚛𝚑𝚘𝚎 account?",
 "hasAccount": "Already have a 𝙲𝚑𝚛𝚢𝚜𝚘𝚛𝚛𝚑𝚘𝚎 account?",
-"logout": "Logout",
+"logout": "Account Logout",
 "createdAt": "Created At",
 "walletId": "ID",
 "balanceLow": "Insufficient Balance",
@@ -121,7 +121,7 @@
 },
 "exchangeRate": {
 "loading": "Loading exchange rate...",
-"title": "Exchange Rate",
+"title": "Exch.",
 "rate": "1 USD = {{rate}}",
 "lastUpdated": "{{time}}"
 }
