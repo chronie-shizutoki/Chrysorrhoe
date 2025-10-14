@@ -50,8 +50,12 @@
     "transfer": "轉帳",
     "system": "系統",
     "unknown": "未知",
-    "thirdParty": "第三方支付（含30%手續費）{{thirdPartyName}}",
+    "thirdParty": "{{thirdPartyName}}",
     "thirdPartyFrom": "，第三方業者：",
+    "thirdPartyPaymentTo": "，支付給第三方業者：",
+    "thirdPartyReceiptFrom": "，第三方業者收入來源：",
+    "thirdPartyPayment": "第三方支付（含手續費）",
+    "thirdPartyReceipt": "第三方收入",
     "interest": "利息"
   },
 "messages": {

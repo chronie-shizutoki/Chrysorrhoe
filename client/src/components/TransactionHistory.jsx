@@ -93,11 +93,18 @@ const TransactionHistory = () => {
     }
     
     // Handle third-party payment related transactions
-    if (['third_party_payment', 'third_party_receipt'].includes(transaction.transactionType)) {
+    if (transaction.transactionType === 'third_party_payment') {
       const thirdPartyName = transaction?.thirdPartyName || '';
       return thirdPartyName 
-        ? t('transaction.thirdParty', { thirdPartyName: `${t('transaction.thirdPartyFrom')} ${thirdPartyName}` })
-        : t('transaction.thirdParty', { thirdPartyName: '' });
+        ? t('transaction.thirdParty', { thirdPartyName: `${t('transaction.thirdPartyPayment')}${t('transaction.thirdPartyPaymentTo')} ${thirdPartyName}` })
+        : t('transaction.thirdPartyPayment', { thirdPartyName: '' });
+    }
+    
+    if (transaction.transactionType === 'third_party_receipt') {
+      const thirdPartyName = transaction?.thirdPartyName || '';
+      return thirdPartyName 
+        ? t('transaction.thirdParty', { thirdPartyName: `${t('transaction.thirdPartyReceipt')}${t('transaction.thirdPartyReceiptFrom')} ${thirdPartyName}` })
+        : t('transaction.thirdPartyReceipt', { thirdPartyName: '' });
     }
     
     // Handle interest related transactions
