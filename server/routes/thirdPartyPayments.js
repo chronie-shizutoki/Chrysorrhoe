@@ -394,7 +394,8 @@ router.get('/transactions', async (req, res) => {
       description: transaction.description,
       createdAt: transaction.created_at,
       fromUsername: transaction.from_username,
-      toUsername: transaction.to_username
+      toUsername: transaction.to_username,
+      thirdPartyName: transaction.third_party_name
     }));
     
     const totalPages = Math.ceil(totalCount / limitNum);

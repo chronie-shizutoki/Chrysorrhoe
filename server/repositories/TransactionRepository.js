@@ -83,7 +83,7 @@ class TransactionRepository {
    * @param {Object} options - Query options
    * @param {number} options.limit - Limit number
    * @param {number} options.offset - Offset number
-   * @param {string} options.type - Transaction type filter
+   * @param {string|Array} options.type - Transaction type filter
    * @returns {Promise<Array>} Transaction list
    */
   async findByWalletId(walletId, options = {}) {
@@ -103,8 +103,13 @@ class TransactionRepository {
     const params = [walletId, walletId];
     
     if (type) {
-      sql += ' AND t.transaction_type = ?';
-      params.push(type);
+      if (Array.isArray(type)) {
+        sql += ' AND t.transaction_type IN (' + type.map(() => '?').join(', ') + ')';
+        params.push(...type);
+      } else {
+        sql += ' AND t.transaction_type = ?';
+        params.push(type);
+      }
     }
     
     sql += ' ORDER BY t.created_at DESC LIMIT ? OFFSET ?';
@@ -123,7 +128,7 @@ class TransactionRepository {
    * @param {Object} options - Query options
    * @param {number} options.limit - Limit number
    * @param {number} options.offset - Offset number
-   * @param {string} options.type - Transaction type filter
+   * @param {string|Array} options.type - Transaction type filter
    * @returns {Promise<Array>} Transaction list
    */
   async findAll(options = {}) {
@@ -142,8 +147,13 @@ class TransactionRepository {
     const params = [];
     
     if (type) {
-      sql += ' WHERE t.transaction_type = ?';
-      params.push(type);
+      if (Array.isArray(type)) {
+        sql += ' WHERE t.transaction_type IN (' + type.map(() => '?').join(', ') + ')';
+        params.push(...type);
+      } else {
+        sql += ' WHERE t.transaction_type = ?';
+        params.push(type);
+      }
     }
     
     sql += ' ORDER BY t.created_at DESC LIMIT ? OFFSET ?';
@@ -157,28 +167,7 @@ class TransactionRepository {
     }
   }
 
-  /**
-   * Chrysorrhoe Count Transactions by Wallet ID
-   * @param {string} walletId - Wallet ID
-   * @param {string} type - Optional transaction type filter
-   * @returns {Promise<number>} Transaction count
-   */
-  async countByWalletId(walletId, type = null) {
-    let sql = 'SELECT COUNT(*) as count FROM transactions WHERE (from_wallet_id = ? OR to_wallet_id = ?)';
-    const params = [walletId, walletId];
-    
-    if (type) {
-      sql += ' AND transaction_type = ?';
-      params.push(type);
-    }
-    
-    try {
-      const result = await dbAsync.get(sql, params);
-      return result.count;
-    } catch (error) {
-      throw new Error(`Chrysorrhoe Count transactions by wallet ID failed: ${error.message}`);
-    }
-  }
+
 
   /**
    * Chrysorrhoe Count All Transactions
