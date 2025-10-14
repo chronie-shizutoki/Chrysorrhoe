@@ -5,6 +5,7 @@
 "history": "交易记录",
 "create": "获取新账户",
 "username": "用户名",
+"initialBalance": "初始余额",
 "currentBalance": "当前余额",
 "noWallet": "未找到账户",
 "login": "登录",

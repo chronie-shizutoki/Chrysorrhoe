@@ -9,7 +9,8 @@
     "client:dev": "cd client && npm run dev",
     "server:start": "cd server && npm start",
     "client:build": "cd client && npm run build",
-    "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "i18n:check": "node scripts/i18nChecker.js"
   },
   "keywords": ["wallet", "web-app", "react", "express"],
   "author": "",
