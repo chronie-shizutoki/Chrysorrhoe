@@ -9,10 +9,10 @@ const { t } = require('../config/i18n');
 class ExchangeRateScheduler {
   constructor() {
     this.job = null;
-    // Exchange rate range: 1 USD = 2000-3000 local currency. Adjusted to a more reasonable range.
-    // Force exchange rate price range to be between 1950-2050
-    this.minRate = 1950;
-    this.maxRate = 2050;
+    // Exchange rate range: 1 USD = 19-20 local currency. Adjusted to a more reasonable range.
+    // Force exchange rate price range to be between 19-21
+    this.minRate = 19;
+    this.maxRate = 21;
   }
 
   /**
