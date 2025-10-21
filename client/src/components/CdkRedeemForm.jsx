@@ -4,7 +4,7 @@ import { useWallet } from '../context/WalletContext'
 import { useFormatting } from '../hooks/useFormatting'
 import Loading from './Loading'
 import cdkService from '../services/cdkService'
-import './CdkRedeemForm.css'
+import '../styles/CdkRedeemForm.css'
 
 function CdkRedeemForm({ onClose, onSuccess }) {
   const { t } = useTranslation()

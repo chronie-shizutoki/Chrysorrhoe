@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWallet } from '../context/WalletContext'
 import { languageStorage } from '../utils/languageStorage'
+import '../styles/LanguageSelector.css'
 
 const languages = [
   { code: 'en-US', name: 'English' },

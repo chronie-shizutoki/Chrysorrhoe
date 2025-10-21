@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFormatting } from '../hooks/useFormatting'
+import '../styles/ExchangeRateBanner.css'
 
 function ExchangeRateBanner() {
   const { t } = useTranslation()
