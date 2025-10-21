@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWallet } from '../context/WalletContext'
 import { useFormatting } from '../hooks/useFormatting'
 import Loading from './Loading'
 
 function TransferForm({ onClose, onSuccess }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const { t } = useTranslation()
   const { currentWallet, walletService, isLoading, error } = useWallet()
   const { formatCurrency } = useFormatting()
@@ -61,7 +63,19 @@ function TransferForm({ onClose, onSuccess }) {
     if (transferResult) {
       setTransferResult(null)
     }
+    
+    // Start open animation if not already open
+    if (!isOpen) {
+      setIsOpen(true);
+    }
   }
+
+  useEffect(() => {
+    // Start open animation
+    if (!isOpen) {
+      setTimeout(() => setIsOpen(true), 10);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -92,12 +106,10 @@ function TransferForm({ onClose, onSuccess }) {
           onSuccess(result)
         }
         
-        // Close the modal to show the success message
+        // Close the modal with animation
         setTimeout(() => {
-          if (onClose) {
-            onClose()
-          }
-        }, )
+          handleClose()
+        }, 1000)
       }
     } catch (error) {
       setTransferResult({
@@ -108,20 +120,26 @@ function TransferForm({ onClose, onSuccess }) {
   }
 
   const handleClose = () => {
-    if (onClose) {
-      onClose()
-    }
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      setIsOpen(false);
+      if (onClose) {
+        onClose();
+      }
+    }, 300);
   }
 
   return (
     <div className="transfer-form-overlay">
-      <div className="transfer-form glass-modal">
+      <div className={`transfer-form glass-modal ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}>
         <div className="transfer-form__header">
           <h2 className="transfer-form__title">{t('transfer.form')}</h2>
           <button 
             className="transfer-form__close"
             onClick={handleClose}
             type="button"
+            aria-label="Close transfer form"
           >
             ×
           </button>
