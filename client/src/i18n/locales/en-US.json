@@ -19,16 +19,16 @@
 "balanceSufficient": "Sufficient Balance"
 },
 "cdk": {
-"redeemTitle": "Redeem CDK",
+"redeemTitle": "Redeem from CDK",
 "enterCdk": "Enter CDK code",
 "validate": "Validate",
-"redeem": "Redeem",
+"redeem": "Redeem Now",
 "cdkCode": "CDK Code",
 "validCode": "CDK Details",
 "valueInfo": "Value: {{amount}}",
 "expiresInfo": "Expires: {{date}}",
 "status": "Status: {{status}}",
-"statusValid": "Valid",
+"statusValid": "Query Status",
 "statusUsed": "Used",
 "statusExpired": "Expired",
 "statusInvalid": "Invalid",
@@ -40,7 +40,9 @@
 "validationFailed": "CDK validation failed",
 "redeemFailed": "Failed to redeem CDK",
 "processing": "Processing...",
-"formatHint": "Format: XXXX-XXXX-XXXX-XXXX (where X is uppercase letter or number)"
+"formatHint": "Format: XXXX-XXXX-XXXX-XXXX (where X is uppercase letter or number)",
+"redeemAmount": "Successfully redeemed: {{amount}}",
+"autoCloseIn3s": "This window will close automatically in 3 seconds"
 },
 "transfer": {
 "recipient": "Recipient",

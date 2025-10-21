@@ -19,16 +19,16 @@
 "balanceSufficient": "余额充足"
 },
 "cdk": {
-"redeemTitle": "兑换CDK",
+"redeemTitle": "CDK储值",
 "enterCdk": "请输入CDK代码",
 "validate": "验证",
-"redeem": "兑换",
+"redeem": "立刻兑换",
 "cdkCode": "CDK代码",
 "validCode": "CDK详情",
 "valueInfo": "价值：{{amount}}",
 "expiresInfo": "有效期至：{{date}}",
 "status": "状态：{{status}}",
-"statusValid": "有效",
+"statusValid": "查询状态",
 "statusUsed": "已使用",
 "statusExpired": "已过期",
 "statusInvalid": "无效",
@@ -40,7 +40,9 @@
 "validationFailed": "CDK验证失败",
 "redeemFailed": "CDK兑换失败",
 "processing": "处理中...",
-"formatHint": "格式: XXXX-XXXX-XXXX-XXXX (X为大写字母或数字)"
+"formatHint": "格式: XXXX-XXXX-XXXX-XXXX (X为大写字母或数字)",
+"redeemAmount": "成功兑换：{{amount}}",
+"autoCloseIn3s": "此窗口将在3秒后自动关闭"
 },
 "transfer": {
 "recipient": "收款方",
