@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWallet } from '../context/WalletContext'
 import { useFormatting } from '../hooks/useFormatting'
@@ -17,6 +17,39 @@ function CdkRedeemForm({ onClose, onSuccess }) {
   const [validationError, setValidationError] = useState('')
   const [cdkInfo, setCdkInfo] = useState(null)
   const [redeemResult, setRedeemResult] = useState(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
+  
+  // 组件挂载时触发动画
+  useEffect(() => {
+    setIsOpen(true)
+  }, [])
+  
+  // 处理关闭逻辑，添加动画效果
+  const handleClose = () => {
+    if (isValidating || isRedeeming) return
+    
+    setIsClosing(true)
+    setIsOpen(false)
+    // 等待动画完成后调用父组件的关闭函数
+    setTimeout(() => {
+      if (onClose) {
+        onClose()
+      }
+    }, 300)
+  }
+  
+  // 添加键盘事件监听
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isValidating && !isRedeeming) {
+        handleClose()
+      }
+    }
+    
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isValidating, isRedeeming])
 
   // Validate CDK format
   const validateCodeFormat = () => {
@@ -103,11 +136,9 @@ function CdkRedeemForm({ onClose, onSuccess }) {
           onSuccess(result)
         }
         
-        // Auto-close after success
+        // Auto-close after success with animation
         setTimeout(() => {
-          if (onClose) {
-            onClose()
-          }
+          handleClose()
         }, 3000)
       }
     } catch (error) {
@@ -127,8 +158,19 @@ function CdkRedeemForm({ onClose, onSuccess }) {
   }
 
   return (
-    <div className="cdk-redeem-form">
-      <h2>{t('cdk.redeemTitle')}</h2>
+    <div className={`cdk-redeem-form ${isOpen ? 'open' : ''}`}>
+      <h2>
+        {t('cdk.redeemTitle')}
+        <button 
+          type="button" 
+          onClick={handleClose} 
+          className="close-btn"
+          disabled={isValidating || isRedeeming || isClosing}
+          aria-label={t('common.close')}
+        >
+          ×
+        </button>
+      </h2>
       
       {redeemResult ? (
         <div className={`result-message ${redeemResult.success ? 'success' : 'error'}`}>
@@ -188,12 +230,13 @@ function CdkRedeemForm({ onClose, onSuccess }) {
         </form>
       )}
       
+      {/* 底部关闭按钮已替换为右上角X按钮 */}
       {!redeemResult && (
         <button 
           type="button" 
-          onClick={onClose} 
+          onClick={handleClose} 
           className="btn-close"
-          disabled={isValidating || isRedeeming}
+          disabled={isValidating || isRedeeming || isClosing}
         >
           {t('common.close')}
         </button>
