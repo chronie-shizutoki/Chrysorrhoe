@@ -1,0 +1,257 @@
+/* Liquid Glass Style Classes */
+/* Base glass styles with enhanced dynamic properties */
+.glass-effect {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.15));
+  backdrop-filter: blur(var(--glass-blur, 8px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 8px));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Enhanced hover effect with subtle scale and glow */
+.glass-effect:hover {
+  background: var(--glass-bg-hover, rgba(255, 255, 255, 0.25));
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* Add a subtle light reflection that moves with cursor */
+.glass-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.glass-effect:hover::before {
+  opacity: 1;
+}
+
+/* Dark mode glass styles */
+.glass-effect-dark {
+  background: var(--glass-bg-dark, rgba(15, 23, 42, 0.65));
+  backdrop-filter: blur(var(--glass-blur, 8px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 8px));
+  border: 1px solid var(--glass-border-dark, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-effect-dark:hover {
+  background: var(--glass-bg-dark-hover, rgba(15, 23, 42, 0.75));
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.glass-effect-dark::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.glass-effect-dark:hover::before {
+  opacity: 1;
+}
+
+/* Fluid animation for glass elements */
+@keyframes glassAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Flowing background animation for glass elements */
+@keyframes glassFlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+/* Glowing edge animation */
+@keyframes glassGlow {
+  0%, 100% {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 15px rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Utility classes for applying glass effects with enhanced properties */
+.glass-card {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.15));
+  backdrop-filter: blur(var(--glass-blur, 8px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 8px));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  animation: glassAppear 0.6s ease-out forwards;
+}
+
+.glass-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.glass-modal {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.15));
+  backdrop-filter: blur(var(--glass-blur, 8px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 8px));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  animation: glassAppear 0.5s ease-out forwards;
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(var(--glass-blur, 8px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 8px));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.glass-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Add a subtle gradient overlay for depth */
+.glass-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.glass-button:hover::after {
+  opacity: 1;
+}
+
+/* New utility classes for enhanced glass effects */
+
+/* Glass with flowing background */
+.glass-flow {
+  background-image: linear-gradient(45deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.05) 50%, 
+    rgba(255, 255, 255, 0.1) 100%);
+  background-size: 200% 200%;
+  animation: glassFlow 8s ease-in-out infinite;
+}
+
+/* Glass with subtle pulsing glow */
+.glass-pulse {
+  animation: glassGlow 3s ease-in-out infinite;
+}
+
+/* Glass with interactive light effect (requires JavaScript for full functionality) */
+.glass-interactive {
+  position: relative;
+}
+
+.glass-interactive::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.glass-interactive:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Glass with border glow effect */
+.glass-border-glow {
+  position: relative;
+}
+
+.glass-border-glow::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: inherit;
+  background: linear-gradient(45deg, 
+    rgba(255, 255, 255, 0.2) 0%, 
+    rgba(255, 255, 255, 0.1) 50%, 
+    rgba(255, 255, 255, 0.2) 100%);
+  z-index: -1;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.glass-border-glow:hover::before {
+  opacity: 1;
+}
+
+/* Responsive adjustments for better mobile experience */
+@media (max-width: 768px) {
+  .glass-effect, .glass-effect-dark, .glass-card, .glass-modal, .glass-button {
+    backdrop-filter: blur(calc(var(--glass-blur, 8px) * 0.8));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur, 8px) * 0.8));
+  }
+}

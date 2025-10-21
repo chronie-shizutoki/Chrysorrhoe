@@ -4,6 +4,7 @@ import i18n from './i18n/config'
 import WalletProvider from './context/WalletContext'
 import { WalletSetup, WalletDashboard, TransactionHistory, Layout, ErrorBoundary } from './components'
 import './App.css'
+import './styles/liquid-glass.css'
 
 function App() {
   return (
