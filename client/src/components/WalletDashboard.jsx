@@ -148,7 +148,7 @@ function WalletDashboard() {
             {t('wallet.transfer')}
           </button>
           <button 
-            className="action-button action-button--secondary"
+            className="action-button action-button-cdk"
             onClick={handleCdkClick}
           >
             {t('cdk.redeemTitle')}

@@ -874,6 +874,17 @@ body {
   -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
+.action-button-cdk {
+  background-color: rgba(245,158,11,0.9);
+  color: white;
+}
+
+.action-button-cdk:hover {
+  background-color: rgba(245,158,11,0.8);
+  box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+}
+
+
 .action-button--primary {
   background-color: rgba(59, 130, 246, 0.9);
   color: white;
