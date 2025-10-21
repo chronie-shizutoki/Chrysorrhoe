@@ -131,7 +131,7 @@ function TransferForm({ onClose, onSuccess }) {
   }
 
   return (
-    <div className="transfer-form-overlay">
+    <div className={`transfer-form-overlay ${isClosing ? 'closing' : ''}`}>
       <div className={`transfer-form glass-modal ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}>
         <div className="transfer-form__header">
           <h2 className="transfer-form__title">{t('transfer.form')}</h2>
