@@ -28,7 +28,7 @@ async function updateTransactionTable() {
         from_wallet_id TEXT,
         to_wallet_id TEXT,
         amount REAL NOT NULL,
-        transaction_type TEXT NOT NULL CHECK (transaction_type IN ('transfer', 'initial_deposit', 'interest_credit', 'interest_debit')),
+        transaction_type TEXT NOT NULL CHECK (transaction_type IN ('transfer', 'system', 'interest_credit', 'interest_debit')),
         description TEXT,
         created_at TEXT NOT NULL DEFAULT (datetime('now')),
         FOREIGN KEY (from_wallet_id) REFERENCES wallets(id),

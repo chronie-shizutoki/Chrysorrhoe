@@ -1,0 +1,30 @@
+{
+  "cdks": [
+    {
+      "key": "a1b2-c3d4-z5x6-c7f8-j8jk-4d5f",
+      "amount": 100,
+      "currency": "USD",
+      "status": "ACTIVE",
+      "created_at": "2024-01-01T00:00:00Z",
+      "expires_at": "2024-12-31T23:59:59Z"
+    },
+    {
+      "key": "1234-abcd-5678-efgh-9012-ijkl",
+      "amount": 500,
+      "currency": "USD",
+      "status": "ACTIVE",
+      "created_at": "2024-01-01T00:00:00Z",
+      "expires_at": "2025-12-31T23:59:59Z"
+    },
+    {
+      "key": "qwerty-asdf-zxcvb-1234-5678-9012",
+      "amount": 1000,
+      "currency": "USD",
+      "status": "USED",
+      "created_at": "2024-01-01T00:00:00Z",
+      "expires_at": "2024-12-31T23:59:59Z",
+      "used_at": "2024-02-01T12:00:00Z",
+      "used_by": "test_user"
+    }
+  ]
+}

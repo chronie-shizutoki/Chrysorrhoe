@@ -44,8 +44,8 @@ const TransactionHistory = () => {
   }
 
   const getTransactionType = (transaction) => {
-    if (transaction.transactionType === 'initial_deposit') {
-      return t('transaction.initialDeposit')
+    if (transaction.transactionType === 'system') {
+      return t('transaction.system')
     }
     
     if (transaction.direction === 'outgoing') {
@@ -58,7 +58,7 @@ const TransactionHistory = () => {
   }
 
   const getTransactionAmount = (transaction) => {
-    if (transaction.transactionType === 'initial_deposit') {
+    if (transaction.transactionType === 'system') {
       return `+${formatCurrency(transaction.amount)}`
     }
     
@@ -72,7 +72,7 @@ const TransactionHistory = () => {
   }
 
   const getTransactionAmountClass = (transaction) => {
-    if (transaction.transactionType === 'initial_deposit' || 
+    if (transaction.transactionType === 'system' || 
         transaction.direction === 'incoming') {
       return 'transaction-amount-positive'
     } else if (transaction.direction === 'outgoing') {
@@ -82,7 +82,7 @@ const TransactionHistory = () => {
   }
 
   const getOtherParty = (transaction) => {
-    if (transaction.transactionType === 'initial_deposit') {
+    if (transaction.transactionType === 'system') {
       return t('transaction.system')
     }
     

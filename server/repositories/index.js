@@ -53,23 +53,23 @@ class DatabaseService {
   }
 
   /**
-   * Create Wallet with Initial Deposit
+   * Create Wallet with System
    * @param {string} username - Username
    * @param {number} initialBalance - Initial balance
    * @returns {Promise<Object>} Creation result
    */
-  async createWalletWithInitialDeposit(username, initialBalance = 0) {
+  async createWalletWithInitialSystem(username, initialBalance = 0) {
     try {
       // Create wallet
       const wallet = await this.wallets.create({ username, balance: initialBalance });
       
-      // If there is initial balance, create initial deposit record
+      // If there is initial balance, create initial system record
       let transaction = null;
       if (initialBalance > 0) {
-        transaction = await this.transactions.createInitialDeposit(
+        transaction = await this.transactions.createInitialSystem(
           wallet.id, 
           initialBalance, 
-          'Initial Deposit'
+          'System'
         );
       }
       
@@ -79,7 +79,7 @@ class DatabaseService {
         transaction
       };
     } catch (error) {
-      throw new Error(`Create Wallet with Initial Deposit Failed: ${error.message}`);
+      throw new Error(`Create Wallet with System Failed: ${error.message}`);
     }
   }
 

@@ -5,6 +5,7 @@ import { useWallet } from '../context/WalletContext'
 import { useFormatting } from '../hooks/useFormatting'
 import Loading from './Loading'
 import TransferForm from './TransferForm'
+import CdkRedeemForm from './CdkRedeemForm'
 
 function WalletDashboard() {
   const { t } = useTranslation()
@@ -13,6 +14,8 @@ function WalletDashboard() {
   const { formatCurrency } = useFormatting()
   const [showTransferForm, setShowTransferForm] = useState(false)
   const [transferSuccess, setTransferSuccess] = useState(false)
+  const [showCdkForm, setShowCdkForm] = useState(false)
+  const [cdkSuccess, setCdkSuccess] = useState(false)
 
   useEffect(() => {
     // If no wallet exists, redirect to setup
@@ -54,6 +57,25 @@ function WalletDashboard() {
     }, 3000)
   }
 
+  const handleCdkClick = () => {
+    setShowCdkForm(true)
+  }
+
+  const handleCdkClose = () => {
+    setShowCdkForm(false)
+  }
+
+  const handleCdkSuccess = (result) => {
+    // CDK redemption was successful, show success message
+    setCdkSuccess(true)
+    console.log('CDK redeemed successfully:', result)
+    
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      setCdkSuccess(false)
+    }, 3000)
+  }
+
   const handleHistoryClick = () => {
     navigate('/history')
   }
@@ -75,6 +97,12 @@ function WalletDashboard() {
         {transferSuccess && (
           <div className="wallet-dashboard__success">
             {t('transfer.success')}
+          </div>
+        )}
+        
+        {cdkSuccess && (
+          <div className="wallet-dashboard__success">
+            {t('cdk.redeemSuccess')}
           </div>
         )}
 
@@ -121,6 +149,12 @@ function WalletDashboard() {
           </button>
           <button 
             className="action-button action-button--secondary"
+            onClick={handleCdkClick}
+          >
+            {t('cdk.redeemTitle')}
+          </button>
+          <button 
+            className="action-button action-button--secondary"
             onClick={handleHistoryClick}
           >
             {t('wallet.history')}
@@ -151,6 +185,13 @@ function WalletDashboard() {
         <TransferForm 
           onClose={handleTransferClose}
           onSuccess={handleTransferSuccess}
+        />
+      )}
+      
+      {showCdkForm && (
+        <CdkRedeemForm 
+          onClose={handleCdkClose}
+          onSuccess={handleCdkSuccess}
         />
       )}
     </div>

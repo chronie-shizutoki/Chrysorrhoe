@@ -7,6 +7,7 @@
   },
   "errors": {
     "serverError": "伺服器內部錯誤",
+    "serverInternalError": "伺服器內部錯誤",
     "resourceNotFound": "找不到相關資源",
     "routeNotFound": "找不到此路由",
     "authenticationRequired": "需要進行身份驗證",
@@ -38,6 +39,18 @@
     "mustProvideCleanupDate": "請提供清理日期",
     "invalidDateFormat": "日期格式無效",
     "failedToRefreshExchangeRates": "重新整理匯率失敗",
-    "failedToCleanupExchangeRates": "清理匯率紀錄失敗"
+    "failedToCleanupExchangeRates": "清理匯率紀錄失敗",
+    "cdkNotFound": "CDK 代碼不存在",
+    "cdkAlreadyUsed": "CDK 代碼已被使用",
+    "cdkExpired": "CDK 代碼已過期",
+    "invalidCdkFormat": "無效的 CDK 格式。請使用格式：XXXX-XXXX-XXXX-XXXX-XXXX-XXXX",
+    "cdkAlreadyExists": "CDK 代碼已存在",
+    "cdkDataSaveFailed": "保存 CDK 數據失敗",
+    "missingRequiredFields": "缺少必填字段"
+  },
+  "messages": {
+    "cdkRedeemedSuccessfully": "CDK已成功使用",
+    "cdkValid": "CDK代碼有效",
+    "cdkAddedSuccessfully": "CDK已成功添加"
   }
 }

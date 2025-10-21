@@ -25,10 +25,10 @@ export const WalletSchema = {
 // Transaction data model
 export const TransactionSchema = {
   id: '', // UUID string
-  fromWalletId: null, // Sender wallet ID, null for initial deposit
+  fromWalletId: null, // Sender wallet ID, null for initial system
   toWalletId: null, // Receiver wallet ID, null for extraction
   amount: 0, // Transaction amount
-  transactionType: '', // Transaction type: 'transfer', 'initial_deposit'
+  transactionType: '', // Transaction type: 'transfer', 'system'
   description: '', // Transaction description
   createdAt: '' // Creation time, ISO string
 };
@@ -74,7 +74,7 @@ export const validateTransaction = (transaction) => {
     errors.push(i18n.t('validation.transactionAmountPositive'));
   }
   
-  if (!['transfer', 'initial_deposit'].includes(transaction.transactionType)) {
+  if (!['transfer', 'system'].includes(transaction.transactionType)) {
     errors.push(i18n.t('validation.invalidTransactionType'));
   }
   

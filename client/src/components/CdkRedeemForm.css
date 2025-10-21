@@ -1,0 +1,168 @@
+.cdk-redeem-form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cdk-redeem-form h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.cdk-redeem-form h4 {
+  color: #27ae60;
+  margin-bottom: 10px;
+}
+
+.cdk-form-group { 
+  margin-bottom: 20px;
+}
+
+.cdk-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #34495e;
+  font-weight: 500;
+}
+
+.cdk-form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cdk-form-group input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.cdk-form-group input.error {
+  border-color: #e74c3c;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.format-hint {
+  display: block;
+  margin-top: 5px;
+  color: #7f8c8d;
+  font-size: 0.85rem;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2980b9;
+}
+
+.btn-secondary {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #7f8c8d;
+}
+
+.btn-close {
+  width: 100%;
+  padding: 10px;
+  background-color: #f39c12;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.btn-close:hover:not(:disabled) {
+  background-color: #e67e22;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.cdk-info {
+  background-color: #e8f6f3;
+  border: 1px solid #1abc9c;
+  border-radius: 4px;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.cdk-info p {
+  margin: 5px 0;
+  color: #2c3e50;
+}
+
+.result-message {
+  text-align: center;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.result-message.success {
+  background-color: #d5f5e3;
+  border: 1px solid #27ae60;
+  color: #27ae60;
+}
+
+.result-message.error {
+  background-color: #fadbd8;
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+}
+
+.result-message p {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+}
+
+.redeem-amount {
+  font-size: 1.5rem !important;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 576px) {
+  .cdk-redeem-form {
+    padding: 15px;
+    margin: 0 10px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .cdk-redeem-form h2 {
+    font-size: 1.3rem;
+  }
+}

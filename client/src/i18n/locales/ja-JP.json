@@ -39,7 +39,6 @@
     "noTransactions": "取引履歴がまだありません",
     "loadMore": "さらに読み込む",
     "page": "{{current}} / {{total}} ページ",
-    "initialDeposit": "初期入金",
     "sent": "送金済み",
     "received": "入金済み",
     "transfer": "振替",

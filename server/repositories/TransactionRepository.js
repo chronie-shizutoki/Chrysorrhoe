@@ -28,7 +28,7 @@ class TransactionRepository {
     } = transactionData;
     
     // Check transaction type
-    const validTypes = ['transfer', 'initial_deposit', 'interest_credit', 'interest_debit', 'third_party_payment', 'third_party_receipt'];
+    const validTypes = ['transfer', 'system', 'interest_credit', 'interest_debit', 'third_party_payment', 'third_party_receipt'];
     if (!validTypes.includes(transactionType)) {
       throw new Error('Invalid transaction type');
     }
@@ -237,8 +237,8 @@ class TransactionRepository {
       // transfer transactions
       const transferCount = await this.countByWalletId(walletId, 'transfer');
       
-      // initial deposit transactions
-      const depositCount = await this.countByWalletId(walletId, 'initial_deposit');
+      // initial system transactions
+      const systemCount = await this.countByWalletId(walletId, 'system');
       
       // total sent amount
       const sentResult = await dbAsync.get(
@@ -255,7 +255,7 @@ class TransactionRepository {
       return {
         totalTransactions: totalCount,
         transferTransactions: transferCount,
-        depositTransactions: depositCount,
+        systemTransactions: systemCount,
         totalSent: sentResult.total,
         totalReceived: receivedResult.total
       };
@@ -328,18 +328,18 @@ class TransactionRepository {
   }
 
   /**
-   * Create Initial Deposit Transaction
+   * Create Initial System Transaction
    * @param {string} toWalletId - Receiver wallet ID
-   * @param {number} amount - Deposit amount
+   * @param {number} amount - System amount
    * @param {string} description - Transaction description
    * @returns {Promise<Object>} Created transaction object
    */
-  async createInitialDeposit(toWalletId, amount, description = '初始存款') {
+  async createInitialSystem(toWalletId, amount, description = '系统') {
     return await this.create({
       fromWalletId: null,
       toWalletId,
       amount,
-      transactionType: 'initial_deposit',
+      transactionType: 'system',
       description
     });
   }

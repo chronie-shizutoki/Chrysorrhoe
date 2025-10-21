@@ -39,7 +39,6 @@
     "noTransactions": "暫無交易記錄",
     "loadMore": "載入更多",
     "page": "第 {{current}} 頁/共 {{total}} 頁",
-    "initialDeposit": "初始存入",
     "sent": "轉出",
     "received": "轉入",
     "transfer": "轉帳",

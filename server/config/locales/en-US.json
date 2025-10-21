@@ -7,6 +7,7 @@
   },
   "errors": {
     "serverError": "Internal server error",
+    "serverInternalError": "Server internal error",
     "resourceNotFound": "Resource not found",
     "routeNotFound": "Route not found",
     "authenticationRequired": "Authentication required",
@@ -38,6 +39,18 @@
     "mustProvideCleanupDate": "Cleanup date is required",
     "invalidDateFormat": "Invalid date format",
     "failedToRefreshExchangeRates": "Failed to refresh exchange rates",
-    "failedToCleanupExchangeRates": "Failed to clean up exchange rate records"
+    "failedToCleanupExchangeRates": "Failed to clean up exchange rate records",
+    "cdkNotFound": "CDK code not found",
+    "cdkAlreadyUsed": "CDK code has already been used",
+    "cdkExpired": "CDK code has expired",
+    "invalidCdkFormat": "Invalid CDK format. Please use format: XXXX-XXXX-XXXX-XXXX-XXXX-XXXX",
+    "cdkAlreadyExists": "CDK code already exists",
+    "cdkDataSaveFailed": "Failed to save CDK data",
+    "missingRequiredFields": "Missing required fields"
+  },
+  "messages": {
+    "cdkRedeemedSuccessfully": "CDK redeemed successfully",
+    "cdkValid": "CDK code is valid",
+    "cdkAddedSuccessfully": "CDK added successfully"
   }
 }

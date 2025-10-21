@@ -74,6 +74,7 @@ app.use('/api/transactions', require('./routes/transactions'));
 app.use('/api/interests', require('./routes/interests'));
 app.use('/api/exchange-rates', require('./routes/exchangeRates'));
 app.use('/api/third-party', require('./routes/thirdPartyPayments'));
+app.use('/api/cdks', require('./routes/cdks'));
 
 const { t } = require('./config/i18n');
 
