@@ -1,5 +1,6 @@
 const { dbAsync } = require('../config/database');
 const { v4: uuidv4 } = require('uuid');
+const { t } = require('../config/i18n');
 
 /**
  * Transaction Data Access Layer  
@@ -30,12 +31,12 @@ class TransactionRepository {
     // Check transaction type
     const validTypes = ['transfer', 'system', 'interest_credit', 'interest_debit', 'third_party_payment', 'third_party_receipt'];
     if (!validTypes.includes(transactionType)) {
-      throw new Error('Invalid transaction type');
+      throw new Error(t(null, 'errors.invalidTransactionType'));
     }
     
     // Check transaction amount
     if (typeof amount !== 'number' || amount <= 0) {
-      throw new Error('Transaction amount must be greater than 0');
+      throw new Error(t(null, 'errors.transactionAmountMustBePositive'));
     }
     
     const id = uuidv4();
@@ -50,7 +51,7 @@ class TransactionRepository {
       
       return await this.findById(id);
     } catch (error) {
-      throw new Error(`Create transaction record failed: ${error.message}`);
+      throw new Error(t(null, 'errors.createTransactionRecordFailed', { error: error.message }));
     }
   }
 
@@ -73,7 +74,7 @@ class TransactionRepository {
       );
       return transaction || null;
     } catch (error) {
-      throw new Error(`Find transaction by ID failed: ${error.message}`);
+      throw new Error(t(null, 'errors.findTransactionByIdFailed', { error: error.message }));
     }
   }
 
@@ -119,7 +120,7 @@ class TransactionRepository {
       const transactions = await dbAsync.all(sql, params);
       return transactions;
     } catch (error) {
-      throw new Error(`Find transactions by wallet ID failed: ${error.message}`);
+      throw new Error(t(null, 'errors.findTransactionsByWalletIdFailed', { error: error.message }));
     }
   }
 
@@ -163,7 +164,7 @@ class TransactionRepository {
       const transactions = await dbAsync.all(sql, params);
       return transactions;
     } catch (error) {
-      throw new Error(`Get all transactions failed: ${error.message}`);
+      throw new Error(t(null, 'errors.getAllTransactionsFailed', { error: error.message }));
     }
   }
 
@@ -192,7 +193,7 @@ class TransactionRepository {
       const result = await dbAsync.get(sql, params);
       return result.count;
     } catch (error) {
-      throw new Error(`Count all transactions failed: ${error.message}`);
+      throw new Error(t(null, 'errors.countAllTransactionsFailed', { error: error.message }));
     }
   }
 
@@ -220,7 +221,7 @@ class TransactionRepository {
       const result = await dbAsync.get(sql, params);
       return result.count;
     } catch (error) {
-      throw new Error(`Count transactions by wallet ID failed: ${error.message}`);
+      throw new Error(t(null, 'errors.countTransactionsByWalletIdFailed', { error: error.message }));
     }
   }
 
@@ -260,7 +261,7 @@ class TransactionRepository {
         totalReceived: receivedResult.total
       };
     } catch (error) {
-      throw new Error(`Get wallet stats failed: ${error.message}`);
+      throw new Error(t(null, 'errors.getWalletStatsFailed', { error: error.message }));
     }
   }
 
@@ -288,7 +289,7 @@ class TransactionRepository {
       );
       return transactions;
     } catch (error) {
-      throw new Error(`Get transactions by date range failed: ${error.message}`);
+      throw new Error(t(null, 'errors.getTransactionsByDateRangeFailed', { error: error.message }));
     }
   }
 
@@ -305,7 +306,7 @@ class TransactionRepository {
       );
       return result.changes > 0;
     } catch (error) {
-      throw new Error(`Delete transaction failed: ${error.message}`);
+      throw new Error(t(null, 'errors.deleteTransactionFailed', { error: error.message }));
     }
   }
 
@@ -334,13 +335,14 @@ class TransactionRepository {
    * @param {string} description - Transaction description
    * @returns {Promise<Object>} Created transaction object
    */
-  async createInitialSystem(toWalletId, amount, description = '系统') {
+  async createInitialSystem(toWalletId, amount, description) {
+    const defaultDescription = t(null, 'transactions.systemTransaction');
     return await this.create({
       fromWalletId: null,
       toWalletId,
       amount,
       transactionType: 'system',
-      description
+      description: description || defaultDescription
     });
   }
 
@@ -351,13 +353,14 @@ class TransactionRepository {
    * @param {string} description - Transaction description
    * @returns {Promise<Object>} Created transaction object
    */
-  async createInterestCredit(toWalletId, amount, description = '利息收入') {
+  async createInterestCredit(toWalletId, amount, description) {
+    const defaultDescription = t(null, 'transactions.interestIncome');
     return await this.create({
       fromWalletId: null,
       toWalletId,
       amount,
       transactionType: 'interest_credit',
-      description
+      description: description || defaultDescription
     });
   }
 
@@ -368,13 +371,14 @@ class TransactionRepository {
    * @param {string} description - Transaction description
    * @returns {Promise<Object>} Created transaction object
    */
-  async createInterestDebit(toWalletId, amount, description = '利息支出') {
+  async createInterestDebit(toWalletId, amount, description) {
+    const defaultDescription = t(null, 'transactions.interestExpense');
     return await this.create({
       fromWalletId: null,
       toWalletId,
       amount,
       transactionType: 'interest_debit',
-      description
+      description: description || defaultDescription
     });
   }
 }
