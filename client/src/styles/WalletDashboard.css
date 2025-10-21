@@ -414,29 +414,226 @@
 /* Responsive adjustments for better mobile experience */
 @media (max-width: 767px) {
   .wallet-dashboard {
-    padding: 1rem;
+    padding: 0.5rem;
+    min-height: 100vh;
+    background-attachment: fixed;
   }
   
   .wallet-dashboard__container {
+    padding: var(--space-md);
+    gap: var(--space-lg);
+    width: 100%;
+    max-width: 100%;
+    background-image: none; /* Remove complex background for better performance */
+  }
+  
+  .wallet-dashboard__header {
+    padding: 1.25rem;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .wallet-dashboard__title {
+    font-size: var(--font-size-2xl);
+    letter-spacing: var(--letter-spacing-normal);
+  }
+  
+  .wallet-dashboard__username {
+    font-size: var(--font-size-base);
+  }
+  
+  .wallet-dashboard__error,
+  .wallet-dashboard__success {
+    padding: 1rem;
+    font-size: 0.95rem;
+    margin-bottom: var(--space-md);
+  }
+  
+  /* Balance Card Mobile Optimizations */
+  .wallet-dashboard__balance-card {
+    backdrop-filter: blur(calc(var(--glass-blur, 8px) * 0.8));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur, 8px) * 0.8));
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    margin-bottom: var(--space-md);
+  }
+  
+  .balance-card__header {
+    padding: var(--space-md);
+  }
+  
+  .balance-card__title {
+    font-size: var(--font-size-base);
+    letter-spacing: var(--letter-spacing-normal);
+  }
+  
+  .balance-card__content {
     padding: var(--space-lg);
   }
   
   .balance-card__amount {
-    font-size: var(--font-size-4xl);
+    font-size: calc(var(--font-size-4xl) * 0.9);
+    line-height: 1.2;
+    margin-bottom: var(--space-sm);
+    /* Improve touch target size for accessibility */
+    padding: 0.5rem 0;
+  }
+  
+  .balance-card__status {
+    margin-top: 1rem;
+  }
+  
+  .balance-status {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    border-radius: 25px;
+    display: inline-block;
+    text-align: center;
+    min-width: 120px;
+  }
+  
+  /* Action Buttons Mobile Optimizations */
+  .wallet-dashboard__actions {
+    padding: var(--space-md);
+    gap: 0.875rem;
+    /* Make buttons more accessible with larger touch targets */
   }
   
   .action-button {
     min-width: 100%;
+    max-width: 100%;
+    padding: 1.125rem 2rem;
+    min-height: 56px;
+    font-size: 1rem;
+    /* Optimize for touch interactions */
+    -webkit-tap-highlight-color: transparent;
+    /* Increase hit area */
+  }
+  
+  .action-button:active {
+    transform: scale(0.97);
+  }
+  
+  /* Info Section Mobile Optimizations */
+  .wallet-dashboard__info {
+    padding: 1.5rem;
+    backdrop-filter: blur(calc(var(--glass-blur, 8px) * 0.8));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur, 8px) * 0.8));
   }
   
   .info-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    padding: 1rem 0;
+  }
+  
+  .info-label {
+    font-size: 0.9rem;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.25rem;
   }
   
   .info-value {
     width: 100%;
     text-align: center;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    word-break: break-all;
+    /* Improve touch interaction */
+  }
+  
+  /* Add extra space between elements for better touch experience */
+  .wallet-dashboard__balance-card,
+  .wallet-dashboard__actions,
+  .wallet-dashboard__info {
+    margin-bottom: var(--space-lg);
+  }
+  
+  /* Disable complex animations on mobile for better performance */
+  .wallet-dashboard__container {
+    animation: glassAppear 0.4s ease-out; /* Shorter animation */
+  }
+  
+  .action-button::before {
+    /* Simplify button hover effect for mobile */
+    display: none;
+  }
+}
+
+/* Extra small screens optimization */
+@media (max-width: 380px) {
+  .wallet-dashboard {
+    padding: 0.25rem;
+  }
+  
+  .wallet-dashboard__container {
+    padding: var(--space-sm);
+  }
+  
+  .wallet-dashboard__header {
+    padding: 1rem;
+  }
+  
+  .wallet-dashboard__title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .balance-card__amount {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .action-button {
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .wallet-dashboard__info {
+    padding: 1.25rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .balance-status--positive {
+    background-color: rgba(34, 197, 94, 0.8);
+    color: white;
+  }
+
+  .balance-status--low {
+    background-color: rgba(255, 153, 0, 0.8);
+    color: white;
+  }
+
+  .balance-status--negative {
+    background-color: rgba(248, 113, 113, 0.8);
+    color: white;
+  }
+}
+
+/* Ensure touch targets are large enough for accessibility */
+@media (hover: none) and (pointer: coarse) {
+  .action-button {
+    min-height: 56px;
+    font-size: 1.05rem;
+  }
+  
+  .info-value {
+    padding: 0.75rem 1rem;
+  }
+  
+  /* Add more space between interactive elements */
+  .wallet-dashboard__actions {
+    gap: 1rem;
+  }
+  
+  /* Simplify effects for touch devices */
+  .action-button:hover {
+    transform: translateY(-2px); /* Subtle hover effect for touch */
+  }
+  
+  .info-item:hover {
+    transform: none; /* Disable hover transform on touch */
+  }
+  
+  .info-value:hover {
+    transform: none; /* Disable hover transform on touch */
   }
 }
