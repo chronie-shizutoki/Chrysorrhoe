@@ -6,6 +6,7 @@ import { useFormatting } from '../hooks/useFormatting'
 import Loading from './Loading'
 import TransferForm from './TransferForm'
 import CdkRedeemForm from './CdkRedeemForm'
+import '../styles/WalletDashboard.css'
 
 function WalletDashboard() {
   const { t } = useTranslation()

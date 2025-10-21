@@ -84,6 +84,22 @@
   font-size: 0.9rem;
 }
 
+.switch-mode-button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 0.5rem;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.switch-mode-button:hover {
+  color: var(--color-primary-700);
+}
+
 @media (min-width: 480px) {
   .wallet-setup__container {
     max-width: min(450px, 85vw);
@@ -93,6 +109,15 @@
 @media (min-width: 768px) {
   .wallet-setup__container {
     max-width: min(500px, 70vw);
+  }
+
+  .wallet-setup__switch p {
+    display: inline;
+  }
+  
+  .switch-mode-button {
+    display: inline;
+    margin: 0 0 0 0.5rem;
   }
 }
 

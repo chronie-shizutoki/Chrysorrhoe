@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useWallet } from '../context/WalletContext'
 import { useFormatting } from '../hooks/useFormatting'
 import Loading from './Loading'
+import '../styles/TransactionHistory.css'
 
 const TransactionHistory = () => {
   const { t } = useTranslation()
