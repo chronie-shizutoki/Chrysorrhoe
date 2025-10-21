@@ -375,6 +375,9 @@ body {
 }
 
 .no-wallet-message, .no-transactions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   padding: var(--space-2xl) var(--space-xl);
   background-color: var(--color-surface);
