@@ -7,6 +7,7 @@ import Loading from './Loading'
 import TransferForm from './TransferForm'
 import CdkRedeemForm from './CdkRedeemForm'
 import '../styles/WalletDashboard.css'
+import '../styles/liquid-glass.css'
 
 function WalletDashboard() {
   const { t } = useTranslation()
@@ -113,7 +114,9 @@ function WalletDashboard() {
           </div>
         )}
 
-        <div className="wallet-dashboard__balance-card glass-card">
+        <div 
+        className="wallet-dashboard__balance-card"
+      >
           <div className="balance-card__header">
             <h2 className="balance-card__title">{t('wallet.currentBalance')}</h2>
           </div>

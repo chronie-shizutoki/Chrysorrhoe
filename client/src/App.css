@@ -119,7 +119,6 @@
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-family-base);
   font-size: var(--font-size-base);
