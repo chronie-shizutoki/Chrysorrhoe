@@ -3,6 +3,7 @@ const router = express.Router();
 const { dbAsync } = require('../config/database');
 const WalletRepository = require('../repositories/WalletRepository');
 const TransactionRepository = require('../repositories/TransactionRepository');
+const { t } = require('../config/i18n');
 
 const walletRepo = new WalletRepository();
 const transactionRepo = new TransactionRepository();
@@ -15,7 +16,7 @@ const validateThirdPartyPayment = async (req, res, next) => {
   if ((!walletId && !username) || typeof walletId !== 'string' && typeof username !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Wallet ID or username is required'
+      error: t(req, 'thirdPartyPayments.walletIdOrUsernameRequired')
     });
   }
   
@@ -321,7 +322,7 @@ router.post('/receipts', async (req, res, next) => {
     
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to process third-party receipt'
+      error: error.message || t(req, 'thirdPartyPayments.failedToProcessThirdPartyReceipt')
     });
   }
 });
@@ -338,14 +339,14 @@ router.get('/transactions', async (req, res) => {
     if (isNaN(pageNum) || pageNum < 1) {
       return res.status(400).json({
         success: false,
-        error: 'Page number must be a positive integer'
+        error: t(req, 'errors.pageNumberMustBePositive')
       });
     }
     
     if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
       return res.status(400).json({
         success: false,
-        error: 'Limit must be between 1 and 100'
+        error: t(req, 'errors.limitMustBeBetween', { min: 1, max: 100 })
       });
     }
     
@@ -360,7 +361,7 @@ router.get('/transactions', async (req, res) => {
     if (!wallet && (walletId || username)) {
       return res.status(404).json({
         success: false,
-        error: 'Wallet does not exist'  
+        error: t(req, 'thirdPartyPayments.walletDoesNotExist')  
       });
     }
     

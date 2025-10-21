@@ -44,5 +44,25 @@
     "cdkRedeemedSuccessfully": "CDKが正常に使用されました",
     "cdkValid": "CDKコードは有効です",
     "cdkAddedSuccessfully": "CDKが正常に追加されました"
+  },
+  "transactions": {
+    "transactionIdRequired": "取引IDが必要です",
+    "transactionNotFound": "取引記録が見つかりません",
+    "failedToFetchTransactionDetails": "取引の詳細情報の取得に失敗しました",
+    "failedToFetchTransactionRecords": "取引記録の取得に失敗しました"
+  },
+  "interests": {
+    "interestCalculationSuccess": "利息計算が正常に実行されました",
+    "failedToExecuteInterestCalculation": "利息計算の実行に失敗しました",
+    "failedToGetInterestSchedulerStatus": "利息スケジューラのステータスの取得に失敗しました"
+  },
+  "exchangeRates": {
+    "exchangeRatesRefreshed": "為替レートが正常に更新されました",
+    "exchangeRateRecordsDeleted": "{{count}} 件の為替レートレコードが正常に削除されました"
+  },
+  "thirdPartyPayments": {
+    "walletIdOrUsernameRequired": "ウォレットIDまたはユーザー名が必要です",
+    "walletDoesNotExist": "ウォレットが存在しません",
+    "failedToProcessThirdPartyReceipt": "サードパーティの受領処理に失敗しました"
   }
 }

@@ -52,5 +52,25 @@
     "cdkRedeemedSuccessfully": "CDK已成功使用",
     "cdkValid": "CDK代碼有效",
     "cdkAddedSuccessfully": "CDK已成功添加"
+  },
+  "transactions": {
+    "transactionIdRequired": "交易ID不得為空",
+    "transactionNotFound": "交易記錄不存在",
+    "failedToFetchTransactionDetails": "取得交易詳細資料失敗",
+    "failedToFetchTransactionRecords": "取得交易記錄失敗"
+  },
+  "interests": {
+    "interestCalculationSuccess": "利息計算執行成功",
+    "failedToExecuteInterestCalculation": "執行利息計算失敗",
+    "failedToGetInterestSchedulerStatus": "取得利息調度器狀態失敗"
+  },
+  "exchangeRates": {
+    "exchangeRatesRefreshed": "匯率刷新成功",
+    "exchangeRateRecordsDeleted": "成功刪除 {{count}} 條匯率記錄"
+  },
+  "thirdPartyPayments": {
+    "walletIdOrUsernameRequired": "需要提供錢包ID或使用者名稱",
+    "walletDoesNotExist": "錢包不存在",
+    "failedToProcessThirdPartyReceipt": "處理第三方收款失敗"
   }
 }

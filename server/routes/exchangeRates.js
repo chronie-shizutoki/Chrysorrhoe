@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const exchangeRateService = require('../services/ExchangeRateService');
+const { t } = require('../config/i18n');
 
 /**
  * @route   GET /api/exchange-rates/latest
@@ -19,14 +20,14 @@ router.get('/latest', async (req, res) => {
     } else {
       res.status(404).json({
         success: false,
-        message: 'No exchange rate record found'
+        message: t(req, 'errors.noExchangeRateRecord')
       });
     }
   } catch (error) {
     console.error('Error fetching latest exchange rate:', error);
     res.status(500).json({
       success: false,
-      message: 'Server internal error'
+      message: t(req, 'errors.serverInternalError')
     });
   }
 });
@@ -51,7 +52,7 @@ router.get('/', async (req, res) => {
     console.error('Error fetching exchange rate list:', error);
     res.status(500).json({
       success: false,
-      message: 'Server internal error'
+      message: t(req, 'errors.serverInternalError')
     });
   }
 });
@@ -69,13 +70,13 @@ router.post('/refresh', async (req, res) => {
     if (result.success) {
       res.status(200).json({
         success: true,
-        message: 'Exchange rates successfully refreshed',
+        message: t(req, 'exchangeRates.exchangeRatesRefreshed'),
         data: result
       });
     } else {
       res.status(500).json({
         success: false,
-        message: result.message || 'Failed to refresh exchange rates'
+        message: result.message || t(req, 'errors.failedToRefreshExchangeRates')
       });
     }
   } catch (error) {
@@ -105,7 +106,7 @@ router.delete('/cleanup', async (req, res) => {
     if (!beforeDate) {
       return res.status(400).json({
         success: false,
-        message: 'Must provide cleanup date'
+        message: t(req, 'errors.mustProvideCleanupDate')
       });
     }
     
@@ -114,7 +115,7 @@ router.delete('/cleanup', async (req, res) => {
     if (isNaN(date.getTime())) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid date format'
+        message: t(req, 'errors.invalidDateFormat')
       });
     }
     
@@ -123,12 +124,12 @@ router.delete('/cleanup', async (req, res) => {
     if (result.success) {
       res.status(200).json({
         success: true,
-        message: `Successfully deleted ${result.deletedCount} exchange rate records`
+        message: t(req, 'exchangeRates.exchangeRateRecordsDeleted', { count: result.deletedCount })
       });
     } else {
       res.status(500).json({
         success: false,
-        message: result.message || 'Failed to clean up exchange rate records'
+        message: result.message || t(req, 'errors.failedToCleanupExchangeRates')
       });
     }
   } catch (error) {

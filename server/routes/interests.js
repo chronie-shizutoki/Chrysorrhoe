@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const interestScheduler = require('../services/InterestScheduler');
+const { t } = require('../config/i18n');
 
 /**
  * Interest-related API routes
@@ -22,7 +23,7 @@ router.post('/process', async (req, res) => {
     if (result.success) {
       res.status(200).json({
         success: true,
-        message: 'Interest calculation executed successfully',
+        message: t(req, 'interests.interestCalculationSuccess'),
         data: {
           processedCount: result.processedCount,
           totalInterest: result.totalInterest
@@ -31,14 +32,14 @@ router.post('/process', async (req, res) => {
     } else {
       res.status(500).json({
         success: false,
-        message: result.message || 'Failed to execute interest calculation'
+        message: result.message || t(req, 'interests.failedToExecuteInterestCalculation')
       });
     }
   } catch (error) {
     console.error('Error manually triggering interest calculation:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Server internal error'
+      message: error.message || t(req, 'errors.serverInternalError')
     });
   }
 });
@@ -62,7 +63,7 @@ router.get('/status', async (req, res) => {
     console.error('Error getting interest scheduler status:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Server internal error'
+      message: error.message || t(req, 'interests.failedToGetInterestSchedulerStatus')
     });
   }
 });

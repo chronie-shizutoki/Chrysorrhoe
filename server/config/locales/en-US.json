@@ -52,5 +52,25 @@
     "cdkRedeemedSuccessfully": "CDK redeemed successfully",
     "cdkValid": "CDK code is valid",
     "cdkAddedSuccessfully": "CDK added successfully"
+  },
+  "transactions": {
+    "transactionIdRequired": "Transaction ID is required",
+    "transactionNotFound": "Transaction not found",
+    "failedToFetchTransactionDetails": "Failed to fetch transaction details",
+    "failedToFetchTransactionRecords": "Failed to fetch transaction records"
+  },
+  "interests": {
+    "interestCalculationSuccess": "Interest calculation executed successfully",
+    "failedToExecuteInterestCalculation": "Failed to execute interest calculation",
+    "failedToGetInterestSchedulerStatus": "Failed to get interest scheduler status"
+  },
+  "exchangeRates": {
+    "exchangeRatesRefreshed": "Exchange rates successfully refreshed",
+    "exchangeRateRecordsDeleted": "Successfully deleted {{count}} exchange rate records"
+  },
+  "thirdPartyPayments": {
+    "walletIdOrUsernameRequired": "Wallet ID or username is required",
+    "walletDoesNotExist": "Wallet does not exist",
+    "failedToProcessThirdPartyReceipt": "Failed to process third-party receipt"
   }
 }

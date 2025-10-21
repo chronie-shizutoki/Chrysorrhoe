@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const TransactionRepository = require('../repositories/TransactionRepository');
+const { t } = require('../config/i18n');
 
 const transactionRepo = new TransactionRepository();
 
@@ -12,7 +13,7 @@ router.get('/:transactionId', async (req, res) => {
     if (!transactionId || typeof transactionId !== 'string') {
       return res.status(400).json({
         success: false,
-        error: 'Transaction ID is required'
+        error: t(req, 'transactions.transactionIdRequired')
       });
     }
     
@@ -20,7 +21,7 @@ router.get('/:transactionId', async (req, res) => {
     if (!transaction) {
       return res.status(404).json({
         success: false,
-        error: 'Transaction not found'
+        error: t(req, 'transactions.transactionNotFound')
       });
     }
     
@@ -44,7 +45,7 @@ router.get('/:transactionId', async (req, res) => {
     console.error('Error fetching transaction details:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to fetch transaction details'
+      error: error.message || t(req, 'transactions.failedToFetchTransactionDetails')
     });
   }
 });
@@ -61,14 +62,14 @@ router.get('/', async (req, res) => {
     if (isNaN(pageNum) || pageNum < 1) {
       return res.status(400).json({
         success: false,
-        error: 'Page number must be a positive integer'
+        error: t(req, 'errors.pageMustBePositive')
       });
     }
     
     if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
       return res.status(400).json({
         success: false,
-        error: 'Limit must be between 1 and 100'
+        error: t(req, 'errors.limitRange')
       });
     }
     
@@ -109,7 +110,7 @@ router.get('/', async (req, res) => {
     console.error('Error fetching transaction records:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to fetch transaction records'
+      error: error.message || t(req, 'transactions.failedToFetchTransactionRecords')
     });
   }
 });
