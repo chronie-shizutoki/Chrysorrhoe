@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useWallet } from '../context/WalletContext'
 import Loading from './Loading'
+import '../styles/WalletSetup.css'
 
 function WalletSetup() {
   const { t } = useTranslation()
