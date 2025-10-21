@@ -35,9 +35,8 @@
   --glass-blur: 10px;
   
   /* Typography System */
-  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  --font-family-mono: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --font-family-base: system-ui, sans-serif;
+  --font-family-mono: 'Courier New', monospace , system-ui ;
   
   /* Font Size Hierarchy */
   --font-size-xs: 0.75rem;    /* 12px */

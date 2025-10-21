@@ -352,6 +352,7 @@
 .info-label {
   font-weight: 600;
   color: var(--color-text-muted);
+  font-family: var(--font-family-mono);
   font-size: 1rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -359,7 +360,7 @@
 
 .info-value {
   color: var(--color-text);
-  font-family: monospace;
+  font-family: var(--font-family-mono);
   font-size: 1rem;
   background: rgba(255, 255, 255, 0.1);
   padding: 0.5rem 1rem;

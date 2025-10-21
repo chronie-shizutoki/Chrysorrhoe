@@ -120,6 +120,7 @@
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 1rem;
+  font-family: var(--font-family-mono);
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
