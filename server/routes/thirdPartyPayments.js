@@ -163,20 +163,20 @@ router.post('/payments', async (req, res, next) => {
     if (error.message.includes('Wallet balance is insufficient')) {
       return res.status(400).json({
         success: false,
-        error: error.message
+        error: t(req, 'errors.insufficientBalance')
       });
     }
     
     if (error.message.includes('Wallet does not exist')) {
       return res.status(404).json({
         success: false,
-        error: error.message
+        error: t(req, 'errors.walletNotFound')
       });
     }
     
     res.status(500).json({
       success: false,
-      error: error.message || 'Third-party payment failed'
+      error: error.message || t(req, 'thirdPartyPayments.paymentFailed')
     });
   }
 });

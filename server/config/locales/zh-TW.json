@@ -6,6 +6,7 @@
     "interestTransactionTypesEnsured": "利息交易類型已確保設定完成"
   },
   "errors": {
+    "systemErrorPleaseTryAgain": "系統錯誤，請稍後再試",
     "serverError": "伺服器內部錯誤",
     "serverInternalError": "伺服器內部錯誤",
     "resourceNotFound": "找不到相關資源",
@@ -71,6 +72,7 @@
   "thirdPartyPayments": {
     "walletIdOrUsernameRequired": "需要提供錢包ID或使用者名稱",
     "walletDoesNotExist": "錢包不存在",
-    "failedToProcessThirdPartyReceipt": "處理第三方收款失敗"
+    "failedToProcessThirdPartyReceipt": "處理第三方收款失敗",
+    "paymentFailed": "第三方支付失敗"
   }
 }

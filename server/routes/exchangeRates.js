@@ -83,7 +83,7 @@ router.post('/refresh', async (req, res) => {
     console.error('Error refreshing exchange rates:', error);
     res.status(500).json({
       success: false,
-      message: 'Server internal error'
+      message: t(req, 'errors.serverInternalError')
     });
   }
 });
@@ -136,7 +136,7 @@ router.delete('/cleanup', async (req, res) => {
     console.error('Error cleaning up exchange rates:', error);
     res.status(500).json({
       success: false,
-      message: 'Server internal error'
+      message: t(req, 'errors.serverInternalError')
     });
   }
 });

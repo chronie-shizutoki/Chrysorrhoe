@@ -1,6 +1,8 @@
 {
   "errors": {
+    "systemErrorPleaseTryAgain": "システムエラーが発生しました。しばらくしてからもう一度お試しください",
     "serverError": "サーバー内部でエラーが発生しました",
+    "serverInternalError": "サーバー内部でエラーが発生しました",
     "resourceNotFound": "要求されたリソースが見つかりません",
     "routeNotFound": "要求されたルートが見つかりません",
     "authenticationRequired": "このリソースにアクセスするには認証が必要です",
@@ -63,6 +65,7 @@
   "thirdPartyPayments": {
     "walletIdOrUsernameRequired": "ウォレットIDまたはユーザー名が必要です",
     "walletDoesNotExist": "ウォレットが存在しません",
-    "failedToProcessThirdPartyReceipt": "サードパーティの受領処理に失敗しました"
+    "failedToProcessThirdPartyReceipt": "サードパーティの受領処理に失敗しました",
+    "paymentFailed": "サードパーティの支払いに失敗しました"
   }
 }

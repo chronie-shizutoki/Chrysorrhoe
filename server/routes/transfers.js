@@ -91,7 +91,7 @@ router.post('/', async (req, res, next) => {
     console.error('Error validating transfer:', error);
     return res.status(500).json({
       success: false,
-      error: 'System error, please try again later'
+      error: t(req, 'errors.systemErrorPleaseTryAgain')
     });
   }
 }, async (req, res) => {

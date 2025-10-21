@@ -6,6 +6,7 @@
     "interestTransactionTypesEnsured": "Interest transaction types verified and configured"
   },
   "errors": {
+    "systemErrorPleaseTryAgain": "System error, please try again later",
     "serverError": "Internal server error",
     "serverInternalError": "Server internal error",
     "resourceNotFound": "Resource not found",
@@ -71,6 +72,7 @@
   "thirdPartyPayments": {
     "walletIdOrUsernameRequired": "Wallet ID or username is required",
     "walletDoesNotExist": "Wallet does not exist",
-    "failedToProcessThirdPartyReceipt": "Failed to process third-party receipt"
+    "failedToProcessThirdPartyReceipt": "Failed to process third-party receipt",
+    "paymentFailed": "Third-party payment failed"
   }
 }

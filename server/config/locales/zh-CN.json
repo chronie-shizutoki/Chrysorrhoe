@@ -1,5 +1,6 @@
 {
   "errors": {
+    "systemErrorPleaseTryAgain": "系统错误，请稍后再试",
     "serverError": "服务器发生内部错误",
     "serverInternalError": "服务器发生内部错误",
     "resourceNotFound": "请求的资源不存在",
@@ -64,6 +65,7 @@
   "thirdPartyPayments": {
     "walletIdOrUsernameRequired": "需要提供钱包ID或用户名",
     "walletDoesNotExist": "钱包不存在",
-    "failedToProcessThirdPartyReceipt": "处理第三方收款失败"
+    "failedToProcessThirdPartyReceipt": "处理第三方收款失败",
+    "paymentFailed": "第三方支付失败"
   }
 }
