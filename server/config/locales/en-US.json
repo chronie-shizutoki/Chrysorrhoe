@@ -82,7 +82,8 @@
     "transactionNotFound": "Transaction record does not exist",
     "failedToFetchTransactionDetails": "Failed to fetch transaction details",
     "failedToFetchTransactionRecords": "Failed to fetch transaction records",
-    "cdkRedemptionSuccess": "CDK redeemed successfully"
+    "cdkRedemptionSuccess": "CDK redeemed successfully",
+    "cdkRedemption": "CDK redemption ({{keyPrefix}})"
   },
   "interests": {
     "interestCalculationSuccess": "Interest calculation executed successfully",

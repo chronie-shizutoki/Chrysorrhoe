@@ -128,7 +128,7 @@ class CdkService {
           fromWalletId: null,
           toWalletId: wallet.id,
           amount: cdk.amount,
-          transactionType: 'system', // 使用系统支持的交易类型
+          transactionType: 'system', // Using system-supported transaction type
           description: t(null, 'transactions.cdkRedemption', { keyPrefix: cdkKey.substring(0, 8) })
         };
         await this.transactionRepo.create(transactionData);

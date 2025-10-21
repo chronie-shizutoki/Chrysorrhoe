@@ -30,7 +30,7 @@ class ExchangeRateScheduler {
    */
   async start() {
     try {
-      // 确保汇率表存在
+      // Ensure exchange rate table exists
       const tableCreated = await exchangeRateService.ensureTableExists();
       if (!tableCreated) {
         throw new Error('Failed to create exchange rate table');

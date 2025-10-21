@@ -82,7 +82,8 @@
     "transactionNotFound": "取引記録が見つかりません",
     "failedToFetchTransactionDetails": "取引の詳細情報の取得に失敗しました",
     "failedToFetchTransactionRecords": "取引記録の取得に失敗しました",
-    "cdkRedemptionSuccess": "CDKが正常に使用されました"
+    "cdkRedemptionSuccess": "CDKが正常に使用されました",
+    "cdkRedemption": "CDKの使用 ({{keyPrefix}})"
   },
   "interests": {
     "interestCalculationSuccess": "利息計算が正常に実行されました",

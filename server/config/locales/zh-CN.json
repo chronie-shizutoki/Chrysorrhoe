@@ -82,7 +82,8 @@
     "transactionNotFound": "交易记录不存在",
     "failedToFetchTransactionDetails": "获取交易详情失败",
     "failedToFetchTransactionRecords": "获取交易记录失败",
-    "cdkRedemptionSuccess": "CDK已成功使用"
+    "cdkRedemptionSuccess": "CDK已成功使用",
+    "cdkRedemption": "CDK兑换 ({{keyPrefix}})"
   },
   "interests": {
     "interestCalculationSuccess": "利息计算执行成功",

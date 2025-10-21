@@ -177,7 +177,7 @@ class InterestService {
    */
   async processMonthlyInterest(targetPeriod = null) {
     // If no month is specified, use the current month
-    const period = targetPeriod || new Date().toISOString().slice(0, 7); // 格式：YYYY-MM
+    const period = targetPeriod || new Date().toISOString().slice(0, 7); // Format: YYYY-MM
     console.log(t(null, 'info.startInterestProcessing', { period }));
     
     // Initialize interest payment log table
