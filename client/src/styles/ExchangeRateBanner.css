@@ -1,15 +1,38 @@
 /* Exchange Rate Banner */
 .exchange-rate-banner {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-bottom: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(var(--glass-blur, 12px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: var(--space-sm) var(--space-md);
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glass card subtle gradient overlay */
+.exchange-rate-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Hover effect for interactive feel */
+.exchange-rate-banner:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
 }
 
 .exchange-rate-content {
@@ -19,10 +42,18 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   font-family: var(--font-family-mono);
+  position: relative;
+  z-index: 1;
+  padding: var(--space-xs) 0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  gap: var(--space-md);
 }
 
 .exchange-rate-label {
   font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
 }
 
 .exchange-rate-value {
@@ -30,10 +61,119 @@
   font-weight: var(--font-weight-semibold);
   font-family: var(--font-family-mono);
   letter-spacing: var(--letter-spacing-wide);
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-primary-400));
+  -webkit-background-clip: text;
+  background-clip: text;
+  padding: 2px 0;
+  transition: all 0.3s ease;
+}
+
+.exchange-rate-banner:hover .exchange-rate-value {
+  transform: translateX(2px);
 }
 
 .exchange-rate-update-time {
   font-size: var(--font-size-xs);
   color: var(--color-text-subtle);
   font-family: var(--font-family-mono);
+  transition: color 0.3s ease;
+}
+
+.exchange-rate-banner:hover .exchange-rate-update-time {
+  color: var(--color-text-muted);
+}
+
+/* Loading state styling */
+.exchange-rate-loading {
+  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.exchange-rate-loading::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--color-primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error state styling */
+.exchange-rate-error {
+  color: var(--color-danger-600);
+  font-weight: var(--font-weight-medium);
+  padding: 4px 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 6px;
+  font-size: var(--font-size-xs);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .exchange-rate-banner {
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .exchange-rate-content {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .exchange-rate-value {
+    font-size: var(--font-size-xs);
+    letter-spacing: var(--letter-spacing-normal);
+  }
+  
+  .exchange-rate-update-time {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .exchange-rate-label {
+    display: none;
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  .exchange-rate-banner {
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    border-top-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  .exchange-rate-banner:hover {
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .exchange-rate-banner::before {
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  }
+  
+  .exchange-rate-value {
+    background: linear-gradient(90deg, var(--color-primary-300), var(--color-primary-200));
+  }
 }
