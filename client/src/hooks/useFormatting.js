@@ -21,8 +21,8 @@ export function useFormatting() {
       'ja-JP': new Intl.NumberFormat('ja-JP', { 
         style: 'currency', 
         currency: 'JPY',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
       }),
       'en-US': new Intl.NumberFormat('en-US', { 
         style: 'currency', 
@@ -38,10 +38,22 @@ export function useFormatting() {
 
   const formatNumber = (value) => {
     const formatters = {
-      'zh-CN': new Intl.NumberFormat('zh-CN'),
-      'zh-TW': new Intl.NumberFormat('zh-TW'),
-      'ja-JP': new Intl.NumberFormat('ja-JP'),
-      'en-US': new Intl.NumberFormat('en-US')
+      'zh-CN': new Intl.NumberFormat('zh-CN', {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
+      }),
+      'zh-TW': new Intl.NumberFormat('zh-TW', {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
+      }),
+      'ja-JP': new Intl.NumberFormat('ja-JP', {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
+      }),
+      'en-US': new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
+      })
     }
     
     const formatter = formatters[currentLanguage] || formatters['zh-CN']
