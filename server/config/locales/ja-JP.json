@@ -19,6 +19,7 @@
     "senderWalletDoesNotExist": "送信者のウォレットが存在しません",
     "receiverWalletDoesNotExist": "受信者のウォレットが存在しません",
     "senderBalanceInsufficient": "送信者の残高が不足しています",
+    "receiverUsernameDoesNotExist": "受信者のユーザー名が存在しません",
     "invalidTransactionType": "無効な取引タイプ",
     "transactionAmountMustBePositive": "取引金額は0より大きくなければなりません",
     "createTransactionRecordFailed": "取引記録の作成に失敗しました：{{error}}",

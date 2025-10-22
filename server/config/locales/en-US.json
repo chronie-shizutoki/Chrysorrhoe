@@ -19,6 +19,7 @@
     "senderWalletDoesNotExist": "Sender wallet does not exist",
     "receiverWalletDoesNotExist": "Receiver wallet does not exist",
     "senderBalanceInsufficient": "Sender balance insufficient",
+    "receiverUsernameDoesNotExist": "Receiver username does not exist",
     "invalidTransactionType": "Invalid transaction type",
     "transactionAmountMustBePositive": "Transaction amount must be greater than 0",
     "createTransactionRecordFailed": "Failed to create transaction record: {{error}}",

@@ -8,7 +8,6 @@ import '../styles/TransferForm.css';
 function TransferForm({ onClose, onSuccess }) {
   const [isOpen, setIsOpen] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { t } = useTranslation()
   const { currentWallet, walletService, isLoading, error } = useWallet()
   const { formatCurrency } = useFormatting()
@@ -70,20 +69,7 @@ function TransferForm({ onClose, onSuccess }) {
     }
   }
 
-  // Mouse move effect for glass morphism
-  const handleMouseMove = (e) => {
-    if (formRef.current) {
-      const rect = formRef.current.getBoundingClientRect();
-      setMousePosition({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-    }
-  };
 
-  const handleMouseLeave = () => {
-    setMousePosition({ x: 0, y: 0 });
-  };
 
   useEffect(() => {
     // Set focus trap when open
@@ -200,20 +186,7 @@ function TransferForm({ onClose, onSuccess }) {
       <div 
         className={`transfer-form glass-modal ${isClosing ? 'closing' : ''}`}
         ref={formRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          backgroundPosition: `${mousePosition.x}px ${mousePosition.y}px`
-        }}
       >
-        {/* Dynamic light effect */}
-        <div 
-          className="glass-card-light"
-          style={{
-            left: `${mousePosition.x}px`,
-            top: `${mousePosition.y}px`
-          }}
-        />
         <div className="transfer-form__header">
           <h2 className="transfer-form__title">{t('transfer.form')}</h2>
           <button 

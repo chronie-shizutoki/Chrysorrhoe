@@ -51,6 +51,7 @@
     "amountMustBePositive": "金额必须大于零",
     "amountDecimalPlaces": "金额最多支持2位小数",
     "insufficientBalance": "账户余额不足",
+    "receiverUsernameDoesNotExist": "接收方用户名不存在",
     "transferFailed": "转账操作未能完成",
     "systemError": "系统发生错误，请稍后重试",
     "pageMustBePositive": "页码必须是正数",
