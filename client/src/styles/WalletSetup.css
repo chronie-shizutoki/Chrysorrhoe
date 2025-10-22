@@ -404,28 +404,12 @@
   }
 
   .switch-mode-button {
-    color: rgba(255, 255, 255, 0.87);
+    color: var(--color-primary-300);
     border-color: rgba(255, 255, 255, 0.2);
   }
 
-  .switch-mode-button:focus{
-    color: rgba(255, 255, 255, 0.9);
-  }
-}
-
-/* Touch device optimizations */
-@media (hover: none) and (pointer: coarse) {
-  .wallet-setup__submit,
-  .switch-mode-button {
-    transition: none;
-    transform: none !important;
-  }
-  
-  .wallet-setup__submit:active {
-    background: linear-gradient(135deg, rgba(29, 78, 216, 0.9), rgba(20, 53, 132, 0.9));
-  }
-  
-  .switch-mode-button:active {
-    background: rgba(59, 130, 246, 0.3);
+  .switch-mode-button:focus,
+  .switch-mode-button:hover {
+    color: var(--color-primary-200);
   }
 }
