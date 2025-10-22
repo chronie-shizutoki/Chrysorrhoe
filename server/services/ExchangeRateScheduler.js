@@ -4,7 +4,7 @@ const { t } = require('../config/i18n');
 
 /**
  * Exchange rate scheduler
- * hourly job to generate and save random exchange rates
+ * daily job to generate and save one random exchange rate
  */
 class ExchangeRateScheduler {
   constructor() {
@@ -17,16 +17,18 @@ class ExchangeRateScheduler {
 
   /**
    * Generate Random Exchange Rate
-   * @returns {number} Randomly generated exchange rate value
+   * @returns {number} Randomly generated exchange rate value with 4 decimal places
    */
   generateRandomRate() {
-    return Math.floor(Math.random() * (this.maxRate - this.minRate + 1)) + this.minRate;
+    // Generate random rate with 4 decimal places
+    const randomRate = Math.random() * (this.maxRate - this.minRate) + this.minRate;
+    return parseFloat(randomRate.toFixed(4));
   }
 
   /**
    * Start Exchange Rate Scheduler  
-   * Set up a daily job to generate and save random exchange rates
-   * between 9-15 UTC+0 each day
+   * Set up a daily job to generate and save one exchange rate
+   * at 10:00:00 UTC+0 each day
    */
   async start() {
     try {
@@ -38,22 +40,21 @@ class ExchangeRateScheduler {
 
       console.log('Exchange rate scheduler started...');
       
-      // Daily job to generate and save random exchange rates
-      // between 9-15 UTC+0 each day
+      // Daily job to generate and save one exchange rate each day
       // Format: 'sec min hour day month dayOfWeek'
-      // 0 0 0 * * * means execute at 00:00:00 UTC+0 each day
-      this.job = schedule.scheduleJob('0 0 0 * * *', async () => {
-        console.log(`[${new Date().toISOString()}] Exchange rate scheduler triggered, ready to execute exchange rate generation task between UTC+0 9-15`);
+      // 0 0 10 * * * means execute at 10:00:00 UTC+0 each day
+      this.job = schedule.scheduleJob('0 0 10 * * *', async () => {
+        console.log(`[${new Date().toISOString()}] Exchange rate scheduler triggered, ready to execute daily exchange rate generation task`);
         
         try {
-          // Execute exchange rate generation task between UTC+0 9-15
+          // Execute daily exchange rate generation task
           await this.executeDailyRates();
         } catch (error) {
           console.error(`[${new Date().toISOString()}] Failed to execute exchange rate generation task:`, error);
         }
       });
       
-      console.log('Exchange rate scheduler started, will generate and save random exchange rates between UTC+0 9-15 each day');
+      console.log('Exchange rate scheduler started, will generate and save one exchange rate at 10:00:00 UTC+0 each day');
       console.log('Next execution time:', this.job.nextInvocation());
       
       // Immediately generate and save one exchange rate (initialization)
@@ -68,70 +69,27 @@ class ExchangeRateScheduler {
 
   /**
    * Execute Daily Exchange Rate Generation Task
-   * Generate and save random exchange rates between UTC+0 9-15 each day
+   * Generate and save one random exchange rate per day
    * @returns {Promise<void>}
    */
   async executeDailyRates() {
     const today = new Date();
-    console.log(`[${today.toISOString()}] Start executing daily exchange rate generation task between UTC+0 9-15`);
+    console.log(`[${today.toISOString()}] Start executing daily exchange rate generation task`);
     
     try {
-      // Generate 15-30 records for the day
-      const recordsForDay = 15 + Math.floor(Math.random() * 16); // 15 to 30 (inclusive)
+      // Generate a random exchange rate with 4 decimal places
+      const randomRate = this.generateRandomRate();
       
-      // Set the start time of the day (UTC+0 9:00)
-      const dayStartTime = new Date(today);
-      dayStartTime.setUTCHours(9, 0, 0, 0);
+      // Save the exchange rate
+      const result = await exchangeRateService.saveRate(randomRate);
       
-      // Set the end time of the day (UTC+0 15:00)
-      const dayEndTime = new Date(today);
-      dayEndTime.setUTCHours(15, 0, 0, 0);
-      
-      // Calculate the total time window available for record generation (milliseconds)
-      const availableTimeWindow = dayEndTime - dayStartTime;
-      
-      // Generate all record time points for the day
-      const recordTimes = [];
-      
-      for (let i = 0; i < recordsForDay; i++) {
-        // Randomly assign a time point for each record
-        const randomOffset = Math.floor(Math.random() * availableTimeWindow);
-        const recordTime = new Date(dayStartTime.getTime() + randomOffset);
-        recordTimes.push(recordTime);
+      if (result.success) {
+        console.log(`[${new Date().toISOString()}] Daily exchange rate generated and saved successfully: 1 USD = ${randomRate} Local Currency`);
+      } else {
+        console.error(`[${new Date().toISOString()}] Failed to save daily exchange rate:`, result.message);
       }
       
-      // Sort time points to ensure they are in chronological order
-      recordTimes.sort((a, b) => a - b);
-      
-      // Adjust record intervals to ensure they are spaced reasonably
-      this.adjustRecordIntervals(recordTimes);
-      
-      // Generate and save exchange rates for each record time point
-      let successCount = 0;
-      for (const recordTime of recordTimes) {
-        // Calculate the time until the record time (milliseconds)
-        const timeUntilExecution = recordTime - new Date();
-        
-        // If the time is positive, wait until the record time
-        if (timeUntilExecution > 0) {
-          await new Promise(resolve => setTimeout(resolve, timeUntilExecution));
-        }
-        
-        // Generate a random exchange rate
-        const randomRate = this.generateRandomRate();
-        
-        // Save the exchange rate
-        const result = await exchangeRateService.saveRate(randomRate);
-        
-        if (result.success) {
-          console.log(`[${new Date().toISOString()}] Exchange rate generated and saved successfully: 1 USD = ${randomRate} Local Currency`);
-          successCount++;
-        } else {
-          console.error(`[${new Date().toISOString()}] Failed to save exchange rate:`, result.message);
-        }
-      }
-      
-      console.log(`[${new Date().toISOString()}] Daily exchange rate generation task completed, successfully generated ${successCount} records`);
+      console.log(`[${new Date().toISOString()}] Daily exchange rate generation task completed`);
     } catch (error) {
       console.error(`[${new Date().toISOString()}] ${t(null, 'errors.exchangeRateTaskExecutionFailed')}:`, error);
       throw error;

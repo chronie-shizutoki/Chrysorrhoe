@@ -13,7 +13,52 @@ class ExchangeRateService {
   }
 
   /**
+   * Get the start of day (UTC) for a given date
+   * @param {Date|string} date - The date to get the start of day for
+   * @returns {string} ISO string of the start of day
+   */
+  getStartOfDay(date) {
+    const d = date instanceof Date ? date : new Date(date);
+    const startOfDay = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0, 0));
+    return startOfDay.toISOString();
+  }
+
+  /**
+   * Get the end of day (UTC) for a given date
+   * @param {Date|string} date - The date to get the end of day for
+   * @returns {string} ISO string of the end of day
+   */
+  getEndOfDay(date) {
+    const d = date instanceof Date ? date : new Date(date);
+    const endOfDay = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 23, 59, 59, 999));
+    return endOfDay.toISOString();
+  }
+
+  /**
+   * Check if exchange rate already exists for today
+   * @param {Date} date - The date to check
+   * @returns {Promise<boolean>} True if rate exists for today, false otherwise
+   */
+  async rateExistsForDay(date) {
+    try {
+      const startOfDay = this.getStartOfDay(date);
+      const endOfDay = this.getEndOfDay(date);
+
+      const result = await dbAsync.get(
+        `SELECT COUNT(*) as count FROM ${this.tableName} WHERE created_at >= ? AND created_at <= ?`,
+        [startOfDay, endOfDay]
+      );
+
+      return result.count > 0;
+    } catch (error) {
+      console.error(t(null, 'errors.exchangeRateCheckError') + ':', error);
+      return false;
+    }
+  }
+
+  /**
    * Save exchange rate record
+   * Ensures only one rate is saved per day
    * @param {number} rate - Exchange rate value (1 USD = x local currency)
    * @param {Date|string} [createdAt] - Optional creation time, default is current time
    * @returns {Promise<Object>} Save result
@@ -23,6 +68,19 @@ class ExchangeRateService {
       // Validate exchange rate value
       if (typeof rate !== 'number' || rate < 0) {
         throw new Error(t(null, 'errors.invalidExchangeRateValue'));
+      }
+
+      // Determine the date to check
+      const checkDate = createdAt ? (createdAt instanceof Date ? createdAt : new Date(createdAt)) : new Date();
+
+      // Check if rate already exists for this day
+      const exists = await this.rateExistsForDay(checkDate);
+      if (exists) {
+        console.log(t(null, 'info.exchangeRateAlreadyExistsForDay'));
+        return {
+          success: false,
+          message: t(null, 'info.exchangeRateAlreadyExistsForDay')
+        };
       }
 
       // Generate UUID as ID
@@ -133,12 +191,12 @@ class ExchangeRateService {
         `SELECT name FROM sqlite_master WHERE type='table' AND name='${this.tableName}'`
       );
 
-      // If table does not exist, create table  
+      // If table does not exist, create table with proper precision support
       if (!tableExists) {
         await dbAsync.run(
           `CREATE TABLE IF NOT EXISTS ${this.tableName} (
             id TEXT PRIMARY KEY,
-            rate REAL NOT NULL,
+            rate REAL NOT NULL, -- REAL type supports 4 decimal places precision
             created_at TEXT NOT NULL DEFAULT (datetime('now'))
           )`
         );

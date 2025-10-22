@@ -1,6 +1,15 @@
 {
   "errors": {
     "systemErrorPleaseTryAgain": "系统错误，请稍后重试",
+    "exchangeRateCheckError": "检查汇率记录失败",
+    "exchangeRateTaskExecutionFailed": "执行汇率生成任务失败",
+    "exchangeRateSaveError": "保存汇率失败",
+    "invalidExchangeRateValue": "无效的汇率值",
+    "exchangeRateFetchLatestError": "获取最新汇率失败",
+    "exchangeRateFetchAllError": "获取所有汇率失败",
+    "exchangeRateDeleteError": "删除汇率记录失败",
+    "exchangeRateTableEnsureError": "确保汇率表存在失败",
+    "invalidDateObject": "无效的日期对象",
     "usernameOnlyEnglishLetters": "用户名只能包含英文字母",
     "initialBalanceMustBeZero": "初始余额必须为0",
     "failedToCreateWallet": "创建钱包失败：{{error}}",
@@ -69,6 +78,13 @@
     "cdkAlreadyExists": "CDK代码已存在",
     "cdkDataSaveFailed": "无法保存CDK数据",
     "missingRequiredFields": "缺少必填字段"
+  },
+  "info": {
+    "exchangeRateSaved": "汇率已保存: {{rate}}",
+    "exchangeRateAlreadyExistsForDay": "当日汇率已存在，跳过保存",
+    "exchangeRateRecordsDeleted": "已删除 {{count}} 条汇率记录 (日期: {{date}})",
+    "exchangeRateTableCreated": "汇率表已创建: {{tableName}}",
+    "walletCreated": "钱包创建成功"
   },
   "messages": {
     "cdkRedeemedSuccessfully": "CDK已成功使用",

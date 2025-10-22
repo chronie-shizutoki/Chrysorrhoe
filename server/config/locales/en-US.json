@@ -1,5 +1,14 @@
 {
   "errors": {
+    "exchangeRateCheckError": "Failed to check exchange rate records",
+    "exchangeRateTaskExecutionFailed": "Failed to execute exchange rate generation task",
+    "exchangeRateSaveError": "Failed to save exchange rate",
+    "invalidExchangeRateValue": "Invalid exchange rate value",
+    "exchangeRateFetchLatestError": "Failed to fetch latest exchange rate",
+    "exchangeRateFetchAllError": "Failed to fetch all exchange rates",
+    "exchangeRateDeleteError": "Failed to delete exchange rate records",
+    "exchangeRateTableEnsureError": "Failed to ensure exchange rate table exists",
+    "invalidDateObject": "Invalid date object",
     "systemErrorPleaseTryAgain": "System error, please try again later",
     "usernameOnlyEnglishLetters": "Username can only contain English letters",
     "initialBalanceMustBeZero": "Initial balance must be zero",
@@ -100,5 +109,11 @@
     "walletDoesNotExist": "Wallet does not exist",
     "failedToProcessThirdPartyReceipt": "Failed to process third-party receipt",
     "paymentFailed": "Third-party payment failed"
+  },
+  "info": {
+    "exchangeRateSaved": "Exchange rate saved: {{rate}}",
+    "exchangeRateAlreadyExistsForDay": "Exchange rate already exists for today, skipping save",
+    "exchangeRateRecordsDeleted": "Deleted {{count}} exchange rate records (Date: {{date}})",
+    "exchangeRateTableCreated": "Exchange rate table created: {{tableName}}"
   }
 }

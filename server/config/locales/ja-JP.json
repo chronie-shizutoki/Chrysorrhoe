@@ -1,5 +1,14 @@
 {
   "errors": {
+    "exchangeRateCheckError": "為替レートレコードの確認に失敗しました",
+    "exchangeRateTaskExecutionFailed": "為替レート生成タスクの実行に失敗しました",
+    "exchangeRateSaveError": "為替レートの保存に失敗しました",
+    "invalidExchangeRateValue": "無効な為替レートの値",
+    "exchangeRateFetchLatestError": "最新の為替レートの取得に失敗しました",
+    "exchangeRateFetchAllError": "すべての為替レートの取得に失敗しました",
+    "exchangeRateDeleteError": "為替レートレコードの削除に失敗しました",
+    "exchangeRateTableEnsureError": "為替レートテーブルの存在確認に失敗しました",
+    "invalidDateObject": "無効な日付オブジェクト",
     "systemErrorPleaseTryAgain": "システムエラーが発生しました。しばらくしてからもう一度お試しください",
     "usernameOnlyEnglishLetters": "ユーザー名は英字のみ使用可能です",
     "initialBalanceMustBeZero": "初期残高は0でなければなりません",
@@ -74,6 +83,12 @@
     "cdkRedeemedSuccessfully": "CDKが正常に使用されました",
     "cdkValid": "CDKコードは有効です",
     "cdkAddedSuccessfully": "CDKが正常に追加されました"
+  },
+  "info": {
+    "exchangeRateSaved": "為替レートが保存されました: {{rate}}",
+    "exchangeRateAlreadyExistsForDay": "今日の為替レートは既に存在します、保存をスキップします",
+    "exchangeRateRecordsDeleted": "{{count}}件の為替レートレコードを削除しました（日付: {{date}}）",
+    "exchangeRateTableCreated": "為替レートテーブルが作成されました: {{tableName}}"
   },
   "transactions": {
     "systemTransaction": "システム",
