@@ -7,9 +7,6 @@ function Layout({ children }) {
 
   return (
     <div className="app-layout">
-      <a href="#main-content" className="skip-to-main">
-        {t('accessibility.skipToMain', 'Skip to main content')}
-      </a>
       <header className="app-header">
         <h1 className="app-title">{t('wallet.title')}</h1>
       </header>
