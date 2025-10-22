@@ -1,15 +1,19 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWallet } from '../context/WalletContext'
 import { useFormatting } from '../hooks/useFormatting'
 import Loading from './Loading'
+import '../styles/TransferForm.css';
 
 function TransferForm({ onClose, onSuccess }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { t } = useTranslation()
   const { currentWallet, walletService, isLoading, error } = useWallet()
   const { formatCurrency } = useFormatting()
+  const formRef = useRef(null);
+  const overlayRef = useRef(null);
   
   const [formData, setFormData] = useState({
     recipient: '',
@@ -17,6 +21,7 @@ function TransferForm({ onClose, onSuccess }) {
   })
   const [validationErrors, setValidationErrors] = useState({})
   const [transferResult, setTransferResult] = useState(null)
+  const [animationComplete, setAnimationComplete] = useState(false);
 
   const validateForm = () => {
     const errors = {}
@@ -63,19 +68,75 @@ function TransferForm({ onClose, onSuccess }) {
     if (transferResult) {
       setTransferResult(null)
     }
-    
-    // Start open animation if not already open
-    if (!isOpen) {
-      setIsOpen(true);
-    }
   }
 
-  useEffect(() => {
-    // Start open animation
-    if (!isOpen) {
-      setTimeout(() => setIsOpen(true), 10);
+  // Mouse move effect for glass morphism
+  const handleMouseMove = (e) => {
+    if (formRef.current) {
+      const rect = formRef.current.getBoundingClientRect();
+      setMousePosition({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
     }
-  }, []);
+  };
+
+  const handleMouseLeave = () => {
+    setMousePosition({ x: 0, y: 0 });
+  };
+
+  useEffect(() => {
+    // Set focus trap when open
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isClosing) {
+        handleClose();
+      }
+      
+      // Focus trap logic
+      if (e.key === 'Tab' && formRef.current) {
+        const focusableElements = formRef.current.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    
+    // Focus on first input when animation completes
+    const timer = setTimeout(() => {
+      setAnimationComplete(true);
+      const firstInput = formRef.current?.querySelector('input');
+      if (firstInput) firstInput.focus();
+    }, 400);
+
+    // Prevent body scrolling
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+      clearTimeout(timer);
+    };
+  }, [isClosing]);
+
+  // Handle click outside to close (optional feature)
+  const handleClickOutside = (e) => {
+    if (overlayRef.current && formRef.current && 
+        overlayRef.current.contains(e.target) && 
+        !formRef.current.contains(e.target)) {
+      handleClose();
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -119,20 +180,40 @@ function TransferForm({ onClose, onSuccess }) {
     }
   }
 
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsClosing(false);
-      setIsOpen(false);
-      if (onClose) {
-        onClose();
-      }
-    }, 300);
-  }
+  const handleClose = useCallback(() => {
+    if (!isClosing) {
+      setIsClosing(true);
+      setTimeout(() => {
+        if (onClose) {
+          onClose();
+        }
+      }, 400); // Match animation duration
+    }
+  }, [isClosing, onClose]);
 
   return (
-    <div className={`transfer-form-overlay ${isClosing ? 'closing' : ''}`}>
-      <div className={`transfer-form glass-modal ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}>
+    <div 
+      className={`transfer-form-overlay ${isClosing ? 'closing' : ''}`}
+      ref={overlayRef}
+      onClick={handleClickOutside}
+    >
+      <div 
+        className={`transfer-form glass-modal ${isClosing ? 'closing' : ''}`}
+        ref={formRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          backgroundPosition: `${mousePosition.x}px ${mousePosition.y}px`
+        }}
+      >
+        {/* Dynamic light effect */}
+        <div 
+          className="glass-card-light"
+          style={{
+            left: `${mousePosition.x}px`,
+            top: `${mousePosition.y}px`
+          }}
+        />
         <div className="transfer-form__header">
           <h2 className="transfer-form__title">{t('transfer.form')}</h2>
           <button 
@@ -140,6 +221,7 @@ function TransferForm({ onClose, onSuccess }) {
             onClick={handleClose}
             type="button"
             aria-label="Close transfer form"
+            disabled={isLoading}
           >
             ×
           </button>
@@ -159,6 +241,13 @@ function TransferForm({ onClose, onSuccess }) {
         {transferResult && (
           <div className={`transfer-form__result ${transferResult.success ? 'transfer-form__result--success' : 'transfer-form__result--error'}`}>
             {transferResult.message}
+            {transferResult.success && transferResult.transaction && (
+              <div className="transfer-form__transaction-details">
+                <small>
+                  {t('transfer.transactionId')}: {transferResult.transaction.id}
+                </small>
+              </div>
+            )}
           </div>
         )}
 
@@ -176,6 +265,8 @@ function TransferForm({ onClose, onSuccess }) {
               className={`form-input ${validationErrors.recipient ? 'form-input--error' : ''}`}
               placeholder={t('transfer.enterRecipient')}
               disabled={isLoading}
+              autoComplete="off"
+              spellCheck="false"
             />
             {validationErrors.recipient && (
               <span className="form-error">{validationErrors.recipient}</span>
@@ -198,6 +289,7 @@ function TransferForm({ onClose, onSuccess }) {
               min="0.01"
               max={currentWallet.balance}
               disabled={isLoading}
+              autoComplete="off"
             />
             {validationErrors.amount && (
               <span className="form-error">{validationErrors.amount}</span>
@@ -205,14 +297,6 @@ function TransferForm({ onClose, onSuccess }) {
           </div>
 
           <div className="transfer-form__actions">
-            <button 
-              type="button" 
-              className="transfer-form__cancel"
-              onClick={handleClose}
-              disabled={isLoading}
-            >
-              {t('common.cancel')}
-            </button>
             <button 
               type="submit" 
               className="transfer-form__submit"
