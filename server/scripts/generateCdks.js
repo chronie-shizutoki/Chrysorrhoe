@@ -42,7 +42,7 @@ class CdkGenerator {
    * Format: XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
    */
   generateCdkKey() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let key = '';
     
     // Generate 6 groups of 4 characters, separated by hyphens  

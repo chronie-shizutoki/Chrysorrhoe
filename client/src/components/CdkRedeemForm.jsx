@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWallet } from '../context/WalletContext'
 import { useFormatting } from '../hooks/useFormatting'
@@ -29,14 +29,17 @@ function CdkRedeemForm({ onClose, onSuccess }) {
   const handleClose = () => {
     if (isValidating || isRedeeming) return
     
+    // 先设置关闭状态，开始动画
     setIsClosing(true)
-    setIsOpen(false)
-    // 等待动画完成后调用父组件的关闭函数
+    
+    // 等待动画完成后再设置isOpen为false和调用父组件关闭函数
+    // 600ms与CSS中closing动画时间匹配
     setTimeout(() => {
+      setIsOpen(false)
       if (onClose) {
         onClose()
       }
-    }, 300)
+    }, 600)
   }
   
   // 添加键盘事件监听
@@ -157,91 +160,120 @@ function CdkRedeemForm({ onClose, onSuccess }) {
     handleRedeem()
   }
 
+  const formRef = useRef(null)
+  
+  const handleBackdropClick = (e) => {
+    if (formRef.current && !formRef.current.contains(e.target)) {
+      handleClose()
+    }
+  }
+  
   return (
-    <div className={`cdk-redeem-form ${isOpen ? 'open' : ''}`}>
-      <h2>
-        {t('cdk.redeemTitle')}
-        <button 
-          type="button" 
-          onClick={handleClose} 
-          className="close-btn"
-          disabled={isValidating || isRedeeming || isClosing}
-          aria-label={t('common.close')}
+    <>
+      {isOpen && (
+        <div 
+          className={`cdk-redeem-overlay ${isClosing ? 'closing' : ''}`}
+          onClick={handleBackdropClick}
         >
-          ×
-        </button>
-      </h2>
-      
-      {redeemResult ? (
-        <div className={`result-message ${redeemResult.success ? 'success' : 'error'}`}>
-          <p>{redeemResult.message}</p>
-          {redeemResult.success && redeemResult.amount && (
-            <p className="redeem-amount">
-              {t('cdk.redeemAmount', {
-                amount: formatCurrency(redeemResult.amount, redeemResult.currency)
-              })}
-            </p>
-          )}
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <div className="cdk-form-group">
-            <label htmlFor="cdkCode">{t('cdk.enterCdk')}</label>
-            <input
-              type="text"
-              id="cdkCode"
-              value={cdkCode}
-              onChange={handleCodeChange}
-              placeholder={t('cdk.cdkCode')}
-              className={validationError ? 'error' : ''}
-              disabled={isValidating || isRedeeming}
-            />
-            {validationError && (
-              <div className="error-message">{validationError}</div>
-            )}
-            <small className="format-hint">{t('cdk.formatHint')}</small>
-          </div>
-          
-          <div className="button-group">
-            <button 
-              type="button" 
-              onClick={handleValidate}
-              disabled={!cdkCode.trim() || isValidating || isRedeeming}
-              className="btn-secondary"
-            >
-              {isValidating ? <Loading size="small" /> : t('cdk.statusValid')}
-            </button>
-            <button 
-              type="submit" 
-              disabled={!cdkCode.trim() || isValidating || isRedeeming}
-              className="btn-primary"
-            >
-              {isRedeeming ? <Loading size="small" /> : t('cdk.redeem')}
-            </button>
-          </div>
-          
-          {cdkInfo && (
-            <div className="cdk-info">
-              <h4>{t('cdk.validCode')}</h4>
-              <p>{t('cdk.valueInfo', { amount: formatCurrency(cdkInfo.amount, cdkInfo.currency) })}</p>
-              <p>{t('cdk.expiresInfo', { date: new Date(cdkInfo.expiresAt).toLocaleDateString() })}</p>
+          <div 
+            className={`cdk-redeem-form ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}
+            onClick={(e) => e.stopPropagation()}
+            ref={formRef}
+          >
+            <div className="cdk-redeem-form__header">
+              <h2 className="cdk-redeem-form__title">
+                {t('cdk.redeemTitle')}
+              </h2>
+              <button 
+                className="cdk-redeem-form__close" 
+                onClick={handleClose}
+                disabled={isValidating || isRedeeming || isClosing}
+                aria-label={t('common.close')}
+              >
+                ×
+              </button>
             </div>
-          )}
-        </form>
+
+            <div className="cdk-redeem-form__content">
+              {redeemResult ? (
+                <div className={`cdk-redeem-form__result cdk-redeem-form__result--${redeemResult.success ? 'success' : 'error'}`}>
+                  <p>{redeemResult.message}</p>
+                  {redeemResult.success && redeemResult.amount && (
+                    <p className="redeem-amount">
+                      {t('cdk.redeemAmount', {
+                        amount: formatCurrency(redeemResult.amount, redeemResult.currency)
+                      })}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <div className="cdk-form-group">
+                    <label htmlFor="cdkCode">{t('cdk.enterCdk')}</label>
+                    <input
+                      type="text"
+                      id="cdkCode"
+                      value={cdkCode}
+                      onChange={handleCodeChange}
+                      placeholder={t('cdk.cdkCode')}
+                      className={validationError ? 'error' : ''}
+                      disabled={isValidating || isRedeeming}
+                    />
+                    {validationError && (
+                      <div className="error-message">{validationError}</div>
+                    )}
+                    <small className="format-hint">{t('cdk.formatHint')}</small>
+                  </div>
+                  
+                  {cdkInfo && (
+                    <div className="cdk-redeem-form__info">
+                      <h4>{t('cdk.validCode')}</h4>
+                      <p>{t('cdk.valueInfo', { amount: formatCurrency(cdkInfo.amount, cdkInfo.currency) })}</p>
+                      <p>{t('cdk.expiresInfo', { date: new Date(cdkInfo.expiresAt).toLocaleDateString() })}</p>
+                    </div>
+                  )}
+                </form>
+              )}
+
+              {(redeemResult || (!isValidating && !isRedeeming && !redeemResult)) && (
+                <div className="cdk-redeem-form__actions">
+                  {!redeemResult && (
+                    <>
+                      <button 
+                        type="button" 
+                        onClick={handleValidate}
+                        disabled={!cdkCode.trim() || isValidating || isRedeeming}
+                        className="cdk-redeem-form__validate"
+                      >
+                        {isValidating ? <Loading size="small" /> : t('cdk.statusValid')}
+                      </button>
+                      <button 
+                        type="submit" 
+                        disabled={!cdkCode.trim() || isValidating || isRedeeming}
+                        className="cdk-redeem-form__submit"
+                        onClick={handleRedeem}
+                      >
+                        {isRedeeming ? <Loading size="small" /> : t('cdk.redeem')}
+                      </button>
+                    </>
+                  )}
+                  {redeemResult && (
+                    <button
+                      type="button"
+                      className="cdk-redeem-form__submit"
+                      onClick={handleClose}
+                      disabled={isValidating || isRedeeming || isClosing}
+                    >
+                      {t('common.close')}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
-      
-      {/* 底部关闭按钮已替换为右上角X按钮 */}
-      {!redeemResult && (
-        <button 
-          type="button" 
-          onClick={handleClose} 
-          className="btn-close"
-          disabled={isValidating || isRedeeming || isClosing}
-        >
-          {t('common.close')}
-        </button>
-      )}
-    </div>
+    </>
   )
 }
 
