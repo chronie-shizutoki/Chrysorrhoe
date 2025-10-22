@@ -140,6 +140,12 @@
 "accessibility": {
 "skipToMain": "メインコンテンツまでスキップ"
 },
+"error": {
+"title": "エラーが発生しました",
+"message": "予期しないエラーが発生しました。ページを更新してみてください。",
+"details": "エラーの詳細",
+"refreshButton": "ページを更新"
+},
 "exchangeRate": {
 "loading": "為替レートを読み込み中...",
 "title": "為替レート",

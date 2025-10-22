@@ -141,6 +141,12 @@
 "accessibility": {
 "skipToMain": "Skip to main content"
 },
+"error": {
+"title": "Something Went Wrong",
+"message": "We encountered an unexpected error. Please try refreshing the page.",
+"details": "Error Details",
+"refreshButton": "Reload Page"
+},
 "exchangeRate": {
 "loading": "Loading exchange rate...",
 "title": "Exch.",

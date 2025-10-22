@@ -140,6 +140,12 @@
 "accessibility": {
 "skipToMain": "跳過導覽"
 },
+"error": {
+"title": "發生錯誤",
+"message": "我們遇到了意外錯誤，請嘗試重新整理頁面。",
+"details": "錯誤詳情",
+"refreshButton": "重新整理頁面"
+},
 "exchangeRate": {
 "loading": "正在載入匯率...",
 "title": "匯率",

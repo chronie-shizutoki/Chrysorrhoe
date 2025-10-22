@@ -2,7 +2,7 @@ import { Component } from 'react'
 import { useTranslation } from 'react-i18next'
 import '../styles/ErrorBoundary.css'
 
-// 为类组件创建一个包装器以使用钩子
+// Create a wrapper for class components to use hooks
 function ErrorBoundaryWithTranslation({ children }) {
   const { t } = useTranslation()
   return <ErrorBoundary t={t}>{children}</ErrorBoundary>

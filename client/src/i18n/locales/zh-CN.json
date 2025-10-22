@@ -140,6 +140,12 @@
 "accessibility": {
 "skipToMain": "跳过导航"
 },
+"error": {
+"title": "发生错误",
+"message": "我们遇到了意外错误，请尝试刷新页面。",
+"details": "错误详情",
+"refreshButton": "刷新页面"
+},
 "exchangeRate": {
 "loading": "正在加载汇率...",
 "title": "汇率",
