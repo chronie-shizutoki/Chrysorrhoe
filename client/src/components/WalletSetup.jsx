@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useWallet } from '../context/WalletContext'
@@ -11,10 +11,10 @@ function WalletSetup() {
   const { walletService, isLoading, error } = useWallet()
   
   const [mode, setMode] = useState('login') // 'login' or 'create'
-  const [formData, setFormData] = useState({
-    username: ''
-  })
+  const [formData, setFormData] = useState({username: ''})
   const [validationErrors, setValidationErrors] = useState({})
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [cardElement, setCardElement] = useState(null)
 
   const validateForm = () => {
     const errors = {}
@@ -47,6 +47,53 @@ function WalletSetup() {
       }))
     }
   }
+  
+  // Handle mouse movement for interactive glass effect
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (cardElement) {
+        const rect = cardElement.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        setMousePosition({ x, y })
+        
+        // Add subtle gradient movement effect
+        cardElement.style.background = `rgba(255, 255, 255, 0.1) radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.15), transparent 80px)`
+      }
+    }
+    
+    const container = document.querySelector('.wallet-setup__container')
+    if (container) {
+      setCardElement(container)
+      container.addEventListener('mousemove', handleMouseMove)
+    }
+    
+    return () => {
+      if (container) {
+        container.removeEventListener('mousemove', handleMouseMove)
+      }
+    }
+  }, [])
+  
+  // Reset glass effect when mouse leaves
+  useEffect(() => {
+    const handleMouseLeave = () => {
+      if (cardElement) {
+        cardElement.style.background = 'rgba(255, 255, 255, 0.1)'
+      }
+    }
+    
+    const container = document.querySelector('.wallet-setup__container')
+    if (container) {
+      container.addEventListener('mouseleave', handleMouseLeave)
+    }
+    
+    return () => {
+      if (container) {
+        container.removeEventListener('mouseleave', handleMouseLeave)
+      }
+    }
+  }, [cardElement])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -91,7 +138,22 @@ function WalletSetup() {
 
   return (
     <div className="wallet-setup">
-      <div className="wallet-setup__container glass-card">
+      <div className="wallet-setup__container">
+        {/* Dynamic light effect for glass card */}
+        <div 
+          className="glass-card-light"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255, 255, 255, 0.15), transparent 120px)`,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            pointerEvents: 'none',
+            zIndex: 0
+          }}
+        />
+        
         <h1 className="wallet-setup__title">
           {mode === 'login' ? t('wallet.login') : t('wallet.create')}
         </h1>
@@ -115,6 +177,8 @@ function WalletSetup() {
               onChange={handleInputChange}
               className={`form-input ${validationErrors.username ? 'form-input--error' : ''}`}
               placeholder={t('wallet.enterUsername')}
+              spellCheck="false"
+              autoComplete="off"
             />
             {validationErrors.username && (
               <span className="form-error">{validationErrors.username}</span>
@@ -133,14 +197,14 @@ function WalletSetup() {
         <div className="wallet-setup__switch">
           <p>
             {mode === 'login' ? t('wallet.noAccount') : t('wallet.hasAccount')}
-            <button 
-              type="button" 
-              className="switch-mode-button"
-              onClick={switchMode}
-            >
-              {mode === 'login' ? t('wallet.create') : t('wallet.login')}
-            </button>
           </p>
+          <button 
+            type="button" 
+            className="switch-mode-button"
+            onClick={switchMode}
+          >
+            {mode === 'login' ? t('wallet.create') : t('wallet.login')}
+          </button>
         </div>
       </div>
     </div>
