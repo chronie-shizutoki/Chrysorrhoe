@@ -69,8 +69,6 @@ function TransferForm({ onClose, onSuccess }) {
     }
   }
 
-
-
   useEffect(() => {
     // Set focus trap when open
     const handleKeyDown = (e) => {

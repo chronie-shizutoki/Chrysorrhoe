@@ -20,8 +20,7 @@ function CdkRedeemForm({ onClose, onSuccess }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   
-  // 组件挂载时触发动画
-  // 增加延迟时间确保浏览器有足够时间渲染初始状态
+  // Trigger animation effect when component mounts
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsOpen(true)
@@ -30,15 +29,15 @@ function CdkRedeemForm({ onClose, onSuccess }) {
     return () => clearTimeout(timer)
   }, [])
   
-  // 处理关闭逻辑，添加动画效果
+  // Add animation effect when closing
   const handleClose = () => {
     if (isValidating || isRedeeming) return
     
-    // 先设置关闭状态，开始动画
+    // Set closing state first to start animation
     setIsClosing(true)
     
-    // 等待动画完成后再设置isOpen为false和调用父组件关闭函数
-    // 600ms与CSS中closing动画时间匹配
+    // Wait for animation to complete before setting isOpen to false and calling parent close function
+    // 600ms matches the closing animation duration in CSS
     setTimeout(() => {
       setIsOpen(false)
       if (onClose) {
@@ -47,7 +46,7 @@ function CdkRedeemForm({ onClose, onSuccess }) {
     }, 600)
   }
   
-  // 添加键盘事件监听
+  // Add keyboard event listener
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !isValidating && !isRedeeming) {
