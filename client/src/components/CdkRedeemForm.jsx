@@ -21,8 +21,13 @@ function CdkRedeemForm({ onClose, onSuccess }) {
   const [isClosing, setIsClosing] = useState(false)
   
   // 组件挂载时触发动画
+  // 增加延迟时间确保浏览器有足够时间渲染初始状态
   useEffect(() => {
-    setIsOpen(true)
+    const timer = setTimeout(() => {
+      setIsOpen(true)
+    }, 50)
+    
+    return () => clearTimeout(timer)
   }, [])
   
   // 处理关闭逻辑，添加动画效果
@@ -170,16 +175,16 @@ function CdkRedeemForm({ onClose, onSuccess }) {
   
   return (
     <>
-      {isOpen && (
+      <div 
+        className={`cdk-redeem-overlay ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}
+        onClick={handleBackdropClick}
+        style={{ display: isClosing && !isOpen ? 'none' : 'flex' }}
+      >
         <div 
-          className={`cdk-redeem-overlay ${isClosing ? 'closing' : ''}`}
-          onClick={handleBackdropClick}
+          className={`cdk-redeem-form ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}
+          onClick={(e) => e.stopPropagation()}
+          ref={formRef}
         >
-          <div 
-            className={`cdk-redeem-form ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}
-            onClick={(e) => e.stopPropagation()}
-            ref={formRef}
-          >
             <div className="cdk-redeem-form__header">
               <h2 className="cdk-redeem-form__title">
                 {t('cdk.redeemTitle')}
@@ -272,7 +277,6 @@ function CdkRedeemForm({ onClose, onSuccess }) {
             </div>
           </div>
         </div>
-      )}
     </>
   )
 }
