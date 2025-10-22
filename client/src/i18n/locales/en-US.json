@@ -40,7 +40,7 @@
 "validationFailed": "CDK validation failed",
 "redeemFailed": "Failed to redeem CDK",
 "processing": "Processing...",
-"formatHint": "Format: XXXX-XXXX-XXXX-XXXX (where X is uppercase letter or number)",
+"formatHint": "Input 6 groups of XXXX (where X is uppercase letter or number)",
 "redeemAmount": "Successfully redeemed: {{amount}}",
 "autoCloseIn3s": "This window will close automatically in 3 seconds"
 },

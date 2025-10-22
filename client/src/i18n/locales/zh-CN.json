@@ -40,7 +40,7 @@
 "validationFailed": "CDK验证失败",
 "redeemFailed": "CDK兑换失败",
 "processing": "处理中...",
-"formatHint": "格式: XXXX-XXXX-XXXX-XXXX (X为大写字母或数字)",
+"formatHint": "应输入6组XXXX (X为大写字母或数字)",
 "redeemAmount": "成功兑换：{{amount}}",
 "autoCloseIn3s": "此窗口将在3秒后自动关闭"
 },

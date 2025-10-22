@@ -21,7 +21,7 @@
 "validationFailed": "CDKの検証に失敗しました",
 "redeemFailed": "CDKの使用に失敗しました",
 "processing": "処理中...",
-"formatHint": "形式: XXXX-XXXX-XXXX-XXXX (Xは大文字アルファベットまたは数字)",
+"formatHint": "6組のXXXXを入力 (Xは大文字アルファベットまたは数字)",
 "redeemAmount": "正常に使用: {{amount}}",
 "autoCloseIn3s": "このウィンドウは3秒後に自動的に閉じます"
 },

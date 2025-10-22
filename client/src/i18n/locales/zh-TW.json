@@ -21,7 +21,7 @@
 "validationFailed": "CDK驗證失敗",
 "redeemFailed": "CDK兌換失敗",
 "processing": "處理中...",
-"formatHint": "格式: XXXX-XXXX-XXXX-XXXX (X為大寫字母或數字)",
+"formatHint": "應輸入6組XXXX (X為大寫字母或數字)",
 "redeemAmount": "成功兌換：{{amount}}",
 "autoCloseIn3s": "此視窗將在3秒後自動關閉"
 },
