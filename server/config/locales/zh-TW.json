@@ -1,10 +1,4 @@
 {
-  "info": {
-    "startInterestReissue": "開始進行利息重新發放處理...",
-    "noPendingInterestPeriods": "查無待處理的利息期間",
-    "exchangeRateSaved": "匯率已成功儲存：1 USD = {{rate}}",
-    "interestTransactionTypesEnsured": "利息交易類型已確保設定完成"
-  },
   "errors": {
     "systemErrorPleaseTryAgain": "系統錯誤，請稍後重試",
     "usernameOnlyEnglishLetters": "使用者名稱只能包含英文字母",
