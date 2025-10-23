@@ -259,6 +259,14 @@
   border-bottom: none;
 }
 
+.transaction-table td:nth-child(3) {
+  white-space: nowrap;
+}
+
+.transaction-table td:nth-child(4) {
+  white-space: nowrap;
+}
+
 /* button styles enhancement */
 .back-button {
   background: rgba(255, 255, 255, 0.1);
