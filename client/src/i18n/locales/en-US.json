@@ -64,20 +64,22 @@
     "to": "To",
     "noTransactions": "No transactions yet",
     "loadMore": "Load More",
-    "page": "Page {{current}} of {{total}}",
+    "page": "{{current}} of {{total}}",
     "initialSystem": "System",
     "sent": "Sent",
     "received": "Received",
     "transfer": "Transfer",
     "system": "System",
     "unknown": "Unknown",
+    "party": "Related Party",
     "thirdParty": "{{thirdPartyName}}",
     "thirdPartyFrom": ". From third-party provider: ",
     "thirdPartyPaymentTo": ". Paid to third-party provider: ",
     "thirdPartyReceiptFrom": ". Received from third-party provider: ",
     "thirdPartyPayment": "Third Party Payment (includes fee)",
     "thirdPartyReceipt": "Third Party Receipt",
-    "interest": "Interest"
+    "interest": "Interest",
+    "description": "Description"
   },
 "messages": {
 "insufficient_funds": "Insufficient funds, please top up",
@@ -137,9 +139,6 @@
 "language": {
 "select": "Select Language",
 "current": "Current Language"
-},
-"accessibility": {
-"skipToMain": "Skip to main content"
 },
 "error": {
 "title": "Something Went Wrong",

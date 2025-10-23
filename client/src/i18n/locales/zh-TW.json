@@ -64,19 +64,21 @@
     "to": "收款方",
     "noTransactions": "暫無交易記錄",
     "loadMore": "載入更多",
-    "page": "第 {{current}} 頁/共 {{total}} 頁",
+    "page": "{{current}} / {{total}}",
     "sent": "轉出",
     "received": "轉入",
     "transfer": "轉帳",
     "system": "系統",
     "unknown": "未知",
+    "party": "關聯者",
     "thirdParty": "{{thirdPartyName}}",
     "thirdPartyFrom": "，第三方業者：",
     "thirdPartyPaymentTo": "，支付給第三方業者：",
     "thirdPartyReceiptFrom": "，第三方業者收入來源：",
     "thirdPartyPayment": "第三方支付（含手續費）",
     "thirdPartyReceipt": "第三方收入",
-    "interest": "利息"
+    "interest": "利息",
+    "description": "描述"
   },
 "messages": {
 "insufficient_funds": "餘額不足，請儲值",
@@ -136,9 +138,6 @@
 "language": {
 "select": "選擇語言",
 "current": "目前語言"
-},
-"accessibility": {
-"skipToMain": "跳過導覽"
 },
 "error": {
 "title": "發生錯誤",

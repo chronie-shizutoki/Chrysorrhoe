@@ -64,19 +64,21 @@
     "to": "送金先",
     "noTransactions": "取引履歴がまだありません",
     "loadMore": "さらに読み込む",
-    "page": "{{current}} / {{total}} ページ",
+    "page": "{{current}} / {{total}} ",
     "sent": "送金済み",
     "received": "入金済み",
     "transfer": "振替",
     "system": "システム",
     "unknown": "不明",
+    "party": "関連者",
     "thirdParty": "{{thirdPartyName}}",
     "thirdPartyFrom": "、サードパーティ提供元：",
     "thirdPartyPaymentTo": "、サードパーティ提供元への支払い：",
     "thirdPartyReceiptFrom": "、サードパーティ提供元からの受取り：",
     "thirdPartyPayment": "サードパーティ決済（含手数料）",
     "thirdPartyReceipt": "サードパーティ受取り",
-    "interest": "利息"
+    "interest": "利息",
+    "description": "説明"
   },
 "messages": {
 "insufficient_funds": "残高が不足しています。チャージしてください",
@@ -136,9 +138,6 @@
 "language": {
 "select": "言語選択",
 "current": "現在の言語"
-},
-"accessibility": {
-"skipToMain": "メインコンテンツまでスキップ"
 },
 "error": {
 "title": "エラーが発生しました",

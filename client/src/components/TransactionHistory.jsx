@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useWallet } from '../context/WalletContext'
@@ -12,12 +12,31 @@ const TransactionHistory = () => {
   const { currentWallet, transactions, pagination, walletService, isLoading, error } = useWallet()
   const { formatCurrency, formatDateTime } = useFormatting()
   const [loadingMore, setLoadingMore] = useState(false)
+  const [isTableView, setIsTableView] = useState(false)
+  const resizeObserverRef = useRef(null)
 
   useEffect(() => {
     if (currentWallet) {
       loadTransactions(1)
     }
   }, [currentWallet])
+
+  // listen for window resize events to toggle between card and table views
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsTableView(window.innerWidth >= 1024)
+    }
+
+    // check ScreenSize on component mount
+    checkScreenSize()
+
+    // add window resize event listener
+    window.addEventListener('resize', checkScreenSize)
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize)
+    }
+  }, [])
 
   const loadTransactions = async (page = 1) => {
     if (!currentWallet) return
@@ -199,6 +218,36 @@ const TransactionHistory = () => {
                 )}
               </div>
             ))}
+          </div>
+
+          {/* large table view */}
+          <div className="transaction-table-container">
+            <table className="transaction-table">
+              <thead>
+                <tr>
+                  <th>{t('transaction.type')}</th>
+                  <th>{t('transaction.party')}</th>
+                  <th>{t('transaction.date')}</th>
+                  <th className="text-right">{t('transaction.amount')}</th>
+                  <th>{t('transaction.description')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.map((transaction) => (
+                  <tr key={transaction.id}>
+                    <td>{getTransactionType(transaction)}</td>
+                    <td>{getOtherParty(transaction)}</td>
+                    <td>{formatDateTime(transaction.createdAt)}</td>
+                    <td className={`text-right ${getTransactionAmountClass(transaction)}`}>
+                      {getTransactionAmount(transaction)}
+                    </td>
+                    <td className="description-cell" data-description={transaction.description || ''}>
+                      {transaction.description || '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {pagination.totalPages > 1 && (

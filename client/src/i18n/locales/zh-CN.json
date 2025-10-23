@@ -64,19 +64,21 @@
     "to": "收款方",
     "noTransactions": "暂无交易记录",
     "loadMore": "加载更多",
-    "page": "第 {{current}} 页/共 {{total}} 页",
+    "page": " {{current}} / {{total}}",
     "sent": "转出",
     "received": "转入",
     "transfer": "转账",
     "system": "系统",
     "unknown": "未知",
+    "party": "关联者",
     "thirdParty": "{{thirdPartyName}}",
     "thirdPartyFrom": "，第三方提供商：",
     "thirdPartyPaymentTo": "，支付给第三方服务提供商：",
     "thirdPartyReceiptFrom": "，第三方收款来源：",
     "thirdPartyPayment": "第三方支付（含手续费）",
     "thirdPartyReceipt": "第三方收入",
-    "interest": "利息"
+    "interest": "利息",
+    "description": "描述"
   },
 "messages": {
 "insufficient_funds": "余额不足，请充值",
@@ -136,9 +138,6 @@
 "language": {
 "select": "选择语言",
 "current": "当前语言"
-},
-"accessibility": {
-"skipToMain": "跳过导航"
 },
 "error": {
 "title": "发生错误",
