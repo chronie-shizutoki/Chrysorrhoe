@@ -30,6 +30,8 @@ app.use(cors({
     'http://localhost:3100',
     'http://127.0.0.1:3100',
     'http://192.168.0.197:3100',
+    'http://192.168.0.197:3101',
+    'http://192.168.0.197:4173',
     process.env.CORS_ORIGIN
   ].filter(Boolean),
   credentials: true
