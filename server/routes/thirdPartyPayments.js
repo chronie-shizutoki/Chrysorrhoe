@@ -89,8 +89,8 @@ router.post('/payments', async (req, res, next) => {
         });
       }
       
-      // Calculate 30% extra fee
-    const feeRate = 0.3;
+      // Calculate 15% extra fee
+    const feeRate = 0.15;
     const feeAmount = Math.round(amount * feeRate * 100) / 100; // Keep 2 decimal places
     const totalAmount = amount + feeAmount;
     
