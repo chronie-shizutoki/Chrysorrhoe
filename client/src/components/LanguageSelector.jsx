@@ -98,7 +98,9 @@ function LanguageSelector() {
       >
         <span className="language-select-text">{getCurrentLanguageName()}</span>
         <span className={`language-select-arrow ${isOpen || isClosing ? 'open' : ''}`}>
-          ▼
+          <svg width="8" height="6" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </span>
       </button>
       {(isOpen || isClosing) && (
