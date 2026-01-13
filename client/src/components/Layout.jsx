@@ -7,9 +7,6 @@ function Layout({ children }) {
 
   return (
     <div className="app-layout">
-      <header className="app-header">
-        <h1 className="app-title">{t('wallet.title')}</h1>
-      </header>
       <ExchangeRateBanner />
       <main id="main-content" className="app-main">
         {children}

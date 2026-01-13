@@ -204,55 +204,6 @@ body {
   }
 }
 
-.app-header {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-bottom: 1px solid var(--glass-border);
-  padding: var(--space-md);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: var(--glass-shadow);
-  flex-wrap: wrap;
-  gap: var(--space-md);
-  transition: all var(--animation-duration) ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.app-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--glass-gradient);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.app-header > * {
-  position: relative;
-  z-index: 1;
-}
-
-.app-title {
-  margin: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-tight);
-  line-height: var(--line-height-tight);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: transform var(--animation-duration-fast) ease;
-}
-
-.app-title:hover {
-  transform: translateY(-1px);
-}
-
 .app-main {
   flex: 1;
   padding: var(--space-md);
@@ -539,16 +490,6 @@ body {
 }
 
 @media (min-width: 768px) {
-  .app-header {
-    padding: 1rem 2rem;
-    flex-wrap: nowrap;
-    box-shadow: var(--glass-shadow);
-  }
-  
-  .app-title {
-    font-size: 1.5rem;
-  }
-  
   .app-main {
     padding: 2rem;
   }
@@ -573,7 +514,6 @@ body {
   }
   
   /* Optimized glass effect for mobile */
-  .app-header,
   .no-wallet-message,
   .no-transactions,
   .error-boundary,
@@ -590,7 +530,6 @@ body {
 }
 
 @media (max-width: 380px) {
-  .app-header,
   .app-main {
     padding: var(--space-sm);
   }
@@ -693,7 +632,6 @@ body {
 
 /* Print styles */
 @media print {
-  .app-header,
   .form-input,
   .back-button,
   .no-wallet-message,
