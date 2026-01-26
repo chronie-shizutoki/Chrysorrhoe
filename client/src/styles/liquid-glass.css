@@ -137,7 +137,6 @@
   border-radius: 12px;
   position: relative;
   overflow: hidden;
-  animation: glassAppear 0.5s ease-out forwards;
 }
 
 .glass-button {

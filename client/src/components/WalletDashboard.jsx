@@ -210,13 +210,12 @@ function WalletDashboard() {
         </div>
       </div>
 
-      {showTransferForm && (
-        <TransferForm 
-          onClose={handleTransferClose}
-          onSuccess={handleTransferSuccess}
-          buttonPosition={buttonPositions.transfer}
-        />
-      )}
+      <TransferForm 
+        onClose={handleTransferClose}
+        onSuccess={handleTransferSuccess}
+        buttonPosition={buttonPositions.transfer}
+        visible={showTransferForm}
+      />
       
       {showCdkForm && (
         <CdkRedeemForm 

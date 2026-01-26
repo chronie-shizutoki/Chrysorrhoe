@@ -5,17 +5,19 @@ import { useFormatting } from '../hooks/useFormatting'
 import Loading from './Loading'
 import '../styles/TransferForm.css';
 
-function TransferForm({ onClose, onSuccess, buttonPosition }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
+function TransferForm({ onClose, onSuccess, buttonPosition, visible }) {
   const { t } = useTranslation()
   const { currentWallet, walletService, isLoading, error } = useWallet()
   const { formatCurrency } = useFormatting()
   const formRef = useRef(null);
   const overlayRef = useRef(null);
   
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+  
   // Calculate initial position based on button position
-  const getInitialPosition = () => {
+  const [initialPosition, setInitialPosition] = useState(() => {
     if (buttonPosition) {
       return {
         x: buttonPosition.x - window.innerWidth / 2,
@@ -23,7 +25,19 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
       };
     }
     return { x: 0, y: 0 };
-  };
+  });
+  
+  // Update initial position when button position changes
+  useEffect(() => {
+    if (buttonPosition) {
+      setInitialPosition({
+        x: buttonPosition.x - window.innerWidth / 2,
+        y: buttonPosition.y - window.innerHeight / 2
+      });
+    } else {
+      setInitialPosition({ x: 0, y: 0 });
+    }
+  }, [buttonPosition]);
   
   const [formData, setFormData] = useState({
     recipient: '',
@@ -31,19 +45,16 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
   })
   const [validationErrors, setValidationErrors] = useState({})
   const [transferResult, setTransferResult] = useState(null)
-  const [animationComplete, setAnimationComplete] = useState(false);
 
   const validateForm = () => {
     const errors = {}
     
-    // Recipient validation
     if (!formData.recipient.trim()) {
       errors.recipient = t('validation.required')
     } else if (formData.recipient.trim().length < 2) {
       errors.recipient = t('validation.minLength', { min: 2 })
     }
     
-    // Amount validation
     if (!formData.amount.trim()) {
       errors.amount = t('validation.required')
     } else {
@@ -66,7 +77,6 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
       [name]: value
     }))
     
-    // Clear validation error for this field when user starts typing
     if (validationErrors[name]) {
       setValidationErrors(prev => ({
         ...prev,
@@ -74,70 +84,32 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
       }))
     }
     
-    // Clear transfer result when user modifies form
     if (transferResult) {
       setTransferResult(null)
     }
   }
 
-  useEffect(() => {
-    // Trigger animation when component mounts
-    const animationTimer = setTimeout(() => {
-      setIsOpen(true);
-    }, 50);
-
-    // Set focus trap when open
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && !isClosing) {
-        handleClose();
-      }
-      
-      // Focus trap logic
-      if (e.key === 'Tab' && formRef.current) {
-        const focusableElements = formRef.current.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-        
-        if (e.shiftKey && document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement.focus();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement.focus();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    
-    // Focus on first input when animation completes
-    const timer = setTimeout(() => {
-      setAnimationComplete(true);
-      const firstInput = formRef.current?.querySelector('input');
-      if (firstInput) firstInput.focus();
-    }, 400);
-
-    // Prevent body scrolling
-    document.body.style.overflow = 'hidden';
-    
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
-      clearTimeout(timer);
-      clearTimeout(animationTimer);
-    };
-  }, [isClosing, buttonPosition]);
-
-  // Handle click outside to close (optional feature)
-  const handleClickOutside = (e) => {
+  const handleClickOutside = useCallback((e) => {
     if (overlayRef.current && formRef.current && 
         overlayRef.current.contains(e.target) && 
         !formRef.current.contains(e.target)) {
-      handleClose();
+      handleClose()
     }
-  };
+  }, [])
+
+  const handleClose = useCallback(() => {
+    if (isLoading) return
+    
+    setIsClosing(true)
+    setIsOpen(false)
+    
+    setTimeout(() => {
+      setIsClosing(false)
+      if (onClose) {
+        onClose()
+      }
+    }, 1000)
+  }, [isLoading, onClose])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -160,15 +132,12 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
           transaction: result.transaction
         })
         
-        // Reset form
         setFormData({ recipient: '', amount: '' })
         
-        // Call success callback if provided
         if (onSuccess) {
           onSuccess(result)
         }
         
-        // Close the modal with animation
         setTimeout(() => {
           handleClose()
         }, 1000)
@@ -180,28 +149,88 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
       })
     }
   }
-
-  const handleClose = useCallback(() => {
-    if (!isClosing) {
-      setIsClosing(true);
-      setTimeout(() => {
-        if (onClose) {
-          onClose();
-        }
-      }, 400); // Match animation duration
+  
+  // Update initial position when button position changes
+  useEffect(() => {
+    if (buttonPosition) {
+      setInitialPosition({
+        x: buttonPosition.x - window.innerWidth / 2,
+        y: buttonPosition.y - window.innerHeight / 2
+      });
+    } else {
+      setInitialPosition({ x: 0, y: 0 });
     }
-  }, [isClosing, onClose]);
+  }, [buttonPosition]);
+  
+  // Handle visible prop changes
+  useEffect(() => {
+    if (visible && !shouldRender) {
+      setShouldRender(true)
+      setTimeout(() => {
+        setIsOpen(true)
+      }, 50)
+    } else if (!visible && shouldRender && !isClosing) {
+      handleClose()
+    }
+  }, [visible, shouldRender, isClosing, handleClose])
+  
+  // Cleanup after closing animation
+  useEffect(() => {
+    if (!isOpen && !shouldRender) {
+      return
+    }
+    if (!isOpen && shouldRender && !visible) {
+      const timer = setTimeout(() => {
+        setShouldRender(false)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen, shouldRender, visible])
+  
+  // Add keyboard event listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isLoading) {
+        handleClose()
+      }
+    }
+    
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isLoading, handleClose])
 
+  console.log('TransferForm: rendering, isOpen:', isOpen, 'isClosing:', isClosing, 'shouldRender:', shouldRender);
+  
+  if (!shouldRender) {
+    return null
+  }
+  
   return (
-    <div 
-      className={`transfer-form-overlay ${isClosing ? 'closing' : ''} ${isOpen ? 'open' : ''}`}
-      ref={overlayRef}
-      onClick={handleClickOutside}
-    >
+    <>
       <div 
-        className={`transfer-form glass-modal ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}
-        ref={formRef}
+        className={`transfer-form-overlay ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}
+        ref={overlayRef}
+        onClick={handleClickOutside}
+        style={{ 
+          display: 'flex',
+          opacity: isOpen ? 1 : 0,
+          transition: 'opacity 1s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
       >
+        <div 
+          className="transfer-form glass-modal"
+          ref={formRef}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            opacity: isOpen ? 1 : 0,
+            transform: isClosing 
+              ? `translate(${initialPosition.x}px, ${initialPosition.y}px) scale(0)` 
+              : isOpen 
+                ? 'translate(0, 0) scale(1)' 
+                : `translate(${initialPosition.x}px, ${initialPosition.y}px) scale(0)`,
+            transition: 'transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+          }}
+        >
         <div className="transfer-form__header">
           <h2 className="transfer-form__title">{t('transfer.form')}</h2>
           <button 
@@ -209,7 +238,7 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
             onClick={handleClose}
             type="button"
             aria-label="Close transfer form"
-            disabled={isLoading}
+            disabled={isLoading || isClosing}
           >
             ×
           </button>
@@ -301,7 +330,8 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   )
 }
 
