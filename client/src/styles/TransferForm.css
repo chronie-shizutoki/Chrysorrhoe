@@ -13,6 +13,16 @@
   align-items: center;
   z-index: 1000;
   padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transfer-form-overlay.open {
+  opacity: 1;
+}
+
+.transfer-form-overlay.closing {
+  opacity: 0;
 }
 
 .transfer-form {
@@ -30,6 +40,19 @@
   overflow-y: auto;
   position: relative;
   overflow: hidden;
+  opacity: 0;
+  transform: scale(0);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transfer-form.open {
+  opacity: 1;
+  transform: scale(1) translate(0, 0);
+}
+
+.transfer-form.closing {
+  opacity: 0;
+  transform: scale(0);
 }
 
 .transfer-form__header {

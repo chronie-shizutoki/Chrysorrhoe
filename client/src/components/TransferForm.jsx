@@ -33,15 +33,6 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
   const [transferResult, setTransferResult] = useState(null)
   const [animationComplete, setAnimationComplete] = useState(false);
 
-  // Trigger animation effect when component mounts
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsOpen(true)
-    }, 50)
-    
-    return () => clearTimeout(timer)
-  }, [buttonPosition])
-
   const validateForm = () => {
     const errors = {}
     
@@ -206,23 +197,10 @@ function TransferForm({ onClose, onSuccess, buttonPosition }) {
       className={`transfer-form-overlay ${isClosing ? 'closing' : ''} ${isOpen ? 'open' : ''}`}
       ref={overlayRef}
       onClick={handleClickOutside}
-      style={{
-        opacity: isOpen ? 1 : 0,
-        transition: 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-      }}
     >
       <div 
-        className={`transfer-form glass-modal`}
+        className={`transfer-form glass-modal ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}
         ref={formRef}
-        style={{
-          opacity: isOpen ? 1 : 0,
-          transform: isClosing 
-            ? `scale(0) translate(${getInitialPosition().x}px, ${getInitialPosition().y}px)` 
-            : isOpen 
-              ? 'scale(1) translate(0, 0)' 
-              : `scale(0) translate(${getInitialPosition().x}px, ${getInitialPosition().y}px)`,
-          transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-        }}
       >
         <div className="transfer-form__header">
           <h2 className="transfer-form__title">{t('transfer.form')}</h2>
