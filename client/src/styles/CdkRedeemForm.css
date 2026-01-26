@@ -13,14 +13,6 @@
   align-items: center;
   z-index: 1000;
   padding: 1rem;
-  opacity: 0;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Open state animation for overlay */
-.cdk-redeem-overlay.open {
-  opacity: 1;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cdk-redeem-form {
@@ -36,36 +28,8 @@
     0 0 0 1px rgba(0, 0, 0, 0.02),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
   position: relative;
-  opacity: 0;
-  transform: translateY(10px) scale(0.95);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   z-index: 1001;
-}
-
-/* Open state animation */
-.cdk-redeem-form.open {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Closing state animation */
-.cdk-redeem-form.closing {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-/* Overlay closing animation */
-.cdk-redeem-overlay.closing {
-  opacity: 0;
-  transform: translateY(30px) scale(0.98);
-  filter: blur(4px) brightness(0.9);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Dark Mode Optimization */

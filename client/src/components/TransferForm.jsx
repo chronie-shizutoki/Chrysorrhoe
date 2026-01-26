@@ -5,14 +5,25 @@ import { useFormatting } from '../hooks/useFormatting'
 import Loading from './Loading'
 import '../styles/TransferForm.css';
 
-function TransferForm({ onClose, onSuccess }) {
-  const [isOpen, setIsOpen] = useState(true);
+function TransferForm({ onClose, onSuccess, buttonPosition }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const { t } = useTranslation()
   const { currentWallet, walletService, isLoading, error } = useWallet()
   const { formatCurrency } = useFormatting()
   const formRef = useRef(null);
   const overlayRef = useRef(null);
+  
+  // Calculate initial position based on button position
+  const getInitialPosition = () => {
+    if (buttonPosition) {
+      return {
+        x: buttonPosition.x - window.innerWidth / 2,
+        y: buttonPosition.y - window.innerHeight / 2
+      };
+    }
+    return { x: 0, y: 0 };
+  };
   
   const [formData, setFormData] = useState({
     recipient: '',
@@ -21,6 +32,15 @@ function TransferForm({ onClose, onSuccess }) {
   const [validationErrors, setValidationErrors] = useState({})
   const [transferResult, setTransferResult] = useState(null)
   const [animationComplete, setAnimationComplete] = useState(false);
+
+  // Trigger animation effect when component mounts
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsOpen(true)
+    }, 50)
+    
+    return () => clearTimeout(timer)
+  }, [buttonPosition])
 
   const validateForm = () => {
     const errors = {}
@@ -70,6 +90,11 @@ function TransferForm({ onClose, onSuccess }) {
   }
 
   useEffect(() => {
+    // Trigger animation when component mounts
+    const animationTimer = setTimeout(() => {
+      setIsOpen(true);
+    }, 50);
+
     // Set focus trap when open
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !isClosing) {
@@ -110,8 +135,9 @@ function TransferForm({ onClose, onSuccess }) {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
       clearTimeout(timer);
+      clearTimeout(animationTimer);
     };
-  }, [isClosing]);
+  }, [isClosing, buttonPosition]);
 
   // Handle click outside to close (optional feature)
   const handleClickOutside = (e) => {
@@ -177,13 +203,26 @@ function TransferForm({ onClose, onSuccess }) {
 
   return (
     <div 
-      className={`transfer-form-overlay ${isClosing ? 'closing' : ''}`}
+      className={`transfer-form-overlay ${isClosing ? 'closing' : ''} ${isOpen ? 'open' : ''}`}
       ref={overlayRef}
       onClick={handleClickOutside}
+      style={{
+        opacity: isOpen ? 1 : 0,
+        transition: 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+      }}
     >
       <div 
-        className={`transfer-form glass-modal ${isClosing ? 'closing' : ''}`}
+        className={`transfer-form glass-modal`}
         ref={formRef}
+        style={{
+          opacity: isOpen ? 1 : 0,
+          transform: isClosing 
+            ? `scale(0) translate(${getInitialPosition().x}px, ${getInitialPosition().y}px)` 
+            : isOpen 
+              ? 'scale(1) translate(0, 0)' 
+              : `scale(0) translate(${getInitialPosition().x}px, ${getInitialPosition().y}px)`,
+          transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
       >
         <div className="transfer-form__header">
           <h2 className="transfer-form__title">{t('transfer.form')}</h2>

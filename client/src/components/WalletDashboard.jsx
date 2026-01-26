@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useWallet } from '../context/WalletContext'
@@ -18,6 +18,9 @@ function WalletDashboard() {
   const [transferSuccess, setTransferSuccess] = useState(false)
   const [showCdkForm, setShowCdkForm] = useState(false)
   const [cdkSuccess, setCdkSuccess] = useState(false)
+  const [buttonPositions, setButtonPositions] = useState({ transfer: null, cdk: null })
+  const transferButtonRef = useRef(null)
+  const cdkButtonRef = useRef(null)
 
   useEffect(() => {
     // If no wallet exists, redirect to setup
@@ -41,6 +44,16 @@ function WalletDashboard() {
   }
 
   const handleTransferClick = () => {
+    if (transferButtonRef.current) {
+      const rect = transferButtonRef.current.getBoundingClientRect()
+      setButtonPositions(prev => ({
+        ...prev,
+        transfer: {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        }
+      }))
+    }
     setShowTransferForm(true)
   }
 
@@ -60,6 +73,16 @@ function WalletDashboard() {
   }
 
   const handleCdkClick = () => {
+    if (cdkButtonRef.current) {
+      const rect = cdkButtonRef.current.getBoundingClientRect()
+      setButtonPositions(prev => ({
+        ...prev,
+        cdk: {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        }
+      }))
+    }
     setShowCdkForm(true)
   }
 
@@ -148,12 +171,14 @@ function WalletDashboard() {
           <button 
             className="action-button action-button--primary"
             onClick={handleTransferClick}
+            ref={transferButtonRef}
           >
             {t('wallet.transfer')}
           </button>
           <button 
             className="action-button action-button-cdk"
             onClick={handleCdkClick}
+            ref={cdkButtonRef}
           >
             {t('cdk.redeemTitle')}
           </button>
@@ -189,6 +214,7 @@ function WalletDashboard() {
         <TransferForm 
           onClose={handleTransferClose}
           onSuccess={handleTransferSuccess}
+          buttonPosition={buttonPositions.transfer}
         />
       )}
       
@@ -196,6 +222,7 @@ function WalletDashboard() {
         <CdkRedeemForm 
           onClose={handleCdkClose}
           onSuccess={handleCdkSuccess}
+          buttonPosition={buttonPositions.cdk}
         />
       )}
     </div>

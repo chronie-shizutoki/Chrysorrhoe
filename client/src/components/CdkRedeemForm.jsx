@@ -6,7 +6,7 @@ import Loading from './Loading'
 import cdkService from '../services/cdkService'
 import '../styles/CdkRedeemForm.css'
 
-function CdkRedeemForm({ onClose, onSuccess }) {
+function CdkRedeemForm({ onClose, onSuccess, buttonPosition }) {
   const { t } = useTranslation()
   const { currentWallet, updateWalletBalance } = useWallet()
   const { formatCurrency } = useFormatting()
@@ -20,6 +20,29 @@ function CdkRedeemForm({ onClose, onSuccess }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   
+  // Calculate initial position based on button position
+  const [initialPosition, setInitialPosition] = useState(() => {
+    if (buttonPosition) {
+      return {
+        x: buttonPosition.x - window.innerWidth / 2,
+        y: buttonPosition.y - window.innerHeight / 2
+      };
+    }
+    return { x: 0, y: 0 };
+  });
+  
+  // Update initial position when button position changes
+  useEffect(() => {
+    if (buttonPosition) {
+      setInitialPosition({
+        x: buttonPosition.x - window.innerWidth / 2,
+        y: buttonPosition.y - window.innerHeight / 2
+      });
+    } else {
+      setInitialPosition({ x: 0, y: 0 });
+    }
+  }, [buttonPosition]);
+  
   // Trigger animation effect when component mounts
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -27,7 +50,7 @@ function CdkRedeemForm({ onClose, onSuccess }) {
     }, 50)
     
     return () => clearTimeout(timer)
-  }, [])
+  }, [buttonPosition])
   
   // Add animation effect when closing
   const handleClose = () => {
@@ -177,12 +200,25 @@ function CdkRedeemForm({ onClose, onSuccess }) {
       <div 
         className={`cdk-redeem-overlay ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}
         onClick={handleBackdropClick}
-        style={{ display: isClosing && !isOpen ? 'none' : 'flex' }}
+        style={{ 
+          display: isClosing && !isOpen ? 'none' : 'flex',
+          opacity: isOpen ? 1 : 0,
+          transition: 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
       >
         <div 
-          className={`cdk-redeem-form ${isOpen ? 'open' : ''} ${isClosing ? 'closing' : ''}`}
+          className={`cdk-redeem-form`}
           onClick={(e) => e.stopPropagation()}
           ref={formRef}
+          style={{
+            opacity: isOpen ? 1 : 0,
+            transform: isClosing 
+              ? `translate(${initialPosition.x}px, ${initialPosition.y}px) scale(0)` 
+              : isOpen 
+                ? 'translate(0, 0) scale(1)' 
+                : `translate(${initialPosition.x}px, ${initialPosition.y}px) scale(0)`,
+            transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+          }}
         >
             <div className="cdk-redeem-form__header">
               <h2 className="cdk-redeem-form__title">
